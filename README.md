@@ -19,7 +19,6 @@ Root component:
 <template>
   <div>
     <virtual-list
-      style="height: 360px; overflow-y: auto;" // make list scrollable
       :data-key="'id'"
       :data-source="items"
     >
