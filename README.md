@@ -103,4 +103,4 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 
 ## License
 
-[MIT License.](https://github.com/mfuu/vue-virtual-drag-list/blob/main/LICENSE)
+[MIT License.](https://github.com/mfuu/vue3-virtual-drag-list/blob/master/LICENSE)
