@@ -1,0 +1,7 @@
+.idea
+.vscode
+dev
+issues
+node_modules
+coverage
+package-lock

@@ -1,0 +1,70 @@
+{
+  "name": "vue-virtual-draglist",
+  "version": "3.0.0",
+  "description": "A virtual scrolling list component that can be sorted by dragging",
+  "main": "dist/draglist.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "lint": "eslint --fix src --ext .js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "cross-env mode=development rollup -c rollup.config.js -w",
+    "build": "cross-env mode=production rollup -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfuu/vue-virtual-drag-list.git"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "sort",
+    "drag",
+    "drop",
+    "draggable",
+    "sortable",
+    "virtual",
+    "virtual-list",
+    "big-data",
+    "big-list",
+    "infinite"
+  ],
+  "author": "mfuu",
+  "license": "ISC",
+  "private": false,
+  "bugs": {
+    "url": "https://github.com/mfuu/vue-virtual-drag-list/issues"
+  },
+  "homepage": "https://github.com/mfuu/vue-virtual-drag-list#readme",
+  "dependencies": {
+    "sortable-dnd": "^0.2.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-syntax-jsx": "^7.16.5",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-typescript": "^7.18.6",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "@vue/compiler-sfc": "^3.2.26",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^25.5.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^8.2.0",
+    "rollup": "^2.77.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-uglify": "^6.0.4",
+    "typescript": "^4.7.4",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue": "^3.0.11",
+    "vue-loader": "^15.9.8",
+    "vue-template-compiler": "^2.6.14"
+  }
+}
