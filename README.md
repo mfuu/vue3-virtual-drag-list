@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/vue-virtual-draglist.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![npm](https://img.shields.io/npm/dt/vue-virtual-draglist.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![vue2](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)
 
-A virtual scrolling list component that can be sorted by dragging, for vue3
+A virtual scrolling list component that can be sorted by dragging, support vue3
 
 ### [Live demo](https://mfuu.github.io/vue-virtual-drag-list/)
 
