@@ -18,11 +18,19 @@ Root component:
 ```vue
 <template>
   <div>
+    <!--
+      :draggable="'i'" // use tagName 
+      :draggable="'.drag'" // use class
+      :draggable="'#drag'" // use id
+    -->
     <virtual-list
       :data-key="'id'"
       :data-source="items"
+      :draggable="'#drag'"
+      style="height: 500px;"
     >
       <template slot="item" slot-scope="{ record, index, dataKey }">
+        <i id="drag" class="drag">drag me</i>
         <span>{{ record.text }}</span>
       </template>
     </virtual-list>
