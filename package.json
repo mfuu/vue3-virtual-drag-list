@@ -32,7 +32,7 @@
     "infinite"
   ],
   "author": "mfuu",
-  "license": "ISC",
+  "license": "MIT",
   "private": false,
   "bugs": {
     "url": "https://github.com/mfuu/vue3-virtual-drag-list/issues"
