@@ -56,13 +56,13 @@ class Sortable {
     this.init()
   }
 
-  set(key: any, value: any) {
+  set(key: string, value: any) {
     this[key] = value
     // When the list data changes when dragging, need to execute onDrag function
     if (key === 'dataSource' && this.dragElement) this.dragStart(this.dragElement, false)
   }
 
-  setOption(key: any, value: any) {
+  setOption(key: string, value: any) {
     this.options[key] = value
     this.drag.set(key, value)
   }
