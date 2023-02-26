@@ -30,9 +30,7 @@ export const Items = defineComponent({
       return h(Tag, {
         ref: itemRef,
         key: dataKey,
-        attrs: {
-          'data-key': dataKey
-        }
+        'data-key': dataKey
       }, slots.default?.())
     }
   }
@@ -52,9 +50,7 @@ export const Slots = defineComponent({
       return h(Tag, {
         ref: slotRef,
         key: dataKey,
-        attrs: {
-          'data-key': dataKey
-        }
+        'data-key': dataKey
       }, slots.default?.())
     }
   }

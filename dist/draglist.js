@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.0.3
+ * vue-virtual-draglist v3.0.4
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -1796,9 +1796,7 @@
         return vue.h(Tag, {
           ref: itemRef,
           key: dataKey,
-          attrs: {
-            'data-key': dataKey
-          }
+          'data-key': dataKey
         }, (_slots$default = slots["default"]) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots));
       };
     }
@@ -1818,9 +1816,7 @@
         return vue.h(Tag, {
           ref: slotRef,
           key: dataKey,
-          attrs: {
-            'data-key': dataKey
-          }
+          'data-key': dataKey
         }, (_slots$default2 = slots["default"]) === null || _slots$default2 === void 0 ? void 0 : _slots$default2.call(slots));
       };
     }
@@ -2187,27 +2183,19 @@
           style: {
             overflow: isHorizontal ? 'auto hidden' : 'hidden auto'
           },
-          on: {
-            '&scroll': handleScroll
-          }
+          onScroll: handleScroll
         }, [
         // header
         slots.header ? vue.h(Slots, {
-          props: {
-            tag: HeaderTag,
-            dataKey: 'header',
-            event: 'onHeaderResized'
-          },
-          on: {
-            onHeaderResized: onHeaderResized
-          }
+          tag: HeaderTag,
+          dataKey: 'header',
+          event: 'onHeaderResized',
+          onHeaderResized: onHeaderResized
         }, slots.header()) : null,
         // list
         vue.h(WrapTag, {
           ref: groupRef,
-          attrs: {
-            role: 'group'
-          },
+          role: 'group',
           "class": props.wrapClass,
           style: wrapStyle
         }, viewlist.value.slice(start, end + 1).map(function (item) {
@@ -2220,23 +2208,20 @@
             tag: ItemTag,
             event: 'onItemResized'
           };
-          return slots.item ? vue.h(Items, {
-            key: dataKey,
-            props: itemProps,
+          return slots.item ? vue.h(Items, _objectSpread2(_objectSpread2({
+            key: dataKey
+          }, itemProps), {}, {
             "class": props.itemClass,
             style: itemStyle,
-            on: {
-              onItemResized: onItemResized
-            }
-          }, slots.item({
+            event: 'onItemResized',
+            onItemResized: onItemResized
+          }), slots.item({
             record: item,
             index: index,
             dataKey: dataKey
           })) : vue.h(ItemTag, {
             key: dataKey,
-            attrs: {
-              'data-key': dataKey
-            },
+            'data-key': dataKey,
             "class": props.itemClass,
             style: _objectSpread2(_objectSpread2({}, itemStyle), {}, {
               height: "".concat(props.size, "px")
@@ -2245,14 +2230,10 @@
         })),
         // footer
         slots.footer ? vue.h(Slots, {
-          props: {
-            tag: FooterTag,
-            dataKey: 'footer',
-            event: 'onFooterResized'
-          },
-          on: {
-            onFooterResized: onFooterResized
-          }
+          tag: FooterTag,
+          dataKey: 'footer',
+          event: 'onFooterResized',
+          onFooterResized: onFooterResized
         }, slots.footer()) : null,
         // last el
         vue.h('div', {

@@ -410,22 +410,20 @@ const VirtualDragList = defineComponent({
       return h(RootTag, {
         ref: rootRef,
         style: { overflow: isHorizontal ? 'auto hidden' : 'hidden auto' },
-        on: { '&scroll': handleScroll }
+        onScroll: handleScroll
       }, [
         // header
         slots.header ? h(Slots, {
-          props: {
-            tag: HeaderTag,
-            dataKey: 'header',
-            event: 'onHeaderResized'
-          },
-          on: { onHeaderResized }
+          tag: HeaderTag,
+          dataKey: 'header',
+          event: 'onHeaderResized',
+          onHeaderResized: onHeaderResized
         }, slots.header()) : null,
   
         // list
         h(WrapTag, {
           ref: groupRef,
-          attrs: { role: 'group' },
+          role: 'group',
           class: props.wrapClass,
           style: wrapStyle
         }, viewlist.value.slice(start, end + 1).map(item => {
@@ -437,15 +435,16 @@ const VirtualDragList = defineComponent({
           return slots.item ?
             h(Items, {
               key: dataKey,
-              props: itemProps,
+              ...itemProps,
               class: props.itemClass,
               style: itemStyle,
-              on: { onItemResized }
+              event: 'onItemResized',
+              onItemResized: onItemResized
             }, slots.item({ record: item, index, dataKey }))
             :
             h(ItemTag, {
               key: dataKey,
-              attrs: { 'data-key': dataKey },
+              'data-key': dataKey,
               class: props.itemClass,
               style: { ...itemStyle, height: `${props.size}px` }
             }, dataKey)
@@ -453,12 +452,10 @@ const VirtualDragList = defineComponent({
   
         // footer
         slots.footer ? h(Slots, {
-          props: {
-            tag: FooterTag,
-            dataKey: 'footer',
-            event: 'onFooterResized'
-          },
-          on: {onFooterResized}
+          tag: FooterTag,
+          dataKey: 'footer',
+          event: 'onFooterResized',
+          onFooterResized: onFooterResized
         }, slots.footer()) : null,
   
         // last el
