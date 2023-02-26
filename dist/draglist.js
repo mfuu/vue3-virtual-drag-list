@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.0.2
+ * vue-virtual-draglist v3.0.3
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
