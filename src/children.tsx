@@ -20,6 +20,7 @@ export const SlotsProps = {
 export const Items = defineComponent({
   name: 'virtual-draglist-items',
   props: SlotsProps,
+  emits: ['resize'],
   setup(props, { emit, slots }) {
     const itemRef = ref<HTMLElement | null>(null);
     useObserver(props, itemRef, emit)
@@ -39,6 +40,7 @@ export const Items = defineComponent({
 export const Slots = defineComponent({
   name: 'virtual-draglist-slots',
   props: SlotsProps,
+  emits: ['resize'],
   setup(props, { emit, slots }) {
     const slotRef = ref<HTMLElement | null>(null);
 

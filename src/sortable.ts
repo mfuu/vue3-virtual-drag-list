@@ -1,168 +1,173 @@
-import SortableDnd from 'sortable-dnd'
+import SortableDnd from 'sortable-dnd';
+import { Store, FromTo } from './Storage';
+import { getDataKey } from './utils';
 
-export interface SortableOptions {
-  getKey: Function;
-  scrollEl: HTMLElement | null;
-  dataSource: any[];
-  disabled: boolean;
-  draggable: string | Function | undefined;
-  ghostStyle: object;
-  ghostClass: string;
-  chosenClass: string;
-  animation: number;
-  autoScroll: boolean;
-  scrollStep: number;
-  scrollThreshold: number;
-}
+const attributes = [
+  'group',
+  'handle',
+  'disabled',
+  'draggable',
+  'ghostClass',
+  'ghostStyle',
+  'chosenClass',
+  'animation',
+  'autoScroll',
+  'scrollThreshold',
+];
 
-interface DragStateType {
-  key: any;
-  index: number;
-  item: any;
-}
-
-// drag state
-export class DragState {
-  from: DragStateType;
-  to: DragStateType;
-  constructor() {
-    this.from = { key: undefined, item: undefined, index: -1 }
-    this.to = { key: undefined, item: undefined, index: -1 }
-  }
-}
+let dragEl: HTMLElement | null = null;
 
 class Sortable {
-  onDrag: Function;
-  onDrop: Function;
-  dragState: DragState;
-  dragElement?: HTMLElement | null;
-  drag: SortableDnd;
-  options: SortableOptions;
-  dataSource: any[];
-  cloneList: any[];
-  rangeIsChanged: boolean;
+  context: any;
+  callback: Function;
+  initialList: any[];
+  dynamicList: any[];
+  sortable: any;
+  rangeChanged: boolean;
 
-  constructor(options: SortableOptions, onDrag:Function, onDrop: Function) {
-    this.options = options
-    this.onDrag = onDrag
-    this.onDrop = onDrop
+  constructor(context, callback: Function) {
+    this.context = context;
+    this.callback = callback;
+    
+    this.initialList = [...context.list];
+    this.dynamicList = [...context.list];
 
-    this.dataSource = options.dataSource
-    this.cloneList = new Array()
-    this.dragState = new DragState
-    this.rangeIsChanged = false
+    this.sortable = null;
+    this.rangeChanged = false;
 
-    if (!options.scrollEl) return
-    this.init()
-  }
-
-  set(key: string, value: any) {
-    this[key] = value
-    // When the list data changes when dragging, need to execute onDrag function
-    if (key === 'dataSource' && this.dragElement) this.dragStart(this.dragElement, false)
-  }
-
-  setOption(key: string, value: any) {
-    this.options[key] = value
-    this.drag.set(key, value)
-  }
-
-  init() {
-    const {
-      disabled,
-      draggable,
-      ghostClass,
-      ghostStyle,
-      chosenClass,
-      animation,
-      autoScroll,
-      scrollStep,
-      scrollThreshold
-    } = this.options
-
-    this.drag = new SortableDnd(
-      this.options.scrollEl,
-      {
-        disabled,
-        draggable,
-        ghostClass,
-        ghostStyle,
-        chosenClass,
-        animation,
-        autoScroll,
-        scrollStep,
-        scrollThreshold,
-        onChange: (from: any, to: any) => this.onChange(from, to),
-        onDrag: (dragEl: HTMLElement) => this.dragStart(dragEl),
-        onDrop: (changed: boolean) => this.dragEnd(changed)
-      }
-    )
-  }
-
-  dragStart(dragEl: HTMLElement, callback: boolean = true) {
-    this.dragElement = dragEl
-    this.cloneList = [...this.dataSource]
-
-    const key = dragEl.getAttribute('data-key')
-    this.dataSource.forEach((item, index) => {
-      if (this.options.getKey(item) == key)
-        this.dragState.from = { item, index, key }
-    })
-    if (callback) {
-      this.rangeIsChanged = false
-      this.onDrag(this.dragState.from, dragEl)
-    } else {
-      this.rangeIsChanged = true
-    }
-  }
-
-  onChange(_old_: any, _new_: any) {
-    const oldKey = this.dragState.from.key
-    const newKey = _new_.node.getAttribute('data-key')
-
-    const from = { item: null, index: -1 }
-    const to = { item: null, index: -1 }
-
-    this.cloneList.forEach((el, index) => {
-      const key = this.options.getKey(el)
-      if (key == oldKey) Object.assign(from, { item: el, index })
-      if (key == newKey) Object.assign(to, { item: el, index })
-    })
-
-    this.cloneList.splice(from.index, 1)
-    this.cloneList.splice(to.index, 0, from.item)
-  }
-
-  dragEnd(changed: boolean) {
-    const { getKey } = this.options
-    if (this.rangeIsChanged && this.dragElement) this.dragElement.remove()
-
-    const { from } = this.dragState
-    this.cloneList.forEach((el, index) => {
-      if (getKey(el) == from.key)
-        this.dragState.to = { 
-          index,
-          key: getKey(this.dataSource[index]),
-          item: this.dataSource[index]
-        }
-    })
-
-    this.onDrop(this.cloneList, from, this.dragState.to, changed)
-
-    this.dataSource = [...this.cloneList]
-    this.clear()
-  }
-
-  clear() {
-    this.dragElement = null
-    this.rangeIsChanged = false
-    this.dragState = new DragState
+    this._init();
   }
 
   destroy() {
-    this.drag && this.drag.destroy()
-    this.drag = null
+    this.sortable && this.sortable.destroy();
+    this.sortable = null;
   }
-}
 
-export default Sortable
+  setValue(key: string, value) {
+    if (key === 'list') {
+      this.initialList = [...value];
+      // When the list data changes when dragging, need to execute onDrag function
+      if (dragEl) this._onDrag(dragEl, false);
+    } else {
+      this.context[key] = value;
+      if (this.sortable) this.sortable.options[key] = value;
+    }
+  }
+
+  _init() {
+    const props = attributes.reduce((res, key) => {
+      res[key] = this.context[key];
+      return res;
+    }, {});
+
+    this.sortable = new SortableDnd(this.context.container, {
+      ...props,
+      fallbackOnBody: true,
+      list: this.dynamicList,
+      onDrag: ({ from }) => this._onDrag(from.node),
+      onAdd: ({ from, to }) => this._onAdd(from, to),
+      onRemove: ({ from, to }) => this._onRemove(from, to),
+      onChange: ({ from, to }) => this._onChange(from, to),
+      onDrop: ({ from, to, changed }) => this._onDrop(from, to, changed),
+    });
+  }
+
+  async _onDrag(node: HTMLElement, callback = true) {
+    dragEl = node;
+    this.dynamicList = [...this.initialList];
+
+    const fromList = [...this.initialList];
+    const fromState = this._getFromTo({ node }, fromList);
+
+    await Store.setValue({ from: { ...fromState } });
+
+    if (callback) {
+      this.rangeChanged = false;
+      const store: FromTo = await Store.getValue();
+      this.context.emit('drag', { list: fromList, ...store });
+    } else {
+      this.rangeChanged = true;
+    }
+  }
+
+  async _onAdd(from, to) {
+    const store = await Store.getValue();
+    const list = [...this.dynamicList];
+    const index = this._getIndex(list, to.node.dataset.key);
+    const params = { ...store.from, index };
+    if (from.node === to.node) {
+      // insert to end of list
+      params.index = this.dynamicList.length;
+      this.dynamicList.push(store.from?.item);
+    } else {
+      this.dynamicList.splice(index, 0, store.from?.item);
+    }
+
+    this.context.emit('add', { ...params });
+  }
+
+  async _onRemove(from, to) {
+    const list = [...this.dynamicList];
+    const state = this._getFromTo(from, list);
+
+    this.dynamicList.splice(state.index, 1);
+
+    this.context.emit('remove', { ...state });
+  }
+
+  async _onChange(from, to) {
+    const fromList = [...this.dynamicList];
+    const toList = [...this.dynamicList];
+    const fromState = this._getFromTo(from, fromList);
+    const toState = this._getFromTo(to, toList);
+
+    this.dynamicList.splice(fromState.index, 1);
+    this.dynamicList.splice(toState.index, 0, fromState.item);
+  }
+
+  async _onDrop(from, to, changed) {
+    if (this.rangeChanged || from.sortable !== to.sortable) {
+      dragEl && dragEl.remove();
+    }
+
+    const list = [...this.dynamicList];
+    const index = this._getIndex(list, from.node.dataset.key);
+    const item = this.initialList[index];
+    const key = getDataKey(item, this.context.dataKey);
+
+    await Store.setValue({
+      to: { index, item, key },
+    });
+
+    const store = await Store.getValue();
+    const params = { list: list, ...store, changed };
+
+    this.context.emit('drop', params);
+    this.callback && this.callback(params);
+
+    this.initialList = [...list];
+    this._clear();
+  }
+
+  _getFromTo(fromTo, list) {
+    const key = fromTo.node.dataset.key;
+    const index = this._getIndex(list, key);
+    const item = list[index];
+
+    return { key, item, index };
+  }
+
+  _getIndex(list, key) {
+    return list.findIndex(
+      (item) => getDataKey(item, this.context.dataKey) == key
+    );
+  }
+
+  _clear() {
+    dragEl = null;
+    Store.clear();
+    this.rangeChanged = false;
+  }
+};
+
+export default Sortable;
