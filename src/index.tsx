@@ -209,9 +209,9 @@ const VirtualDragList = defineComponent({
       virtual.handleScroll(offset);
 
       if (virtual.isFront()) {
-        if (!!viewlist.value.length && offset <= 0) handleToTop(this);
+        if (!!viewlist.value.length && offset <= 0) handleToTop();
       } else if (virtual.isBehind()) {
-        if (clientSize + offset >= scrollSize) handleToBottom(this);
+        if (clientSize + offset >= scrollSize) handleToBottom();
       }
     }, props.delay);
 
