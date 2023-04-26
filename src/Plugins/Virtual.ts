@@ -8,7 +8,7 @@ export class Range {
     this.end = options.end || 0;
     this.front = options.front || 0;
     this.behind = options.behind || 0;
-  } 
+  }
 }
 
 export interface VirtualOptions {
@@ -36,13 +36,13 @@ export class CalcSize {
 const CACLTYPE = {
   INIT: 'INIT',
   FIXED: 'FIXED',
-  DYNAMIC: 'DYNAMIC'
-}
+  DYNAMIC: 'DYNAMIC',
+};
 
 const DIRECTION = {
   FRONT: 'FRONT',
-  BEHIND: 'BEHIND'
-}
+  BEHIND: 'BEHIND',
+};
 
 class Virtual {
   options: VirtualOptions;
@@ -81,7 +81,7 @@ class Virtual {
   updateSizes(uniqueKeys: any) {
     this.sizes.forEach((v, k) => {
       if (!uniqueKeys.includes(k)) this.sizes.delete(k);
-    })
+    });
   }
 
   updateRange() {
@@ -130,8 +130,10 @@ class Virtual {
     if (offset <= 0) return 0;
     if (this.isFixed()) return Math.floor(offset / fixed);
 
-    let low = 0, high = this.options.uniqueKeys.length;
-    let middle = 0, middleOffset = 0;
+    let low = 0,
+      high = this.options.uniqueKeys.length;
+    let middle = 0,
+      middleOffset = 0;
     while (low <= high) {
       middle = low + Math.floor((high - low) / 2);
       middleOffset = this.getOffsetByIndex(middle);
@@ -186,7 +188,9 @@ class Virtual {
       return (last - this.range.end) * this.calcSize.fixed;
     }
     if (this.calcIndex === last) {
-      return this.getOffsetByIndex(last) - this.getOffsetByIndex(this.range.end);
+      return (
+        this.getOffsetByIndex(last) - this.getOffsetByIndex(this.range.end)
+      );
     }
     return (last - this.range.end) * this.getItemSize();
   }
@@ -213,7 +217,9 @@ class Virtual {
   }
 
   getItemSize() {
-    return this.isFixed() ? this.calcSize.fixed : (this.calcSize.average || this.options.size);
+    return this.isFixed()
+      ? this.calcSize.fixed
+      : this.calcSize.average || this.options.size;
   }
 
   handleItemSizeChange(key: string | number, size: number) {

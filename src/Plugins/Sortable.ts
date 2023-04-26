@@ -1,6 +1,6 @@
 import SortableDnd from 'sortable-dnd';
 import { Store, FromTo } from './Storage';
-import { getDataKey } from './utils';
+import { getDataKey } from '../utils';
 
 const attributes = [
   'group',
@@ -28,7 +28,7 @@ class Sortable {
   constructor(context, callback: Function) {
     this.context = context;
     this.callback = callback;
-    
+
     this.initialList = [...context.list];
     this.dynamicList = [...context.list];
 
@@ -168,6 +168,6 @@ class Sortable {
     Store.clear();
     this.rangeChanged = false;
   }
-};
+}
 
 export default Sortable;
