@@ -30,7 +30,6 @@ const VirtualDragList = defineComponent({
 
     let lastItem: any = null;
 
-    // --------------------------- usefull values ------------------------------
     const isHorizontal = props.direction !== 'vertical';
     const scrollSizeKey = isHorizontal ? 'scrollWidth' : 'scrollHeight';
     const scrollDirectionKey = isHorizontal ? 'scrollLeft' : 'scrollTop';
@@ -40,7 +39,6 @@ const VirtualDragList = defineComponent({
     let sortable: Sortable;
     let virtual: Virtual;
 
-    // --------------------------- emit functions ------------------------------
     /**
      * reset component
      */
@@ -109,7 +107,6 @@ const VirtualDragList = defineComponent({
       if (rootRef.value) rootRef.value[scrollDirectionKey] = offset;
     }
 
-    // --------------------------- private mehtods ------------------------------
     const init = (list: any[]) => {
       viewlist.value = list;
       updateUniqueKeys();
