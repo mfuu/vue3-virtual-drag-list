@@ -108,7 +108,7 @@ const VirtualDragList = defineComponent({
     }
 
     const init = (list: any[]) => {
-      viewlist.value = list;
+      viewlist.value = [...list];
       updateUniqueKeys();
 
       if (virtual) {
@@ -316,91 +316,86 @@ const VirtualDragList = defineComponent({
           style: { overflow: isHorizontal ? 'auto hidden' : 'hidden auto' },
           onScroll: handleScroll,
         },
-        [
-          // header
-          slots.header
-            ? h(
-                Slots,
-                {
-                  key: 'header',
-                  tag: HeaderTag,
-                  dataKey: 'header',
-                  event: 'resize',
-                  onResize: onHeaderResized,
-                },
-                slots.header()
-              )
-            : null,
+        {
+          default: () => [
+            // header
+            slots.header
+              ? h(
+                  Slots,
+                  {
+                    key: 'header',
+                    tag: HeaderTag,
+                    dataKey: 'header',
+                    event: 'resize',
+                    onResize: onHeaderResized,
+                  },
+                  {default: () => slots.header()}
+                )
+              : null,
 
-          // list
-          h(
-            WrapTag,
-            {
-              ref: groupRef,
-              role: 'group',
-              class: props.wrapClass,
-              style: wrapStyle,
-            },
-            viewlist.value.slice(start, end + 1).map((item) => {
-              const index = getItemIndex(item);
-              const dataKey = getDataKey(item, props.dataKey);
-              const itemStyle = {
-                ...props.itemStyle,
-                ...getItemStyle(dataKey),
-              };
+            // list
+            h(
+              WrapTag,
+              {
+                ref: groupRef,
+                role: 'group',
+                class: props.wrapClass,
+                style: wrapStyle,
+              },
+              {
+                default: () => viewlist.value.slice(start, end + 1).map((item) => {
+                  const index = getItemIndex(item);
+                  const dataKey = getDataKey(item, props.dataKey);
+                  const itemStyle = {
+                    ...props.itemStyle,
+                    ...getItemStyle(dataKey),
+                  };
 
-              return slots.item
-                ? h(
-                    Items,
-                    {
-                      key: dataKey,
-                      tag: ItemTag,
-                      class: props.itemClass,
-                      style: itemStyle,
-                      event: 'resize',
-                      dataKey: dataKey,
-                      isHorizontal: isHorizontal,
-                      onResize: onItemResized,
-                    },
-                    slots.item({ record: item, index, dataKey })
-                  )
-                : h(
-                    ItemTag,
-                    {
-                      key: dataKey,
-                      'data-key': dataKey,
-                      class: props.itemClass,
-                      style: { ...itemStyle, height: `${props.size}px` },
-                    },
-                    dataKey
-                  );
-            })
-          ),
+                  return slots.item
+                    ? h(
+                        Items,
+                        {
+                          key: dataKey,
+                          tag: ItemTag,
+                          class: props.itemClass,
+                          style: itemStyle,
+                          event: 'resize',
+                          dataKey: dataKey,
+                          isHorizontal: isHorizontal,
+                          onResize: onItemResized,
+                        },
+                        {default: () => slots.item({ record: item, index, dataKey })}
+                      )
+                    : null
+                })
+              }
+            ),
 
-          // footer
-          slots.footer
-            ? h(
-                Slots,
-                {
-                  key: 'footer',
-                  tag: FooterTag,
-                  dataKey: 'footer',
-                  event: 'resize',
-                  onResize: onFooterResized,
-                },
-                slots.footer()
-              )
-            : null,
+            // footer
+            slots.footer
+              ? h(
+                  Slots,
+                  {
+                    key: 'footer',
+                    tag: FooterTag,
+                    dataKey: 'footer',
+                    event: 'resize',
+                    onResize: onFooterResized,
+                  },
+                  {default: () => slots.footer()}
+                )
+              : null,
 
-          // last el
-          h('div', {
-            ref: lastRef,
-            style: {
-              width: isHorizontal ? '0px' : '100%',
-              height: isHorizontal ? '100%' : '0px',
-            },
-          }),
-        ]
+            // last el
+            h('div', {
+              ref: lastRef,
+              style: {
+                width: isHorizontal ? '0px' : '100%',
+                height: isHorizontal ? '100%' : '0px',
+              },
+            }),
+          ]
+        }
       );
     };
   },

@@ -24,7 +24,7 @@ class Storage {
    */
   getStore() {
     try {
-      const result = JSON.parse(localStorage.getItem(storeKey) || '{}');
+      const result = JSON.parse(localStorage.getItem(storeKey));
       return result || defaultStore;
     } catch (e) {
       return defaultStore;
@@ -37,7 +37,7 @@ class Storage {
   getValue() {
     return new Promise<FromTo>((resolve, reject) => {
       try {
-        const result = JSON.parse(localStorage.getItem(storeKey) || '{}');
+        const result = JSON.parse(localStorage.getItem(storeKey));
         resolve(result || defaultStore);
       } catch (e) {
         reject(defaultStore);
@@ -48,7 +48,7 @@ class Storage {
   setValue(value: FromTo) {
     return new Promise<string>((resolve, reject) => {
       try {
-        const store = JSON.parse(localStorage.getItem(storeKey) || '{}');
+        const store = JSON.parse(localStorage.getItem(storeKey));
         const result = JSON.stringify({ ...store, ...value });
         localStorage.setItem(storeKey, result);
         resolve(result);

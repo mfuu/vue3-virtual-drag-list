@@ -20,7 +20,7 @@ export const Items = defineComponent({
           key: dataKey,
           'data-key': dataKey,
         },
-        slots.default?.()
+        {default: () => slots.default?.()}
       );
     };
   },
@@ -45,7 +45,7 @@ export const Slots = defineComponent({
           key: dataKey,
           'data-key': dataKey,
         },
-        slots.default?.()
+        {default: () => slots.default?.()}
       );
     };
   },

@@ -5,13 +5,20 @@ type Direction = 'vertical' | 'horizontal';
 export const VirtualProps = {
   dataSource: {
     type: Array,
-    default: () => {
-      return [];
-    },
+    default: () => ([])
   },
   dataKey: {
     type: String,
     required: true,
+  },
+  draggable: {
+    type: [Function, String],
+  },
+  handle: {
+    type: [Function, String]
+  },
+  group: {
+    type: [Object, String]
   },
   direction: {
     type: String as PropType<Direction>,
@@ -28,6 +35,22 @@ export const VirtualProps = {
     type: Number,
     default: 10,
   },
+  animation: {
+    type: Number,
+    default: 150,
+  },
+  autoScroll: {
+    type: Boolean,
+    default: true,
+  },
+  scrollThreshold: {
+    type: Number,
+    default: 15,
+  },
+  keepOffset: {
+    type: Boolean,
+    default: false,
+  },
   rootTag: {
     type: String,
     default: 'div',
@@ -42,6 +65,7 @@ export const VirtualProps = {
   },
   wrapStyle: {
     type: Object,
+    default: () => ({}),
   },
   headerTag: {
     type: String,
@@ -57,6 +81,7 @@ export const VirtualProps = {
   },
   itemStyle: {
     type: Object,
+    default: () => ({}),
   },
   itemClass: {
     type: String,
@@ -66,45 +91,17 @@ export const VirtualProps = {
     type: Boolean,
     default: false,
   },
-  draggable: {
-    type: [Function, String],
-  },
-  dragging: {
-    type: Function,
-  },
   ghostClass: {
     type: String,
     default: '',
   },
   ghostStyle: {
     type: Object,
-    default: () => {
-      return {};
-    },
+    default: () => ({}),
   },
   chosenClass: {
     type: String,
     default: '',
-  },
-  animation: {
-    type: Number,
-    default: 150,
-  },
-  autoScroll: {
-    type: Boolean,
-    default: true,
-  },
-  scrollStep: {
-    type: Number,
-    default: 5,
-  },
-  scrollThreshold: {
-    type: Number,
-    default: 15,
-  },
-  keepOffset: {
-    type: Boolean,
-    default: false,
   },
 };
 

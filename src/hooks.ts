@@ -11,7 +11,7 @@ export const useObserver = (
   );
 
   const getCurrentSize = () => {
-    return aRef?.value ? aRef.value[sizeKey.value] : 0;
+    return aRef.value ? aRef.value[sizeKey.value] : 0;
   };
 
   const onSizeChange = () => {
@@ -24,7 +24,7 @@ export const useObserver = (
       observer = new ResizeObserver(() => {
         onSizeChange();
       });
-      aRef?.value && observer.observe(aRef.value);
+      aRef.value && observer.observe(aRef.value);
     }
   });
 
