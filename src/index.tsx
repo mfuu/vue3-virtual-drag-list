@@ -329,7 +329,7 @@ const VirtualDragList = defineComponent({
                     event: 'resize',
                     onResize: onHeaderResized,
                   },
-                  {default: () => slots.header()}
+                  { default: () => slots.header() }
                 )
               : null,
 
@@ -343,31 +343,35 @@ const VirtualDragList = defineComponent({
                 style: wrapStyle,
               },
               {
-                default: () => viewlist.value.slice(start, end + 1).map((item) => {
-                  const index = getItemIndex(item);
-                  const dataKey = getDataKey(item, props.dataKey);
-                  const itemStyle = {
-                    ...props.itemStyle,
-                    ...getItemStyle(dataKey),
-                  };
+                default: () =>
+                  viewlist.value.slice(start, end + 1).map((item) => {
+                    const index = getItemIndex(item);
+                    const dataKey = getDataKey(item, props.dataKey);
+                    const itemStyle = {
+                      ...props.itemStyle,
+                      ...getItemStyle(dataKey),
+                    };
 
-                  return slots.item
-                    ? h(
-                        Items,
-                        {
-                          key: dataKey,
-                          tag: ItemTag,
-                          class: props.itemClass,
-                          style: itemStyle,
-                          event: 'resize',
-                          dataKey: dataKey,
-                          isHorizontal: isHorizontal,
-                          onResize: onItemResized,
-                        },
-                        {default: () => slots.item({ record: item, index, dataKey })}
-                      )
-                    : null
-                })
+                    return slots.item
+                      ? h(
+                          Items,
+                          {
+                            key: dataKey,
+                            tag: ItemTag,
+                            class: props.itemClass,
+                            style: itemStyle,
+                            event: 'resize',
+                            dataKey: dataKey,
+                            isHorizontal: isHorizontal,
+                            onResize: onItemResized,
+                          },
+                          {
+                            default: () =>
+                              slots.item({ record: item, index, dataKey }),
+                          }
+                        )
+                      : null;
+                  }),
               }
             ),
 
@@ -382,7 +386,7 @@ const VirtualDragList = defineComponent({
                     event: 'resize',
                     onResize: onFooterResized,
                   },
-                  {default: () => slots.footer()}
+                  { default: () => slots.footer() }
                 )
               : null,
 
@@ -394,7 +398,7 @@ const VirtualDragList = defineComponent({
                 height: isHorizontal ? '100%' : '0px',
               },
             }),
-          ]
+          ],
         }
       );
     };

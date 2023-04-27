@@ -5,7 +5,7 @@ type Direction = 'vertical' | 'horizontal';
 export const VirtualProps = {
   dataSource: {
     type: Array,
-    default: () => ([])
+    default: () => [],
   },
   dataKey: {
     type: String,
@@ -15,10 +15,10 @@ export const VirtualProps = {
     type: [Function, String],
   },
   handle: {
-    type: [Function, String]
+    type: [Function, String],
   },
   group: {
-    type: [Object, String]
+    type: [Object, String],
   },
   direction: {
     type: String as PropType<Direction>,
@@ -33,7 +33,7 @@ export const VirtualProps = {
   },
   delay: {
     type: Number,
-    default: 10,
+    default: 0,
   },
   animation: {
     type: Number,
@@ -45,7 +45,7 @@ export const VirtualProps = {
   },
   scrollThreshold: {
     type: Number,
-    default: 15,
+    default: 25,
   },
   keepOffset: {
     type: Boolean,

@@ -79,7 +79,7 @@ class Sortable {
     const fromList = [...this.initialList];
     const fromState = this._getFromTo({ node }, fromList);
 
-    await Store.setValue({ from: { ...fromState } });
+    await Store.setValue({ from: { list: fromList, ...fromState } });
 
     if (callback) {
       this.rangeChanged = false;
@@ -136,7 +136,7 @@ class Sortable {
     const key = getDataKey(item, this.context.dataKey);
 
     await Store.setValue({
-      to: { index, item, key },
+      to: { list: [...this.initialList], index, item, key },
     });
 
     const store = await Store.getValue();

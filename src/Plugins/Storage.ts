@@ -1,6 +1,7 @@
 const storeKey = 'virtualSortableState';
 
 type Item = {
+  list: any[];
   item: any;
   key: string;
   index: number;
