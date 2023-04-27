@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.0.4
+ * vue-virtual-draglist v3.1.0
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -30,6 +30,337 @@
       });
     }
     return target;
+  }
+  function _regeneratorRuntime() {
+    _regeneratorRuntime = function () {
+      return exports;
+    };
+    var exports = {},
+      Op = Object.prototype,
+      hasOwn = Op.hasOwnProperty,
+      defineProperty = Object.defineProperty || function (obj, key, desc) {
+        obj[key] = desc.value;
+      },
+      $Symbol = "function" == typeof Symbol ? Symbol : {},
+      iteratorSymbol = $Symbol.iterator || "@@iterator",
+      asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator",
+      toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+    function define(obj, key, value) {
+      return Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: !0,
+        configurable: !0,
+        writable: !0
+      }), obj[key];
+    }
+    try {
+      define({}, "");
+    } catch (err) {
+      define = function (obj, key, value) {
+        return obj[key] = value;
+      };
+    }
+    function wrap(innerFn, outerFn, self, tryLocsList) {
+      var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator,
+        generator = Object.create(protoGenerator.prototype),
+        context = new Context(tryLocsList || []);
+      return defineProperty(generator, "_invoke", {
+        value: makeInvokeMethod(innerFn, self, context)
+      }), generator;
+    }
+    function tryCatch(fn, obj, arg) {
+      try {
+        return {
+          type: "normal",
+          arg: fn.call(obj, arg)
+        };
+      } catch (err) {
+        return {
+          type: "throw",
+          arg: err
+        };
+      }
+    }
+    exports.wrap = wrap;
+    var ContinueSentinel = {};
+    function Generator() {}
+    function GeneratorFunction() {}
+    function GeneratorFunctionPrototype() {}
+    var IteratorPrototype = {};
+    define(IteratorPrototype, iteratorSymbol, function () {
+      return this;
+    });
+    var getProto = Object.getPrototypeOf,
+      NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+    NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype);
+    var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
+    function defineIteratorMethods(prototype) {
+      ["next", "throw", "return"].forEach(function (method) {
+        define(prototype, method, function (arg) {
+          return this._invoke(method, arg);
+        });
+      });
+    }
+    function AsyncIterator(generator, PromiseImpl) {
+      function invoke(method, arg, resolve, reject) {
+        var record = tryCatch(generator[method], generator, arg);
+        if ("throw" !== record.type) {
+          var result = record.arg,
+            value = result.value;
+          return value && "object" == typeof value && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) {
+            invoke("next", value, resolve, reject);
+          }, function (err) {
+            invoke("throw", err, resolve, reject);
+          }) : PromiseImpl.resolve(value).then(function (unwrapped) {
+            result.value = unwrapped, resolve(result);
+          }, function (error) {
+            return invoke("throw", error, resolve, reject);
+          });
+        }
+        reject(record.arg);
+      }
+      var previousPromise;
+      defineProperty(this, "_invoke", {
+        value: function (method, arg) {
+          function callInvokeWithMethodAndArg() {
+            return new PromiseImpl(function (resolve, reject) {
+              invoke(method, arg, resolve, reject);
+            });
+          }
+          return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
+        }
+      });
+    }
+    function makeInvokeMethod(innerFn, self, context) {
+      var state = "suspendedStart";
+      return function (method, arg) {
+        if ("executing" === state) throw new Error("Generator is already running");
+        if ("completed" === state) {
+          if ("throw" === method) throw arg;
+          return doneResult();
+        }
+        for (context.method = method, context.arg = arg;;) {
+          var delegate = context.delegate;
+          if (delegate) {
+            var delegateResult = maybeInvokeDelegate(delegate, context);
+            if (delegateResult) {
+              if (delegateResult === ContinueSentinel) continue;
+              return delegateResult;
+            }
+          }
+          if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) {
+            if ("suspendedStart" === state) throw state = "completed", context.arg;
+            context.dispatchException(context.arg);
+          } else "return" === context.method && context.abrupt("return", context.arg);
+          state = "executing";
+          var record = tryCatch(innerFn, self, context);
+          if ("normal" === record.type) {
+            if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue;
+            return {
+              value: record.arg,
+              done: context.done
+            };
+          }
+          "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg);
+        }
+      };
+    }
+    function maybeInvokeDelegate(delegate, context) {
+      var methodName = context.method,
+        method = delegate.iterator[methodName];
+      if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel;
+      var record = tryCatch(method, delegate.iterator, context.arg);
+      if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel;
+      var info = record.arg;
+      return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel);
+    }
+    function pushTryEntry(locs) {
+      var entry = {
+        tryLoc: locs[0]
+      };
+      1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry);
+    }
+    function resetTryEntry(entry) {
+      var record = entry.completion || {};
+      record.type = "normal", delete record.arg, entry.completion = record;
+    }
+    function Context(tryLocsList) {
+      this.tryEntries = [{
+        tryLoc: "root"
+      }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0);
+    }
+    function values(iterable) {
+      if (iterable) {
+        var iteratorMethod = iterable[iteratorSymbol];
+        if (iteratorMethod) return iteratorMethod.call(iterable);
+        if ("function" == typeof iterable.next) return iterable;
+        if (!isNaN(iterable.length)) {
+          var i = -1,
+            next = function next() {
+              for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next;
+              return next.value = undefined, next.done = !0, next;
+            };
+          return next.next = next;
+        }
+      }
+      return {
+        next: doneResult
+      };
+    }
+    function doneResult() {
+      return {
+        value: undefined,
+        done: !0
+      };
+    }
+    return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", {
+      value: GeneratorFunctionPrototype,
+      configurable: !0
+    }), defineProperty(GeneratorFunctionPrototype, "constructor", {
+      value: GeneratorFunction,
+      configurable: !0
+    }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) {
+      var ctor = "function" == typeof genFun && genFun.constructor;
+      return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name));
+    }, exports.mark = function (genFun) {
+      return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun;
+    }, exports.awrap = function (arg) {
+      return {
+        __await: arg
+      };
+    }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
+      return this;
+    }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+      void 0 === PromiseImpl && (PromiseImpl = Promise);
+      var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl);
+      return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) {
+        return result.done ? result.value : iter.next();
+      });
+    }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () {
+      return this;
+    }), define(Gp, "toString", function () {
+      return "[object Generator]";
+    }), exports.keys = function (val) {
+      var object = Object(val),
+        keys = [];
+      for (var key in object) keys.push(key);
+      return keys.reverse(), function next() {
+        for (; keys.length;) {
+          var key = keys.pop();
+          if (key in object) return next.value = key, next.done = !1, next;
+        }
+        return next.done = !0, next;
+      };
+    }, exports.values = values, Context.prototype = {
+      constructor: Context,
+      reset: function (skipTempReset) {
+        if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined);
+      },
+      stop: function () {
+        this.done = !0;
+        var rootRecord = this.tryEntries[0].completion;
+        if ("throw" === rootRecord.type) throw rootRecord.arg;
+        return this.rval;
+      },
+      dispatchException: function (exception) {
+        if (this.done) throw exception;
+        var context = this;
+        function handle(loc, caught) {
+          return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught;
+        }
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i],
+            record = entry.completion;
+          if ("root" === entry.tryLoc) return handle("end");
+          if (entry.tryLoc <= this.prev) {
+            var hasCatch = hasOwn.call(entry, "catchLoc"),
+              hasFinally = hasOwn.call(entry, "finallyLoc");
+            if (hasCatch && hasFinally) {
+              if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0);
+              if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc);
+            } else if (hasCatch) {
+              if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0);
+            } else {
+              if (!hasFinally) throw new Error("try statement without catch or finally");
+              if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc);
+            }
+          }
+        }
+      },
+      abrupt: function (type, arg) {
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) {
+            var finallyEntry = entry;
+            break;
+          }
+        }
+        finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null);
+        var record = finallyEntry ? finallyEntry.completion : {};
+        return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record);
+      },
+      complete: function (record, afterLoc) {
+        if ("throw" === record.type) throw record.arg;
+        return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel;
+      },
+      finish: function (finallyLoc) {
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel;
+        }
+      },
+      catch: function (tryLoc) {
+        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+          var entry = this.tryEntries[i];
+          if (entry.tryLoc === tryLoc) {
+            var record = entry.completion;
+            if ("throw" === record.type) {
+              var thrown = record.arg;
+              resetTryEntry(entry);
+            }
+            return thrown;
+          }
+        }
+        throw new Error("illegal catch attempt");
+      },
+      delegateYield: function (iterable, resultName, nextLoc) {
+        return this.delegate = {
+          iterator: values(iterable),
+          resultName: resultName,
+          nextLoc: nextLoc
+        }, "next" === this.method && (this.arg = undefined), ContinueSentinel;
+      }
+    }, exports;
+  }
+  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    try {
+      var info = gen[key](arg);
+      var value = info.value;
+    } catch (error) {
+      reject(error);
+      return;
+    }
+    if (info.done) {
+      resolve(value);
+    } else {
+      Promise.resolve(value).then(_next, _throw);
+    }
+  }
+  function _asyncToGenerator(fn) {
+    return function () {
+      var self = this,
+        args = arguments;
+      return new Promise(function (resolve, reject) {
+        var gen = fn.apply(self, args);
+        function _next(value) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+        }
+        function _throw(err) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+        }
+        _next(undefined);
+      });
+    };
   }
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -137,7 +468,8 @@
     };
     return debounced;
   }
-  function throttle(fn, delay) {
+  function throttle(fn) {
+    var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 50;
     var timer;
     return function () {
       for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
@@ -151,13 +483,18 @@
       }
     };
   }
+  function getDataKey(item, dataKey) {
+    return (!Array.isArray(dataKey) ? dataKey.replace(/\[/g, '.').replace(/\]/g, '.').split('.') : dataKey).reduce(function (o, k) {
+      return (o || {})[k];
+    }, item);
+  }
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   var sortable = {exports: {}};
 
   /*!
-   * sortable-dnd v0.2.7
+   * sortable-dnd v0.4.11
    * open source under the MIT license
    * https://github.com/mfuu/sortable-dnd#readme
    */
@@ -166,6 +503,27 @@
       module.exports = factory() ;
     })(commonjsGlobal, function () {
 
+      function ownKeys(object, enumerableOnly) {
+        var keys = Object.keys(object);
+        if (Object.getOwnPropertySymbols) {
+          var symbols = Object.getOwnPropertySymbols(object);
+          enumerableOnly && (symbols = symbols.filter(function (sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+          })), keys.push.apply(keys, symbols);
+        }
+        return keys;
+      }
+      function _objectSpread2(target) {
+        for (var i = 1; i < arguments.length; i++) {
+          var source = null != arguments[i] ? arguments[i] : {};
+          i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+            _defineProperty(target, key, source[key]);
+          }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+          });
+        }
+        return target;
+      }
       function _typeof(obj) {
         "@babel/helpers - typeof";
 
@@ -175,53 +533,44 @@
           return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
         }, _typeof(obj);
       }
-      function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-          throw new TypeError("Cannot call a class as a function");
+      function _defineProperty(obj, key, value) {
+        key = _toPropertyKey(key);
+        if (key in obj) {
+          Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+          });
+        } else {
+          obj[key] = value;
         }
+        return obj;
       }
-      function _defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-          var descriptor = props[i];
-          descriptor.enumerable = descriptor.enumerable || false;
-          descriptor.configurable = true;
-          if ("value" in descriptor) descriptor.writable = true;
-          Object.defineProperty(target, descriptor.key, descriptor);
+      function _toPrimitive(input, hint) {
+        if (typeof input !== "object" || input === null) return input;
+        var prim = input[Symbol.toPrimitive];
+        if (prim !== undefined) {
+          var res = prim.call(input, hint || "default");
+          if (typeof res !== "object") return res;
+          throw new TypeError("@@toPrimitive must return a primitive value.");
         }
+        return (hint === "string" ? String : Number)(input);
       }
-      function _createClass(Constructor, protoProps, staticProps) {
-        if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) _defineProperties(Constructor, staticProps);
-        Object.defineProperty(Constructor, "prototype", {
-          writable: false
-        });
-        return Constructor;
+      function _toPropertyKey(arg) {
+        var key = _toPrimitive(arg, "string");
+        return typeof key === "symbol" ? key : String(key);
       }
-      function _toConsumableArray(arr) {
-        return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-      }
-      function _arrayWithoutHoles(arr) {
-        if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-      }
-      function _iterableToArray(iter) {
-        if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-      }
-      function _unsupportedIterableToArray(o, minLen) {
-        if (!o) return;
-        if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-        var n = Object.prototype.toString.call(o).slice(8, -1);
-        if (n === "Object" && o.constructor) n = o.constructor.name;
-        if (n === "Map" || n === "Set") return Array.from(o);
-        if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-      }
-      function _arrayLikeToArray(arr, len) {
-        if (len == null || len > arr.length) len = arr.length;
-        for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-        return arr2;
-      }
-      function _nonIterableSpread() {
-        throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-      }
+      var captureMode = {
+        capture: false,
+        passive: false
+      };
+      var R_SPACE = /\s+/g;
+      var events = {
+        start: ['pointerdown', 'touchstart', 'mousedown'],
+        move: ['pointermove', 'touchmove', 'mousemove'],
+        end: ['pointerup', 'pointercancel', 'touchend', 'touchcancel', 'mouseup']
+      };
       function userAgent(pattern) {
         if (typeof window !== 'undefined' && window.navigator) {
           return !! /*@__PURE__*/navigator.userAgent.match(pattern);
@@ -230,66 +579,11 @@
       var IE11OrLess = userAgent(/(?:Trident.*rv[ :]?11\.|msie|iemobile|Windows Phone)/i);
       var Edge = userAgent(/Edge/i);
       var Safari = userAgent(/safari/i) && !userAgent(/chrome/i) && !userAgent(/android/i);
-      var IOS = userAgent(/iP(ad|od|hone)/i);
-      var ChromeForAndroid = userAgent(/chrome/i) && userAgent(/android/i);
-      var captureMode = {
-        capture: false,
-        passive: false
-      };
-      var R_SPACE = /\s+/g;
-      var CSSTRANSITIONS = ['-webkit-transition', '-moz-transition', '-ms-transition', '-o-transition', 'transition'];
-      var CSSTRANSFORMS = ['-webkit-transform', '-moz-transform', '-ms-transform', '-o-transform', 'transform'];
-      var SUPPORTPASSIVE = supportPassive();
-      /**
-       * set transition style
-       * @param {HTMLElement} el 
-       * @param {String | Function} transition 
-       */
 
-      function setTransition(el, transition) {
-        if (transition) {
-          if (transition === 'none') CSSTRANSITIONS.forEach(function (ts) {
-            return css(el, ts, 'none');
-          });else CSSTRANSITIONS.forEach(function (ts) {
-            return css(el, ts, "".concat(ts.split('transition')[0], "transform ").concat(transition));
-          });
-        } else CSSTRANSITIONS.forEach(function (ts) {
-          return css(el, ts, '');
-        });
-      }
-      /**
-       * set transform style
-       * @param {HTMLElement} el 
-       * @param {String} transform 
-       */
-
-      function setTransform(el, transform) {
-        if (transform) CSSTRANSFORMS.forEach(function (tf) {
-          return css(el, tf, "".concat(tf.split('transform')[0]).concat(transform));
-        });else CSSTRANSFORMS.forEach(function (tf) {
-          return css(el, tf, '');
-        });
-      }
-      /**
-       * get touch event and current event
-       * @param {Event} evt 
-       */
-
-      function getEvent(evt) {
-        var touch = evt.touches && evt.touches[0] || evt.pointerType && evt.pointerType === 'touch' && evt;
-        var e = touch || evt;
-        var target = touch ? document.elementFromPoint(e.clientX, e.clientY) : e.target;
-        return {
-          touch: touch,
-          e: e,
-          target: target
-        };
-      }
       /**
        * detect passive event support
        */
-
-      function supportPassive() {
+      var supportPassive = function () {
         // https://github.com/Modernizr/Modernizr/issues/1894
         var supportPassive = false;
         document.addEventListener('checkIfSupportPassive', null, {
@@ -299,68 +593,124 @@
           }
         });
         return supportPassive;
-      }
-      /**
-      * add specified event listener
-      * @param {HTMLElement} el 
-      * @param {String} event 
-      * @param {Function} fn 
-      * @param {Boolean} sp
-      */
+      }();
+      var vendorPrefix = function () {
+        if (typeof window === 'undefined' || typeof document === 'undefined') {
+          // Server environment
+          return '';
+        }
 
+        // window.getComputedStyle() returns null inside an iframe with display: none
+        // in this case return an array with a fake mozilla style in it.
+        var styles = window.getComputedStyle(document.documentElement, '') || ['-moz-hidden-iframe'];
+        var pre = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
+        switch (pre) {
+          case 'ms':
+            return 'ms';
+          default:
+            return pre && pre.length ? pre[0].toUpperCase() + pre.substr(1) : '';
+        }
+      }();
+
+      /**
+       * check if is HTMLElement
+       */
+      function isHTMLElement(node) {
+        if (!node) return false;
+        var ctx = document.createElement('div');
+        try {
+          ctx.appendChild(node.cloneNode(true));
+          return node.nodeType == 1 ? true : false;
+        } catch (e) {
+          return node == window || node == document;
+        }
+      }
+      function setTransition(el, transition) {
+        el.style["".concat(vendorPrefix, "Transition")] = transition ? transition === 'none' ? 'none' : "".concat(transition) : '';
+      }
+      function setTransitionDuration(el, duration) {
+        el.style["".concat(vendorPrefix, "TransitionDuration")] = duration == null ? '' : "".concat(duration, "ms");
+      }
+      function setTransform(el, transform) {
+        el.style["".concat(vendorPrefix, "Transform")] = transform ? "".concat(transform) : '';
+      }
+
+      /**
+       * add specified event listener
+       * @param {HTMLElement} el
+       * @param {String} event
+       * @param {Function} fn
+       */
       function on(el, event, fn) {
         if (window.addEventListener) {
-          el.addEventListener(event, fn, SUPPORTPASSIVE || !IE11OrLess ? captureMode : false);
+          el.addEventListener(event, fn, supportPassive || !IE11OrLess ? captureMode : false);
         } else if (window.attachEvent) {
           el.attachEvent('on' + event, fn);
         }
       }
-      /**
-      * remove specified event listener
-      * @param {HTMLElement} el 
-      * @param {String} event 
-      * @param {Function} fn 
-      * @param {Boolean} sp
-      */
 
+      /**
+       * remove specified event listener
+       * @param {HTMLElement} el
+       * @param {String} event
+       * @param {Function} fn
+       */
       function off(el, event, fn) {
         if (window.removeEventListener) {
-          el.removeEventListener(event, fn, SUPPORTPASSIVE || !IE11OrLess ? captureMode : false);
+          el.removeEventListener(event, fn, supportPassive || !IE11OrLess ? captureMode : false);
         } else if (window.detachEvent) {
           el.detachEvent('on' + event, fn);
         }
       }
+
+      /**
+       * get touch event and current event
+       * @param {Event|TouchEvent} evt
+       */
+      function getEvent(evt) {
+        var event = evt;
+        var touch = evt.touches && evt.touches[0] || evt.changedTouches && evt.changedTouches[0] || evt.pointerType && evt.pointerType === 'touch' && evt;
+        var target = touch ? document.elementFromPoint(touch.clientX, touch.clientY) : evt.target;
+        if (touch) {
+          event.clientX = touch.clientX;
+          event.clientY = touch.clientY;
+          event.pageX = touch.pageX;
+          event.pageY = touch.pageY;
+          event.screenX = touch.screenX;
+          event.screenY = touch.screenY;
+        }
+        return {
+          touch: touch,
+          event: event,
+          target: target
+        };
+      }
+
       /**
        * get element's offetTop
-       * @param {HTMLElement} el 
+       * @param {HTMLElement} el
        */
-
       function getOffset(el) {
-        var result = {
+        var offset = {
           top: 0,
           left: 0,
-          height: 0,
-          width: 0
+          height: el.offsetHeight,
+          width: el.offsetWidth
         };
-        result.height = el.offsetHeight;
-        result.width = el.offsetWidth;
-        result.top = el.offsetTop;
-        result.left = el.offsetLeft;
-        var parent = el.offsetParent;
-        while (parent !== null) {
-          result.top += parent.offsetTop;
-          result.left += parent.offsetLeft;
-          parent = parent.offsetParent;
-        }
-        return result;
+        var winScroller = getWindowScrollingElement();
+        do {
+          offset.top += el.offsetTop;
+          offset.left += el.offsetLeft;
+        } while (el !== winScroller && (el = el.offsetParent));
+        return offset;
       }
+
       /**
        * get scroll element
-       * @param {HTMLElement} el 
+       * @param {HTMLElement} el
        * @param {Boolean} includeSelf whether to include the passed element
        * @returns {HTMLElement} scroll element
        */
-
       function getParentAutoScrollElement(el, includeSelf) {
         // skip to window
         if (!el || !el.getBoundingClientRect) return getWindowScrollingElement();
@@ -387,100 +737,153 @@
           return document;
         }
       }
+
       /**
        * Returns the "bounding client rect" of given element
-       * @param {HTMLElement} el  The element whose boundingClientRect is wanted
+       * @param  {HTMLElement} el                       The element whose boundingClientRect is wanted
+       * @param  {Object} check
+       * @example - {
+       * -   parent: true | false, 'check if parentNode.height < el.height'
+       * -   block: true | false, 'Whether the rect should be relative to the containing block of (including) the container'
+       * -   relative: true | false, 'Whether the rect should be relative to the relative parent of (including) the contaienr'
+       * - }
+       * @param  {HTMLElement} container              The parent the element will be placed in
+       * @return {Object}                               The boundingClientRect of el, with specified adjustments
        */
-
       function getRect(el) {
+        var check = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var container = arguments.length > 2 ? arguments[2] : undefined;
         if (!el.getBoundingClientRect && el !== window) return;
-        var rect = {
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          height: 0,
-          width: 0
-        };
-        var elRect;
+        var elRect, top, left, bottom, right, height, width;
         if (el !== window && el.parentNode && el !== getWindowScrollingElement()) {
           elRect = el.getBoundingClientRect();
-          rect.top = elRect.top;
-          rect.left = elRect.left;
-          rect.bottom = elRect.bottom;
-          rect.right = elRect.right;
-          rect.height = elRect.height;
-          rect.width = elRect.width;
+          top = elRect.top;
+          left = elRect.left;
+          bottom = elRect.bottom;
+          right = elRect.right;
+          height = elRect.height;
+          width = elRect.width;
+          if (check.parent && el.parentNode !== el.ownerDocument.body) {
+            var parentRect,
+              parentNode = el.parentNode;
+            while (parentNode && parentNode.getBoundingClientRect && parentNode !== el.ownerDocument.body) {
+              parentRect = parentNode.getBoundingClientRect();
+              if (parentRect.height < height) {
+                top = parentRect.top;
+                left = parentRect.left;
+                bottom = parentRect.bottom;
+                right = parentRect.right;
+                height = parentRect.height;
+                width = parentRect.width;
+                return {
+                  top: top,
+                  left: left,
+                  bottom: bottom,
+                  right: right,
+                  width: width,
+                  height: height
+                };
+              }
+              parentNode = parentNode.parentNode;
+            }
+          }
         } else {
-          rect.top = 0;
-          rect.left = 0;
-          rect.bottom = window.innerHeight;
-          rect.right = window.innerWidth;
-          rect.height = window.innerHeight;
-          rect.width = window.innerWidth;
+          top = 0;
+          left = 0;
+          bottom = window.innerHeight;
+          right = window.innerWidth;
+          height = window.innerHeight;
+          width = window.innerWidth;
         }
-        return rect;
-      }
-      /**
-       * get target Element in group
-       * @param {HTMLElement} group 
-       * @param {HTMLElement} el 
-       * @param {Boolean} onlyEl only get element
-       */
+        if ((check.block || check.relative) && el !== window) {
+          // Adjust for translate()
+          container = container || el.parentNode;
 
-      function getElement(group, el, onlyEl) {
-        var children = _toConsumableArray(Array.from(group.children)); // If it can be found directly in the child element, return
+          // Not needed on <= IE11
+          if (!IE11OrLess) {
+            do {
+              if (container && container.getBoundingClientRect && (css(container, 'transform') !== 'none' || check.relative && css(container, 'position') !== 'static')) {
+                var containerRect = container.getBoundingClientRect();
 
-        var index = children.indexOf(el);
-        if (index > -1) return onlyEl ? children[index] : {
-          index: index,
-          el: children[index],
-          rect: getRect(children[index]),
-          offset: getOffset(children[index])
-        }; // When the dom cannot be found directly in children, need to look down
-
-        for (var i = 0; i < children.length; i++) {
-          if (isChildOf(el, children[i])) {
-            return onlyEl ? children[i] : {
-              index: i,
-              el: children[i],
-              rect: getRect(children[i]),
-              offset: getOffset(children[i])
-            };
+                // Set relative to edges of padding box of container
+                top -= containerRect.top + parseInt(css(container, 'border-top-width'));
+                left -= containerRect.left + parseInt(css(container, 'border-left-width'));
+                bottom = top + elRect.height;
+                right = left + elRect.width;
+                break;
+              }
+              /* jshint boss:true */
+            } while (container = container.parentNode);
           }
         }
-        return onlyEl ? null : {
-          index: -1,
-          el: null,
-          rect: {},
-          offset: {}
+        return {
+          top: top,
+          left: left,
+          bottom: bottom,
+          right: right,
+          width: width,
+          height: height
         };
       }
+      function closest(el, selector, ctx, includeCTX) {
+        if (el) {
+          ctx = ctx || document;
+          do {
+            if (selector == null) {
+              var children = Array.prototype.slice.call(ctx.children);
+
+              // If it can be found directly in the child element, return
+              var index = children.indexOf(el);
+              if (index > -1) return children[index];
+
+              // When the dom cannot be found directly in children, need to look down
+              for (var i = 0; i < children.length; i++) {
+                if (containes(el, children[i])) return children[i];
+              }
+            } else if (selector[0] === '>' ? el.parentNode === ctx && matches(el, selector) : matches(el, selector) || includeCTX && el === ctx) {
+              return el;
+            }
+          } while (el = el.parentNode);
+        }
+        return null;
+      }
+
       /**
        * Check if child element is contained in parent element
-       * @param {HTMLElement} child 
-       * @param {HTMLElement} parent 
-       * @returns {Boolean} true | false
+       * @param {HTMLElement} el
+       * @param {HTMLElement} root
        */
-
-      function isChildOf(child, parent) {
-        var parentNode;
-        if (child && parent) {
-          parentNode = child.parentNode;
-          while (parentNode) {
-            if (parent === parentNode) return true;
-            parentNode = parentNode.parentNode;
-          }
+      function containes(el, root) {
+        if (root.compareDocumentPosition) {
+          return root === el || !!(root.compareDocumentPosition(el) & 16);
         }
+        if (root.contains && el.nodeType === 1) {
+          return root.contains(el) && root !== el;
+        }
+        while (el = el.parentNode) if (el === root) return true;
         return false;
       }
+
+      /**
+       * Gets the last child in the el, ignoring ghostEl or invisible elements (clones)
+       * @param  {HTMLElement} el       Parent element
+       * @param  {selector} selector    Any other elements that should be ignored
+       * @return {HTMLElement}          The last child, ignoring ghostEl
+       */
+      function lastChild(el, helper, selector) {
+        var last = el.lastElementChild;
+        while (last && (last === helper || css(last, 'display') === 'none' || selector && !matches(last, selector))) {
+          last = last.previousElementSibling;
+        }
+        return last || null;
+      }
+
       /**
        * add or remove element's class
        * @param {HTMLElement} el element
        * @param {String} name class name
        * @param {Boolean} state true: add, false: remove
        */
-
       function toggleClass(el, name, state) {
         if (el && name) {
           if (el.classList) {
@@ -491,13 +894,13 @@
           }
         }
       }
+
       /**
        * Check if a DOM element matches a given selector
-       * @param {HTMLElement} el 
-       * @param {String} selector 
-       * @returns 
+       * @param {HTMLElement} el
+       * @param {String} selector
+       * @returns
        */
-
       function matches(el, selector) {
         if (!selector) return;
         selector[0] === '>' && (selector = selector.substring(1));
@@ -515,6 +918,16 @@
           }
         }
         return false;
+      }
+
+      /**
+       * Check whether the front and rear positions are consistent
+       */
+      function offsetChanged(o1, o2) {
+        return o1.top !== o2.top || o1.left !== o2.left;
+      }
+      function sortByOffset(o1, o2) {
+        return o1.top == o2.top ? o1.left - o2.left : o1.top - o2.top;
       }
       function css(el, prop, val) {
         var style = el && el.style;
@@ -534,561 +947,645 @@
           }
         }
       }
-      function debounce(fn, delay, immediate) {
-        var timer = null;
-        return function () {
-          var context = this,
-            args = arguments;
-          timer && clearTimeout(timer);
-          immediate && !timer && fn.apply(context, args);
-          timer = setTimeout(function () {
-            fn.apply(context, args);
-          }, delay);
-        };
-      }
-      function throttle(fn, delay) {
-        var timer = null;
-        return function () {
-          var context = this,
-            args = arguments;
-          if (!timer) {
-            timer = setTimeout(function () {
-              timer = null;
-              fn.apply(context, args);
-            }, delay);
-          }
-        };
-      }
       function _nextTick(fn) {
         return setTimeout(fn, 0);
       }
-      var State = /*#__PURE__*/_createClass(function State() {
-        _classCallCheck(this, State);
-        this.sortableDown = undefined;
-        this.sortableMove = undefined;
-        this.animationEnd = undefined;
-      });
-      /**
-       * 拖拽前后差异初始化
-       */
-
-      var Differ = /*#__PURE__*/function () {
-        function Differ() {
-          _classCallCheck(this, Differ);
-          this.from = {
-            node: null,
-            rect: {},
-            offset: {}
-          };
-          this.to = {
-            node: null,
-            rect: {},
-            offset: {}
-          };
-        }
-        _createClass(Differ, [{
-          key: "get",
-          value: function get(key) {
-            return this[key];
-          }
-        }, {
-          key: "set",
-          value: function set(key, value) {
-            this[key] = value;
-          }
-        }, {
-          key: "destroy",
-          value: function destroy() {
-            this.from = {
-              node: null,
-              rect: {},
-              offset: {}
-            };
-            this.to = {
-              node: null,
-              rect: {},
-              offset: {}
-            };
-          }
-        }]);
-        return Differ;
-      }();
-      /**
-       * 拖拽中的元素
-       */
-
-      var Ghost = /*#__PURE__*/function () {
-        function Ghost(sortable) {
-          _classCallCheck(this, Ghost);
-          this.$el = null;
-          this.distance = {
-            x: 0,
-            y: 0
-          };
-          this.options = sortable.options;
-          this.container = sortable.container;
-        }
-        _createClass(Ghost, [{
-          key: "init",
-          value: function init(el, rect) {
-            var append = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-            this.$el = el;
-            var _this$options = this.options,
-              ghostClass = _this$options.ghostClass,
-              _this$options$ghostSt = _this$options.ghostStyle,
-              ghostStyle = _this$options$ghostSt === void 0 ? {} : _this$options$ghostSt;
-            toggleClass(this.$el, ghostClass, true);
-            css(this.$el, 'box-sizing', 'border-box');
-            css(this.$el, 'margin', 0);
-            css(this.$el, 'top', rect.top);
-            css(this.$el, 'left', rect.left);
-            css(this.$el, 'width', rect.width);
-            css(this.$el, 'height', rect.height);
-            css(this.$el, 'opacity', '0.8'); // css(this.$el, 'position', IOS ? 'absolute' : 'fixed')
-
-            css(this.$el, 'position', 'fixed');
-            css(this.$el, 'zIndex', '100000');
-            css(this.$el, 'pointerEvents', 'none');
-            this.setStyle(ghostStyle);
-            setTransition(this.$el, 'none');
-            setTransform(this.$el, 'translate3d(0px, 0px, 0px)');
-            if (append) this.container.appendChild(this.$el);
-            css(this.$el, 'transform-origin', this.distance.x / parseInt(this.$el.style.width) * 100 + '% ' + this.distance.y / parseInt(this.$el.style.height) * 100 + '%');
-          }
-        }, {
-          key: "setStyle",
-          value: function setStyle(style) {
-            for (var key in style) {
-              css(this.$el, key, style[key]);
-            }
-          }
-        }, {
-          key: "rect",
-          value: function rect() {
-            return getRect(this.$el);
-          }
-        }, {
-          key: "move",
-          value: function move(x, y) {
-            var smooth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            if (!this.$el) return;
-            setTransition(this.$el, smooth ? "".concat(this.options.ghostAnimation, "ms") : 'none');
-            setTransform(this.$el, "translate3d(".concat(x, "px, ").concat(y, "px, 0)"));
-          }
-        }, {
-          key: "destroy",
-          value: function destroy(rect) {
-            var _this = this;
-            if (!this.$el) return;
-            var left = parseInt(this.$el.style.left);
-            var top = parseInt(this.$el.style.top);
-            this.move(rect.left - left, rect.top - top, true);
-            var ghostAnimation = this.options.ghostAnimation;
-            ghostAnimation ? setTimeout(function () {
-              return _this.clear();
-            }, ghostAnimation) : this.clear();
-          }
-        }, {
-          key: "clear",
-          value: function clear() {
-            this.$el && this.$el.remove();
-            this.distance = {
-              x: 0,
-              y: 0
-            };
-            this.$el = null;
-          }
-        }]);
-        return Ghost;
-      }();
-      function AutoScroll() {
-        if (!window.requestAnimationFrame) {
-          window.requestAnimationFrame = function (callback) {
-            return setTimeout(callback, 17);
-          };
-        }
+      function randomCode() {
+        return Number(Math.random().toString().slice(-3) + Date.now()).toString(32);
+      }
+      var expando = 'Sortable' + Date.now();
+      var multiFromTo = {
+        sortable: null,
+        nodes: []
+      };
+      var multiFrom = _objectSpread2({}, multiFromTo),
+        multiTo = _objectSpread2({}, multiFromTo),
+        selectedElements = {};
+      var getMultiDiffer = function getMultiDiffer() {
         return {
-          _autoScroll: throttle(function (_this) {
-            // check if is moving now
-            if (!(_this.state.sortableDown && _this.state.sortableMove)) return;
-            var _this$state$sortableM = _this.state.sortableMove,
-              clientX = _this$state$sortableM.clientX,
-              clientY = _this$state$sortableM.clientY;
-            if (clientX === void 0 || clientY === void 0) return;
-            if (_this.scrollEl === _this.ownerDocument) ;else {
-              var _this$scrollEl = _this.scrollEl,
-                scrollTop = _this$scrollEl.scrollTop,
-                scrollLeft = _this$scrollEl.scrollLeft,
-                scrollHeight = _this$scrollEl.scrollHeight,
-                scrollWidth = _this$scrollEl.scrollWidth;
-              var _getRect = getRect(_this.scrollEl),
-                top = _getRect.top,
-                right = _getRect.right,
-                bottom = _getRect.bottom,
-                left = _getRect.left,
-                height = _getRect.height,
-                width = _getRect.width;
-              var _this$options = _this.options,
-                scrollStep = _this$options.scrollStep,
-                scrollThreshold = _this$options.scrollThreshold; // check direction
-
-              var totop = scrollTop > 0 && clientY >= top && clientY <= top + scrollThreshold;
-              var toleft = scrollLeft > 0 && clientX >= left && clientX <= left + scrollThreshold;
-              var toright = scrollLeft + width < scrollWidth && clientX <= right && clientX >= right - scrollThreshold;
-              var tobottom = scrollTop + height < scrollHeight && clientY <= bottom && clientY >= bottom - scrollThreshold; // scroll position
-
-              var position = {
-                x: scrollLeft,
-                y: scrollTop
-              };
-              if (totop) {
-                if (toleft) {
-                  // to top-left
-                  position.x = scrollLeft - scrollStep;
-                } else if (toright) {
-                  // to top-right
-                  position.x = scrollLeft + scrollStep;
-                } else {
-                  // to top
-                  position.x = scrollLeft;
-                }
-                position.y = scrollTop - scrollStep;
-              } else if (tobottom) {
-                if (toleft) {
-                  // to bottom-left
-                  position.x = scrollLeft - scrollStep;
-                } else if (toright) {
-                  // to bottom-right
-                  position.x = scrollLeft + scrollStep;
-                } else {
-                  // to bottom
-                  position.x = scrollLeft;
-                }
-                position.y = scrollTop + scrollStep;
-              } else if (toleft) {
-                // to left
-                position.x = scrollLeft - scrollStep;
-                position.y = scrollTop;
-              } else if (toright) {
-                // to right
-                position.x = scrollLeft + scrollStep;
-                position.y = scrollTop;
-              } // if need to scroll
-
-              if (totop || toleft || toright || tobottom) {
-                requestAnimationFrame(function () {
-                  _this.scrollEl.scrollTo(position.x, position.y);
-                  _this._autoScroll(_this);
-                });
-              }
+          from: _objectSpread2({}, multiFrom),
+          to: _objectSpread2({}, multiTo)
+        };
+      };
+      function Multiple(options) {
+        this.options = options || {};
+        this.groupName = options.group.name;
+      }
+      Multiple.prototype = {
+        /**
+         * Indicates whether the multi-drag mode is used
+         * @returns {boolean}
+         */
+        allowDrag: function allowDrag(dragEl) {
+          return this.options.multiple && selectedElements[this.groupName] && selectedElements[this.groupName].length && selectedElements[this.groupName].indexOf(dragEl) > -1;
+        },
+        getHelper: function getHelper() {
+          var container = document.createElement('div');
+          selectedElements[this.groupName].forEach(function (node, index) {
+            var clone = node.cloneNode(true);
+            var opacity = index === 0 ? 1 : 0.5;
+            clone.style = "\n        opacity: ".concat(opacity, ";\n        position: absolute;\n        z-index: ").concat(index, ";\n        left: 0;\n        top: 0;\n        width: 100%;\n        height: 100%;\n      ");
+            container.appendChild(clone);
+          });
+          return container;
+        },
+        /**
+         * Collecting Multi-Drag Elements
+         */
+        select: function select(event, dragEl, from) {
+          if (!dragEl) return;
+          if (!selectedElements[this.groupName]) {
+            selectedElements[this.groupName] = [];
+          }
+          var index = selectedElements[this.groupName].indexOf(dragEl);
+          toggleClass(dragEl, this.options.selectedClass, index < 0);
+          var params = _objectSpread2(_objectSpread2({}, from), {}, {
+            event: event
+          });
+          if (index < 0) {
+            selectedElements[this.groupName].push(dragEl);
+            from.sortable._dispatchEvent('onSelect', params);
+          } else {
+            selectedElements[this.groupName].splice(index, 1);
+            from.sortable._dispatchEvent('onDeselect', params);
+          }
+          selectedElements[this.groupName].sort(function (a, b) {
+            return sortByOffset(getOffset(a), getOffset(b));
+          });
+        },
+        onDrag: function onDrag(sortable) {
+          multiFrom.sortable = sortable;
+          multiFrom.nodes = selectedElements[this.groupName].map(function (node) {
+            return {
+              node: node,
+              rect: getRect(node),
+              offset: getOffset(node)
+            };
+          });
+          multiTo.sortable = sortable;
+        },
+        onTrulyStarted: function onTrulyStarted(dragEl, sortable) {
+          sortable.animator.collect(dragEl, null, dragEl.parentNode);
+          selectedElements[this.groupName].forEach(function (node) {
+            if (node == dragEl) return;
+            node.parentNode.removeChild(node);
+          });
+          sortable.animator.animate();
+        },
+        onChange: function onChange(dragEl, sortable) {
+          var rect = getRect(dragEl);
+          var offset = getOffset(dragEl);
+          multiTo.sortable = sortable;
+          multiTo.nodes = selectedElements[this.groupName].map(function (node) {
+            return {
+              node: node,
+              rect: rect,
+              offset: offset
+            };
+          });
+        },
+        onDrop: function onDrop(event, dragEl, downEvent, _emits) {
+          var _this = this;
+          multiTo.sortable.animator.collect(dragEl, null, dragEl.parentNode);
+          var index = selectedElements[this.groupName].indexOf(dragEl);
+          selectedElements[this.groupName].forEach(function (node, i) {
+            if (i < index) {
+              dragEl.parentNode.insertBefore(node, dragEl);
+            } else {
+              var dropEl = i > 0 ? selectedElements[_this.groupName][i - 1] : dragEl;
+              dragEl.parentNode.insertBefore(node, dropEl.nextSibling);
             }
-          }, 10)
+          });
+          multiFrom.sortable = downEvent.sortable;
+          multiTo.nodes = selectedElements[this.groupName].map(function (node) {
+            return {
+              node: node,
+              rect: getRect(node),
+              offset: getOffset(node)
+            };
+          });
+          var changed = this._offsetChanged(multiFrom.nodes, multiTo.nodes);
+          var params = _objectSpread2(_objectSpread2({}, _emits()), {}, {
+            changed: changed,
+            event: event
+          });
+          if (multiTo.sortable.el != multiFrom.sortable.el) {
+            multiFrom.sortable._dispatchEvent('onDrop', params);
+          }
+          multiTo.sortable._dispatchEvent('onDrop', params);
+          multiTo.sortable.animator.animate();
+        },
+        _offsetChanged: function _offsetChanged(ns1, ns2) {
+          return !!ns1.find(function (node) {
+            var n = ns2.find(function (n) {
+              return n.node === node.node;
+            });
+            return offsetChanged(n.offset, node.offset);
+          });
+        }
+      };
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = function (callback) {
+          return setTimeout(callback, 17);
         };
       }
-      function Animation() {
-        var animationState = [];
-        function getRange(children, drag, drop) {
-          var start = children.indexOf(drag);
-          var end = children.indexOf(drop);
-          return start < end ? {
+      if (!window.cancelAnimationFrame) {
+        window.cancelAnimationFrame = function (id) {
+          clearTimeout(id);
+        };
+      }
+      function AutoScroll() {
+        this.autoScrollAnimationFrame = null;
+        this.speed = {
+          x: 10,
+          y: 10
+        };
+      }
+      AutoScroll.prototype = {
+        clear: function clear() {
+          if (this.autoScrollAnimationFrame == null) {
+            return;
+          }
+          cancelAnimationFrame(this.autoScrollAnimationFrame);
+          this.autoScrollAnimationFrame = null;
+        },
+        update: function update(scrollEl, scrollThreshold, downEvent, moveEvent) {
+          var _this = this;
+          cancelAnimationFrame(this.autoScrollAnimationFrame);
+          this.autoScrollAnimationFrame = requestAnimationFrame(function () {
+            if (downEvent && moveEvent) {
+              _this.autoScroll(scrollEl, scrollThreshold, moveEvent);
+            }
+            _this.update(scrollEl, scrollThreshold, downEvent, moveEvent);
+          });
+        },
+        autoScroll: function autoScroll(scrollEl, scrollThreshold, evt) {
+          if (!scrollEl) return;
+          var clientX = evt.clientX,
+            clientY = evt.clientY;
+          if (clientX === void 0 || clientY === void 0) return;
+          var rect = getRect(scrollEl);
+          if (!rect) return;
+          var scrollTop = scrollEl.scrollTop,
+            scrollLeft = scrollEl.scrollLeft,
+            scrollHeight = scrollEl.scrollHeight,
+            scrollWidth = scrollEl.scrollWidth;
+          var top = rect.top,
+            right = rect.right,
+            bottom = rect.bottom,
+            left = rect.left,
+            height = rect.height,
+            width = rect.width;
+          if (clientY < top || clientX > right || clientY > bottom || clientX < left) {
+            return;
+          }
+
+          // check direction
+          var toTop = scrollTop > 0 && clientY >= top && clientY <= top + scrollThreshold;
+          var toLeft = scrollLeft > 0 && clientX >= left && clientX <= left + scrollThreshold;
+          var toRight = scrollLeft + width < scrollWidth && clientX <= right && clientX >= right - scrollThreshold;
+          var toBottom = scrollTop + height < scrollHeight && clientY <= bottom && clientY >= bottom - scrollThreshold;
+          var scrollx = 0,
+            scrolly = 0;
+          if (toLeft) {
+            scrollx = Math.floor(Math.max(-1, (clientX - left) / scrollThreshold - 1) * this.speed.x);
+          } else if (toRight) {
+            scrollx = Math.ceil(Math.min(1, (clientX - right) / scrollThreshold + 1) * this.speed.x);
+          } else {
+            scrollx = 0;
+          }
+          if (toTop) {
+            scrolly = Math.floor(Math.max(-1, (clientY - top) / scrollThreshold - 1) * this.speed.y);
+          } else if (toBottom) {
+            scrolly = Math.ceil(Math.min(1, (clientY - bottom) / scrollThreshold + 1) * this.speed.y);
+          } else {
+            scrolly = 0;
+          }
+          if (scrolly) {
+            scrollEl.scrollTop += scrolly;
+          }
+          if (scrollx) {
+            scrollEl.scrollLeft += scrollx;
+          }
+        }
+      };
+      function Animation(options) {
+        this.options = options;
+        this.animations = [];
+      }
+      Animation.prototype = {
+        collect: function collect(dragEl, dropEl, container, except) {
+          var _this = this;
+          if (!container) return;
+          var children = Array.prototype.slice.call(container.children);
+          var _this$_getRange = this._getRange(children, dragEl, dropEl, except),
+            start = _this$_getRange.start,
+            end = _this$_getRange.end;
+          this.animations.length = 0;
+          children.slice(start, end + 1).forEach(function (node) {
+            if (node === except || node === Sortable.helper) return;
+            _this.animations.push({
+              node: node,
+              rect: getRect(node)
+            });
+          });
+        },
+        animate: function animate() {
+          var _this2 = this;
+          this.animations.forEach(function (state) {
+            var node = state.node,
+              rect = state.rect;
+            _this2._excute(node, rect);
+          });
+        },
+        _excute: function _excute(el, _ref) {
+          var left = _ref.left,
+            top = _ref.top;
+          var rect = getRect(el);
+          var ot = top - rect.top;
+          var ol = left - rect.left;
+          setTransitionDuration(el);
+          setTransform(el, "translate3d(".concat(ol, "px, ").concat(ot, "px, 0)"));
+
+          // repaint
+          el.offsetWidth;
+          var duration = this.options.animation;
+          setTransitionDuration(el, duration);
+          setTransform(el, 'translate3d(0px, 0px, 0px)');
+          clearTimeout(el.animated);
+          el.animated = setTimeout(function () {
+            setTransitionDuration(el);
+            setTransform(el, '');
+            el.animated = null;
+          }, duration);
+        },
+        _getRange: function _getRange(children, dragEl, dropEl) {
+          var start = children.indexOf(dragEl);
+          var end = children.indexOf(dropEl);
+          if (start > end) {
+            var _ref2 = [end, start];
+            start = _ref2[0];
+            end = _ref2[1];
+          }
+          if (start < 0) {
+            start = end;
+            end = children.length - 1;
+          }
+          if (end < 0) end = children.length - 1;
+          return {
             start: start,
             end: end
-          } : {
-            start: end,
-            end: start
           };
         }
-        return {
-          captureAnimationState: function captureAnimationState() {
-            var children = _toConsumableArray(Array.from(this.rootEl.children));
-            var _getRange = getRange(children, this.dragEl, this.dropEl),
-              start = _getRange.start,
-              end = _getRange.end;
-            animationState.length = 0; // reset
-
-            children.slice(start, end + 1).forEach(function (child) {
-              animationState.push({
-                target: child,
-                rect: getRect(child)
-              });
-            });
-          },
-          animateRange: function animateRange() {
-            var _this = this;
-            animationState.forEach(function (state) {
-              var target = state.target,
-                rect = state.rect;
-              _this.animate(target, rect, _this.options.animation);
-            });
-          },
-          animate: function animate(el, preRect) {
-            var animation = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 150;
-            var curRect = getRect(el);
-            var left = preRect.left - curRect.left;
-            var top = preRect.top - curRect.top;
-            setTransition(el, 'none');
-            setTransform(el, "translate3d(".concat(left, "px, ").concat(top, "px, 0)"));
-            el.offsetLeft; // trigger repaint
-
-            setTransition(el, "".concat(animation, "ms"));
-            setTransform(el, 'translate3d(0px, 0px, 0px)');
-            clearTimeout(el.animated);
-            el.animated = setTimeout(function () {
-              setTransition(el, '');
-              setTransform(el, '');
-              el.animated = null;
-            }, animation);
-          }
-        };
+      };
+      function Helper() {
+        this.helper = null;
       }
-      function DNDEvent() {
-        return {
-          _bindEventListener: function _bindEventListener() {
-            this._onDrag = this._onDrag.bind(this);
-            this._onMove = this._onMove.bind(this);
-            this._onDrop = this._onDrop.bind(this);
-            var _this$options = this.options,
-              supportPointer = _this$options.supportPointer,
-              supportTouch = _this$options.supportTouch;
-            if (supportPointer) {
-              on(this.rootEl, 'pointerdown', this._onDrag);
-            } else if (supportTouch) {
-              on(this.rootEl, 'touchstart', this._onDrag);
-            } else {
-              on(this.rootEl, 'mousedown', this._onDrag);
-            }
-          },
-          _clearEvent: function _clearEvent() {
-            off(this.rootEl, 'pointerdown', this._onDrag);
-            off(this.rootEl, 'touchstart', this._onDrag);
-            off(this.rootEl, 'mousedown', this._onDrag);
-          },
-          _bindMoveEvents: function _bindMoveEvents(touch) {
-            if (this.options.supportPointer) {
-              on(this.ownerDocument, 'pointermove', this._onMove);
-            } else if (touch) {
-              on(this.ownerDocument, 'touchmove', this._onMove);
-            } else {
-              on(this.ownerDocument, 'mousemove', this._onMove);
-            }
-          },
-          _unbindMoveEvents: function _unbindMoveEvents() {
-            off(this.ownerDocument, 'pointermove', this._onMove);
-            off(this.ownerDocument, 'touchmove', this._onMove);
-            off(this.ownerDocument, 'mousemove', this._onMove);
-          },
-          _unbindDropEvents: function _unbindDropEvents() {
-            off(this.ownerDocument, 'pointerup', this._onDrop);
-            off(this.ownerDocument, 'pointercancel', this._onDrop);
-            off(this.ownerDocument, 'touchend', this._onDrop);
-            off(this.ownerDocument, 'touchcancel', this._onDrop);
-            off(this.ownerDocument, 'mouseup', this._onDrop);
-          },
-          _unbindDragEvents: function _unbindDragEvents() {
-            if (this.nativeDraggable) {
-              off(this.rootEl, 'dragstart', this._onDragStart);
-              off(this.rootEl, 'dragover', this._onDragOver);
-              off(this.rootEl, 'dragend', this._onDrop);
-            }
+      Helper.prototype = {
+        get node() {
+          return this.helper;
+        },
+        destroy: function destroy() {
+          if (this.helper && this.helper.parentNode) {
+            this.helper.parentNode.removeChild(this.helper);
           }
+          this.helper = null;
+        },
+        move: function move(x, y) {
+          setTransform(this.helper, "translate3d(".concat(x, "px, ").concat(y, "px, 0)"));
+        },
+        init: function init(rect, element, container, options, distance) {
+          if (this.helper) return;
+          var fallbackOnBody = options.fallbackOnBody,
+            ghostClass = options.ghostClass,
+            _options$ghostStyle = options.ghostStyle,
+            ghostStyle = _options$ghostStyle === void 0 ? {} : _options$ghostStyle;
+          var helperContainer = fallbackOnBody ? document.body : container;
+          this.helper = element.cloneNode(true);
+          toggleClass(this.helper, ghostClass, true);
+          var helperStyle = _objectSpread2({
+            'box-sizing': 'border-box',
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+            position: 'fixed',
+            opacity: '0.8',
+            'z-index': 100000,
+            'pointer-events': 'none'
+          }, ghostStyle);
+          for (var key in helperStyle) {
+            css(this.helper, key, helperStyle[key]);
+          }
+          setTransition(this.helper, 'none');
+          setTransform(this.helper, 'translate3d(0px, 0px, 0px)');
+          helperContainer.appendChild(this.helper);
+          var ox = distance.x / parseInt(this.helper.style.width) * 100;
+          var oy = distance.y / parseInt(this.helper.style.height) * 100;
+          css(this.helper, 'transform-origin', "".concat(ox, "% ").concat(oy, "%"));
+          css(this.helper, 'transform', 'translateZ(0)');
+        }
+      };
+      var FromTo = {
+        sortable: null,
+        group: null,
+        node: null,
+        rect: {},
+        offset: {}
+      };
+
+      // -------------------------------- Sortable ----------------------------------
+      var sortables = [];
+      var rootEl,
+        dragEl,
+        dropEl,
+        downEvent,
+        moveEvent,
+        touchEvent,
+        isMultiple,
+        lastDropEl,
+        autoScroller,
+        dragStartTimer,
+        // timer for start to drag
+        helper = new Helper();
+      var from = _objectSpread2({}, FromTo);
+      var to = _objectSpread2({}, FromTo);
+      var distance = {
+        x: 0,
+        y: 0
+      };
+      var lastPosition = {
+        x: 0,
+        y: 0
+      };
+      var _prepareGroup = function _prepareGroup(options, uniqueId) {
+        var group = {};
+        var originalGroup = options.group;
+        if (!originalGroup || _typeof(originalGroup) != 'object') {
+          originalGroup = {
+            name: originalGroup,
+            pull: true,
+            put: true
+          };
+        }
+        group.name = originalGroup.name || uniqueId;
+        group.pull = originalGroup.pull;
+        group.put = originalGroup.put;
+        options.group = group;
+      };
+
+      /**
+       * get nearest Sortable
+       */
+      var _nearestSortable = function _nearestSortable(evt) {
+        if (dragEl) {
+          var e = evt.touches ? evt.touches[0] : evt;
+          var nearest = _detectNearestSortable(e.clientX, e.clientY);
+          if (nearest) {
+            rootEl = nearest;
+            if (rootEl === downEvent.sortable.el) return;
+            nearest[expando]._onMove(evt);
+          }
+        }
+      };
+      /**
+       * Detects first nearest empty sortable to X and Y position using emptyInsertThreshold.
+       * @param  {Number} x      X position
+       * @param  {Number} y      Y position
+       * @return {HTMLElement}   Element of the first found nearest Sortable
+       */
+      var _detectNearestSortable = function _detectNearestSortable(x, y) {
+        var result;
+        sortables.some(function (sortable) {
+          var threshold = sortable[expando].options.emptyInsertThreshold;
+          if (!threshold) return;
+          var rect = getRect(sortable, {
+              parent: true
+            }),
+            insideHorizontally = x >= rect.left - threshold && x <= rect.right + threshold,
+            insideVertically = y >= rect.top - threshold && y <= rect.bottom + threshold;
+          if (insideHorizontally && insideVertically) {
+            return result = sortable;
+          }
+        });
+        return result;
+      };
+      var _positionChanged = function _positionChanged(evt) {
+        var clientX = evt.clientX,
+          clientY = evt.clientY;
+        var distanceX = clientX - lastPosition.x;
+        var distanceY = clientY - lastPosition.y;
+        lastPosition.x = clientX;
+        lastPosition.y = clientY;
+        if (clientX !== void 0 && clientY !== void 0 && Math.abs(distanceX) <= 0 && Math.abs(distanceY) <= 0) {
+          return false;
+        }
+        return true;
+      };
+      var _emits = function _emits() {
+        var result = {
+          from: _objectSpread2({}, from),
+          to: _objectSpread2({}, to)
         };
-      }
-      var documentExists = typeof document !== 'undefined';
-      var supportDraggable = documentExists && !ChromeForAndroid && !IOS && 'draggable' in document.createElement('div');
+        if (isMultiple) {
+          var ft = getMultiDiffer();
+          result.from = _objectSpread2(_objectSpread2({}, ft.from), result.from);
+          result.to = _objectSpread2(_objectSpread2({}, ft.to), result.to);
+        }
+        return result;
+      };
+
       /**
        * @class  Sortable
        * @param  {HTMLElement}  el group element
        * @param  {Object}       options
        */
-
       function Sortable(el, options) {
         if (!(el && el.nodeType && el.nodeType === 1)) {
           throw "Sortable: `el` must be an HTMLElement, not ".concat({}.toString.call(el));
         }
-        this.rootEl = el; // root element
-
-        this.scrollEl = getParentAutoScrollElement(el, true); // scroll element
-
-        this.options = options = Object.assign({}, options);
+        el[expando] = this;
+        this.el = el;
         this.ownerDocument = el.ownerDocument;
+        this.options = options = Object.assign({}, options);
         var defaults = {
-          autoScroll: true,
-          // Auto scrolling when dragging to the edge of the container
-          scrollStep: 5,
-          // The distance to scroll each frame
-          scrollThreshold: 15,
-          // Autoscroll threshold
-          delay: 0,
-          // Defines the delay time after which the mouse-selected list cell can start dragging
-          delayOnTouchOnly: false,
-          // only delay if user is using touch
-          disabled: false,
-          // Defines whether the sortable object is available or not. When it is true, the sortable object cannot drag and drop sorting and other functions. When it is false, it can be sorted, which is equivalent to a switch.
+          group: '',
           animation: 150,
-          // Define the timing of the sorting animation
-          ghostAnimation: 0,
-          // Animation when the ghost element is destroyed
+          multiple: false,
+          draggable: null,
+          handle: null,
+          onDrag: null,
+          onMove: null,
+          onDrop: null,
+          onChange: null,
+          autoScroll: true,
+          scrollThreshold: 25,
+          delay: 0,
+          delayOnTouchOnly: false,
+          disabled: false,
           ghostClass: '',
-          // Ghost element class name
           ghostStyle: {},
-          // Ghost element style
           chosenClass: '',
-          // Chosen element style
-          draggable: undefined,
-          // String: css selector, Function: (e) => return true
-          dragging: undefined,
-          // Set the drag element, must be a function and must return an HTMLElement: (e) => return e.target
-          onDrag: undefined,
-          // The callback function triggered when dragging starts: () => {}
-          onMove: undefined,
-          // The callback function during drag and drop: (from, to) => {}
-          onDrop: undefined,
-          // The callback function when the drag is completed: (from, to, changed) => {}
-          onChange: undefined,
-          // The callback function when dragging an element to change its position: (from, to) => {}
+          selectedClass: '',
           fallbackOnBody: false,
-          forceFallback: false,
-          // Ignore HTML5 drag and drop behavior, force callback to proceed
           stopPropagation: false,
-          // Prevents further propagation of the current event in the capture and bubbling phases
-          supportPointer: 'PointerEvent' in window && !Safari,
-          supportTouch: 'ontouchstart' in window
-        }; // Set default options
+          supportPointer: 'onpointerdown' in window && !Safari,
+          supportTouch: 'ontouchstart' in window,
+          emptyInsertThreshold: 5
+        };
 
+        // Set default options
         for (var name in defaults) {
           !(name in this.options) && (this.options[name] = defaults[name]);
         }
-        this.container = this.options.fallbackOnBody ? document.body : this.rootEl;
-        this.nativeDraggable = this.options.forceFallback ? false : supportDraggable;
-        this.move = {
-          x: 0,
-          y: 0
-        };
-        this.state = new State(); // Status record during drag and drop
+        _prepareGroup(options, 'group_' + randomCode());
 
-        this.differ = new Differ(); // Record the difference before and after dragging
-
-        this.ghost = new Ghost(this); // Mask element while dragging
-
-        this.dragEl = null; // Drag element
-
-        this.dropEl = null; // Drop element
-
-        this.dragStartTimer = null; // setTimeout timer
-
-        this.autoScrollTimer = null;
-        Object.assign(this, DNDEvent(), Animation(), AutoScroll());
-        this._bindEventListener();
+        // Bind all private methods
+        for (var fn in this) {
+          if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
+            this[fn] = this[fn].bind(this);
+          }
+        }
+        var _this$options = this.options,
+          supportPointer = _this$options.supportPointer,
+          supportTouch = _this$options.supportTouch;
+        if (supportPointer) {
+          on(el, 'pointerdown', this._onDrag);
+        } else if (supportTouch) {
+          on(el, 'touchstart', this._onDrag);
+        } else {
+          on(el, 'mousedown', this._onDrag);
+        }
+        sortables.push(el);
+        this.multiplayer = new Multiple(this.options);
+        this.animator = new Animation(this.options);
+        autoScroller = new AutoScroll();
       }
       Sortable.prototype = {
         constructor: Sortable,
+        get helper() {
+          return helper.node;
+        },
         /**
          * Destroy
          */
         destroy: function destroy() {
-          this._clearState();
-          this._clearEvent(); // Remove draggable attributes
+          this._dispatchEvent('destroy', this);
+          this.el[expando] = null;
+          for (var i = 0; i < events.start.length; i++) {
+            off(this.el, events.start[i], this._onDrag);
+          }
 
-          Array.prototype.forEach.call(this.rootEl.querySelectorAll('[draggable]'), function (el) {
-            el.removeAttribute('draggable');
-          });
+          // clear status
+          this._clearState();
+          sortables.splice(sortables.indexOf(this.el), 1);
+          if (sortables.length == 0) autoScroller = null;
+          this.el = null;
         },
-        /**
-         * set value for options by key
-         */
-        set: function set(key, value) {
-          this.options[key] = value;
-        },
-        /**
-         * get value from options by key
-         */
-        get: function get(key) {
-          return this.options[key];
-        },
-        // -------------------------------- prepare start ----------------------------------
-        _onDrag: function _onDrag( /** Event|TouchEvent */
-        evt) {
-          var _this2 = this;
-          if (/mousedown|pointerdown/.test(evt.type) && evt.button !== 0 || this.options.disabled) return; // only left button and enabled
+        _onDrag: function _onDrag( /** Event|TouchEvent */evt) {
+          var _this = this;
+          if (this.options.disabled || !this.options.group.pull) return;
+          if (/mousedown|pointerdown/.test(evt.type) && evt.button !== 0) return; // only left button and enabled
 
           var _getEvent = getEvent(evt),
             touch = _getEvent.touch,
-            e = _getEvent.e,
-            target = _getEvent.target; // Safari ignores further event handling after mousedown
+            event = _getEvent.event,
+            target = _getEvent.target;
 
-          if (!this.nativeDraggable && Safari && target && target.tagName.toUpperCase() === 'SELECT') return;
-          if (target === this.rootEl) return true;
-          if (this.options.stopPropagation) evt.stopPropagation();
-          var _this$options = this.options,
-            draggable = _this$options.draggable,
-            dragging = _this$options.dragging;
+          // Safari ignores further event handling after mousedown
+          if (Safari && target && target.tagName.toUpperCase() === 'SELECT') return;
+          if (target === this.el) return;
+          var _this$options2 = this.options,
+            draggable = _this$options2.draggable,
+            handle = _this$options2.handle;
+          if (typeof handle === 'function' && !handle(evt)) return;
+          if (typeof handle === 'string' && !matches(target, handle)) return;
           if (typeof draggable === 'function') {
-            if (!draggable(e)) return true;
-          } else if (typeof draggable === 'string') {
-            if (!matches(target, draggable)) return true;
-          } else if (draggable !== undefined) {
-            throw new Error("draggable expected \"function\" or \"string\" but received \"".concat(_typeof(draggable), "\""));
-          } // Get the dragged element               
-
-          if (dragging) {
-            if (typeof dragging === 'function') this.dragEl = dragging(e);else throw new Error("dragging expected \"function\" or \"string\" but received \"".concat(_typeof(dragging), "\""));
+            // Function type must return a HTMLElement if used to specifies the drag el
+            var element = draggable(evt);
+            if (!element) return;
+            // set drag element
+            if (isHTMLElement(element)) dragEl = element;
           } else {
-            this.dragEl = getElement(this.rootEl, target, true);
-          } // No dragging is allowed when there is no dragging element
+            // String use as 'TagName' or '.class' or '#id'
+            dragEl = closest(target, draggable, this.el, false);
+          }
 
-          if (!this.dragEl || this.dragEl.animated) return true; // solve the problem that the mobile cannot be dragged
+          // No dragging is allowed when there is no dragging element
+          if (!dragEl || dragEl.animated) return;
 
-          if (touch) this.dragEl.style['touch-action'] = 'none'; // get the position of the dragged element in the list
+          // solve the problem that the mobile cannot be dragged
+          if (touch) css(dragEl, 'touch-action', 'none');
+          var parentEl = dragEl.parentNode;
+          touchEvent = touch;
+          downEvent = event;
+          downEvent.sortable = this;
+          downEvent.group = parentEl;
+          isMultiple = this.options.multiple && this.multiplayer.allowDrag(dragEl);
+          // multi-drag
+          isMultiple && this.multiplayer.onDrag(this);
 
-          var _getElement = getElement(this.rootEl, this.dragEl),
-            rect = _getElement.rect,
-            offset = _getElement.offset;
-          this.move = {
-            x: e.clientX,
-            y: e.clientY
-          };
-          this.differ.from = {
-            node: this.dragEl,
+          // get the position of the dragEl
+          var rect = getRect(dragEl);
+          var offset = getOffset(dragEl);
+          from = {
+            sortable: this,
+            group: parentEl,
+            node: dragEl,
             rect: rect,
             offset: offset
           };
-          this.ghost.distance = {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
+          to.group = parentEl;
+          to.sortable = this;
+          distance = {
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top
           };
-          this.state.sortableDown = e; // sortable state down is active
-          // Solve the problem that `dragend` does not take effect when the `dragover` event is not triggered
 
-          on(this.ownerDocument, 'pointerup', this._onDrop);
-          on(this.ownerDocument, 'touchend', this._onDrop);
-          on(this.ownerDocument, 'mouseup', this._onDrop);
-          var _this$options2 = this.options,
-            delay = _this$options2.delay,
-            delayOnTouchOnly = _this$options2.delayOnTouchOnly;
-          if (delay && (!delayOnTouchOnly || touch) && (!this.nativeDraggable || !(Edge || IE11OrLess))) {
-            clearTimeout(this.dragStartTimer); // delay to start
-
-            this.dragStartTimer = setTimeout(function () {
-              return _this2._onStart(e, touch);
+          // enable drag between groups
+          if (this.options.supportPointer) {
+            on(this.ownerDocument, 'pointermove', _nearestSortable);
+          } else if (touch) {
+            on(this.ownerDocument, 'touchmove', _nearestSortable);
+          } else {
+            on(this.ownerDocument, 'mousemove', _nearestSortable);
+          }
+          var _this$options3 = this.options,
+            delay = _this$options3.delay,
+            delayOnTouchOnly = _this$options3.delayOnTouchOnly;
+          if (delay && (!delayOnTouchOnly || touch) && !(Edge || IE11OrLess)) {
+            if (this.options.supportPointer) {
+              on(this.ownerDocument, 'pointerup', this._onDrop);
+            } else if (touchEvent) {
+              on(this.ownerDocument, 'touchend', this._onDrop);
+            } else {
+              on(this.ownerDocument, 'mouseup', this._onDrop);
+            }
+            clearTimeout(dragStartTimer);
+            // delay to start
+            dragStartTimer = setTimeout(function () {
+              return _this._onStart();
             }, delay);
           } else {
-            this._onStart(e, touch);
+            this._onStart();
           }
         },
-        _onStart: function _onStart( /** Event|TouchEvent */
-        e, touch) {
-          if (!this.nativeDraggable || touch) {
-            this._bindMoveEvents(touch);
+        _onStart: function _onStart() {
+          rootEl = this.el;
+          if (this.options.supportPointer) {
+            on(this.ownerDocument, 'pointermove', this._onMove);
+            on(this.ownerDocument, 'pointerup', this._onDrop);
             on(this.ownerDocument, 'pointercancel', this._onDrop);
+          } else if (touchEvent) {
+            on(this.ownerDocument, 'touchmove', this._onMove);
+            on(this.ownerDocument, 'touchend', this._onDrop);
             on(this.ownerDocument, 'touchcancel', this._onDrop);
           } else {
-            // allow HTML5 drag event
-            this.dragEl.draggable = true;
-            this._onDragStart = this._onDragStart.bind(this);
-            this._onDragOver = this._onDragOver.bind(this);
-            on(this.rootEl, 'dragstart', this._onDragStart);
-          } // clear selection
+            on(this.ownerDocument, 'mousemove', this._onMove);
+            on(this.ownerDocument, 'mouseup', this._onDrop);
+          }
 
+          // clear selection
           try {
             if (document.selection) {
               // Timeout neccessary for IE9
@@ -1098,359 +1595,588 @@
             } else {
               window.getSelection().removeAllRanges();
             }
-          } catch (error) {//
+          } catch (error) {}
+        },
+        _onTrulyStarted: function _onTrulyStarted() {
+          if (!moveEvent) {
+            // on-drag
+            this._dispatchEvent('onDrag', _objectSpread2(_objectSpread2({}, _emits()), {}, {
+              event: downEvent
+            }));
+            // on-multi-drag
+            isMultiple && this.multiplayer.onTrulyStarted(dragEl, this);
+
+            // Init in the move event to prevent conflict with the click event
+            var element = isMultiple ? this.multiplayer.getHelper() : dragEl;
+            helper.init(from.rect, element, this.el, this.options, distance);
+            Sortable.helper = helper.node;
+
+            // add class for drag element
+            toggleClass(dragEl, this.options.chosenClass, true);
+            css(dragEl, 'will-change', 'transform');
+            Safari && css(document.body, 'user-select', 'none');
           }
         },
-        // -------------------------------- drag event ----------------------------------
-        _onDragStart: function _onDragStart(evt) {
-          // elements can only be dragged after firefox sets setData
-          evt.dataTransfer.setData('te', evt.target.innerText);
-          on(this.rootEl, 'dragover', this._onDragOver);
-          on(this.rootEl, 'dragend', this._onDrop);
+        _allowPut: function _allowPut() {
+          if (downEvent.group === this.el) {
+            return true;
+          } else if (!this.options.group.put) {
+            return false;
+          } else {
+            var name = this.options.group.name;
+            var fromGroup = downEvent.sortable.options.group;
+            return fromGroup.name && name && fromGroup.name === name;
+          }
         },
-        _onDragOver: function _onDragOver(evt) {
-          if (!this.state.sortableDown) return;
-          var stopPropagation = this.options.stopPropagation;
-          stopPropagation && evt.stopPropagation && evt.stopPropagation(); // prevent events from bubbling
-
-          evt.preventDefault !== void 0 && evt.cancelable && evt.preventDefault(); // prevent scrolling
-
-          var clientX = evt.clientX,
-            clientY = evt.clientY;
-          var distanceX = clientX - this.move.x;
-          var distanceY = clientY - this.move.y;
-          if (clientX !== void 0 && Math.abs(distanceX) <= 0 && clientY !== void 0 && Math.abs(distanceY) <= 0) {
-            return;
-          } // truly started
-
-          this._onStarted(evt, evt);
-          if (evt.target === this.rootEl) return;
-          this._onChange(this, evt.target, evt, evt);
-        },
-        // -------------------------------- on move ----------------------------------
-        _onMove: function _onMove( /** Event|TouchEvent */
-        evt) {
-          var _this3 = this;
-          if (!this.state.sortableDown) return;
+        _onMove: function _onMove( /** Event|TouchEvent */evt) {
+          this._preventEvent(evt);
+          if (!downEvent || !dragEl) return;
+          if (!_positionChanged(evt)) return;
           var _getEvent2 = getEvent(evt),
-            e = _getEvent2.e,
+            event = _getEvent2.event,
             target = _getEvent2.target;
-          var clientX = e.clientX,
-            clientY = e.clientY;
-          var distanceX = clientX - this.move.x;
-          var distanceY = clientY - this.move.y;
-          if (clientX !== void 0 && Math.abs(distanceX) <= 0 && clientY !== void 0 && Math.abs(distanceY) <= 0) {
-            return;
+          // truly started
+          this._onTrulyStarted();
+          moveEvent = event; // sortable state move is active
+
+          var x = evt.clientX - downEvent.clientX;
+          var y = evt.clientY - downEvent.clientY;
+          helper.move(x, y);
+
+          // on-move
+          this._dispatchEvent('onMove', _objectSpread2(_objectSpread2({}, _emits()), {}, {
+            event: event
+          }));
+          if (!this.scrollEl) {
+            // get the scroll element, fix display 'none' to 'block'
+            this.scrollEl = getParentAutoScrollElement(this.el, true);
           }
-          var stopPropagation = this.options.stopPropagation;
-          stopPropagation && evt.stopPropagation && evt.stopPropagation(); // prevent events from bubbling
 
-          evt.preventDefault !== void 0 && evt.cancelable && evt.preventDefault(); // prevent scrolling
-
-          this._onStarted(e, evt);
-          this.ghost.move(distanceX, distanceY); // onMove callback
-
-          var onMove = this.options.onMove;
-          if (onMove && typeof onMove === 'function') onMove(this.differ.from, this.ghost.$el, e, evt); // boundary value judgment
-
-          if (clientX < 0 || clientY < 0) return;
-          var _getRect = getRect(this.rootEl),
-            top = _getRect.top,
-            right = _getRect.right,
-            bottom = _getRect.bottom,
-            left = _getRect.left;
-          if (clientX < left || clientX > right || clientY < top || clientY > bottom) return; // check if element will exchange
-
-          this._onChange(this, target, e, evt); // auto scroll
-
-          this.autoScrollTimer && clearTimeout(this.autoScrollTimer);
-          if (this.options.autoScroll) {
-            this.autoScrollTimer = setTimeout(function () {
-              return _this3._autoScroll(_this3);
-            }, 0);
+          // auto scroll
+          var _this$options4 = this.options,
+            autoScroll = _this$options4.autoScroll,
+            scrollThreshold = _this$options4.scrollThreshold;
+          if (autoScroll) {
+            autoScroller.update(this.scrollEl, scrollThreshold, downEvent, moveEvent);
           }
-        },
-        _onStarted: function _onStarted(e, /** originalEvent */
-        evt) {
-          this.state.sortableMove = e; // sortable state move is active
-
-          if (!this.ghost.$el) {
-            // onDrag callback
-            var onDrag = this.options.onDrag;
-            if (onDrag && typeof onDrag === 'function') onDrag(this.dragEl, e, evt); // Init in the move event to prevent conflict with the click event
-
-            var rect = this.differ.from.rect;
-            var ghostEl = this.dragEl.cloneNode(true);
-            this.ghost.init(ghostEl, rect, !this.nativeDraggable); // add class for drag element
-
-            toggleClass(this.dragEl, this.options.chosenClass, true);
-            this.dragEl.style['will-change'] = 'transform';
-            if (Safari) css(document.body, 'user-select', 'none');
-            if (this.nativeDraggable) this._unbindDropEvents();
+          if (!this._allowPut()) return;
+          dropEl = closest(target, this.options.draggable, rootEl, false);
+          if (dropEl) {
+            if (dropEl === lastDropEl) return;
+            lastDropEl = dropEl;
+            if (dropEl.animated || containes(dropEl, dragEl)) return;
           }
-        },
-        _onChange: debounce(function (_this, target, e, evt) {
-          var _getElement2 = getElement(_this.rootEl, target),
-            el = _getElement2.el,
-            rect = _getElement2.rect,
-            offset = _getElement2.offset;
-          if (!el || el && el.animated) return;
-          _this.dropEl = el;
-          var clientX = e.clientX,
-            clientY = e.clientY;
-          var left = rect.left,
-            right = rect.right,
-            top = rect.top,
-            bottom = rect.bottom;
-          if (clientX > left && clientX < right && clientY > top && clientY < bottom) {
-            // swap when the elements before and after the drag are inconsistent
-            if (el !== _this.dragEl) {
-              _this.differ.to = {
-                node: _this.dropEl,
-                rect: rect,
-                offset: offset
-              };
-              _this.captureAnimationState();
-              var onChange = _this.options.onChange;
-              var _offset = getOffset(_this.dragEl); // onChange callback
-
-              if (onChange && typeof onChange === 'function') onChange(_this.differ.from, _this.differ.to, e, evt); // the top value is compared first, and the left is compared if the top value is the same
-
-              if (_offset.top < offset.top || _offset.left < offset.left) {
-                _this.rootEl.insertBefore(_this.dragEl, el.nextElementSibling);
-              } else {
-                _this.rootEl.insertBefore(_this.dragEl, el);
-              }
-              _this.animateRange();
+          if (dropEl === dragEl) return;
+          if (rootEl !== from.sortable.el) {
+            if (target === rootEl || !lastChild(rootEl, helper.node)) {
+              this._onInsert(event, true);
+            } else if (dropEl) {
+              this._onInsert(event, false);
             }
+          } else if (dropEl) {
+            this._onChange(event);
           }
-        }, 5),
-        // -------------------------------- on drop ----------------------------------
-        _onDrop: function _onDrop( /** Event|TouchEvent */
-        evt) {
-          this._unbindDragEvents();
+        },
+        _onInsert: function _onInsert( /** Event|TouchEvent */event, insert) {
+          var target = insert ? dragEl : dropEl;
+          var parentEl = insert ? rootEl : dropEl.parentNode;
+          from.sortable.animator.collect(dragEl, null, dragEl.parentNode, dragEl);
+          this.animator.collect(null, target, parentEl, dragEl);
+          isMultiple && this.multiplayer.onChange(dragEl, this);
+          to = {
+            sortable: this,
+            group: parentEl,
+            node: target,
+            rect: getRect(dragEl),
+            offset: getOffset(dragEl)
+          };
+          from.sortable._dispatchEvent('onRemove', _objectSpread2(_objectSpread2({}, _emits()), {}, {
+            event: event
+          }));
+          if (insert) {
+            parentEl.appendChild(dragEl);
+          } else {
+            parentEl.insertBefore(dragEl, target);
+          }
+          this._dispatchEvent('onAdd', _objectSpread2(_objectSpread2({}, _emits()), {}, {
+            event: event
+          }));
+          from.sortable.animator.animate();
+          this.animator.animate();
+          from.group = parentEl;
+          from.sortable = this;
+        },
+        _onChange: function _onChange( /** Event|TouchEvent */event) {
+          var parentEl = dropEl.parentNode;
+          this.animator.collect(dragEl, dropEl, parentEl);
+          isMultiple && this.multiplayer.onChange(dragEl, this);
+          to = {
+            sortable: this,
+            group: parentEl,
+            node: dropEl,
+            rect: getRect(dropEl),
+            offset: getOffset(dropEl)
+          };
+          this._dispatchEvent('onChange', _objectSpread2(_objectSpread2({}, _emits()), {}, {
+            event: event
+          }));
+
+          // the top value is compared first, and the left is compared if the top value is the same
+          var offset = getOffset(dragEl);
+          var nextEl = null;
+          if (offset.top === to.offset.top) {
+            nextEl = offset.left < to.offset.left ? dropEl.nextSibling : dropEl;
+          } else {
+            nextEl = offset.top < to.offset.top ? dropEl.nextSibling : dropEl;
+          }
+          parentEl.insertBefore(dragEl, nextEl);
+          this.animator.animate();
+          from.group = parentEl;
+          from.sortable = this;
+        },
+        _onDrop: function _onDrop( /** Event|TouchEvent */evt) {
           this._unbindMoveEvents();
           this._unbindDropEvents();
-          this.dragStartTimer && clearTimeout(this.dragStartTimer);
-          var stopPropagation = this.options.stopPropagation;
-          stopPropagation && evt.stopPropagation();
-          evt.preventDefault && evt.preventDefault();
-          var _getEvent3 = getEvent(evt),
-            touch = _getEvent3.touch; // clear style and class
+          this._preventEvent(evt);
+          autoScroller.clear();
+          clearTimeout(dragStartTimer);
 
-          toggleClass(this.dragEl, this.options.chosenClass, false);
-          if (this.nativeDraggable) this.dragEl.draggable = false;
-          if (touch) this.dragEl.style['touch-action'] = '';
-          this.dragEl.style['will-change'] = '';
-          if (this.state.sortableDown && this.state.sortableMove) {
-            // re-acquire the offset and rect values of the dragged element as the value after the drag is completed
-            this.differ.to.offset = getOffset(this.dragEl);
-            this.differ.to.rect = getRect(this.dragEl);
-            var _this$differ = this.differ,
-              from = _this$differ.from,
-              to = _this$differ.to; // compare whether the element is swapped by offset
-
-            var changed = from.offset.top !== to.offset.top || from.offset.left !== to.offset.left; // onDrop callback
-
-            var onDrop = this.options.onDrop;
-            if (onDrop && typeof onDrop === 'function') onDrop(changed, evt);
+          // clear style, attrs and class
+          if (dragEl) {
+            toggleClass(dragEl, this.options.chosenClass, false);
+            touchEvent && css(dragEl, 'touch-action', '');
+            css(dragEl, 'will-change', '');
           }
-          if (Safari) css(document.body, 'user-select', '');
-          this.ghost.destroy(this.differ.to.rect);
-          this.state = new State();
+
+          // drag and drop done
+          if (dragEl && downEvent && moveEvent) {
+            this._onEnd(evt);
+          } else if (this.options.multiple) {
+            // click event
+            this.multiplayer.select(evt, dragEl, _objectSpread2({}, from));
+          }
+          this._clearState();
         },
-        // -------------------------------- clear ----------------------------------
+        _onEnd: function _onEnd( /** Event|TouchEvent */evt) {
+          from.group = downEvent.group;
+          from.sortable = downEvent.sortable;
+          if (isMultiple) {
+            this.multiplayer.onDrop(evt, dragEl, downEvent, _emits);
+          } else {
+            // re-acquire the offset and rect values of the dragged element as the value after the drag is completed
+            to.rect = getRect(dragEl);
+            to.offset = getOffset(dragEl);
+            var changed = offsetChanged(from.offset, to.offset);
+            var params = _objectSpread2(_objectSpread2({}, _emits()), {}, {
+              changed: changed,
+              event: evt
+            });
+            // on-drop
+            if (to.sortable.el !== from.sortable.el) {
+              from.sortable._dispatchEvent('onDrop', params);
+            }
+            to.sortable._dispatchEvent('onDrop', params);
+          }
+          Safari && css(document.body, 'user-select', '');
+        },
+        _preventEvent: function _preventEvent(evt) {
+          evt.preventDefault !== void 0 && evt.cancelable && evt.preventDefault();
+          if (this.options.stopPropagation) {
+            if (evt && evt.stopPropagation) {
+              evt.stopPropagation();
+            } else {
+              window.event.cancelBubble = true;
+            }
+          }
+        },
+        _dispatchEvent: function _dispatchEvent(event, params) {
+          var callback = this.options[event];
+          if (typeof callback === 'function') callback(params);
+        },
         _clearState: function _clearState() {
-          this.state = new State();
-          this.differ.destroy();
-          this.dragEl = null;
-          this.dropEl = null;
+          dragEl = dropEl = downEvent = moveEvent = touchEvent = isMultiple = lastDropEl = dragStartTimer = Sortable.ghost = null;
+          distance = lastPosition = {
+            x: 0,
+            y: 0
+          };
+          from = to = _objectSpread2({}, FromTo);
+          helper.destroy();
+        },
+        _unbindMoveEvents: function _unbindMoveEvents() {
+          for (var i = 0; i < events.move.length; i++) {
+            off(this.ownerDocument, events.move[i], this._onMove);
+            off(this.ownerDocument, events.move[i], _nearestSortable);
+          }
+        },
+        _unbindDropEvents: function _unbindDropEvents() {
+          for (var i = 0; i < events.end.length; i++) {
+            off(this.ownerDocument, events.end[i], this._onDrop);
+          }
         }
       };
       Sortable.prototype.utils = {
         getRect: getRect,
-        getOffset: getOffset,
-        debounce: debounce,
-        throttle: throttle,
-        getParentAutoScrollElement: getParentAutoScrollElement
+        getOffset: getOffset
       };
       return Sortable;
     });
   })(sortable);
   var SortableDnd = sortable.exports;
 
-  // drag state
-  var DragState = /*#__PURE__*/_createClass(function DragState() {
-    _classCallCheck(this, DragState);
-    _defineProperty(this, "from", void 0);
-    _defineProperty(this, "to", void 0);
-    this.from = {
-      key: undefined,
-      item: undefined,
-      index: -1
-    };
-    this.to = {
-      key: undefined,
-      item: undefined,
-      index: -1
-    };
-  });
-  var Sortable = /*#__PURE__*/function () {
-    function Sortable(options, onDrag, onDrop) {
-      _classCallCheck(this, Sortable);
-      _defineProperty(this, "onDrag", void 0);
-      _defineProperty(this, "onDrop", void 0);
-      _defineProperty(this, "dragState", void 0);
-      _defineProperty(this, "dragElement", void 0);
-      _defineProperty(this, "drag", void 0);
-      _defineProperty(this, "options", void 0);
-      _defineProperty(this, "dataSource", void 0);
-      _defineProperty(this, "cloneList", void 0);
-      _defineProperty(this, "rangeIsChanged", void 0);
-      this.options = options;
-      this.onDrag = onDrag;
-      this.onDrop = onDrop;
-      this.dataSource = options.dataSource;
-      this.cloneList = new Array();
-      this.dragState = new DragState();
-      this.rangeIsChanged = false;
-      if (!options.scrollEl) return;
-      this.init();
+  var storeKey = 'virtualSortableState';
+  var defaultStore = {
+    from: {},
+    to: {}
+  };
+  var Storage = /*#__PURE__*/function () {
+    function Storage() {
+      _classCallCheck(this, Storage);
     }
-    _createClass(Sortable, [{
-      key: "set",
-      value: function set(key, value) {
-        this[key] = value;
-        // When the list data changes when dragging, need to execute onDrag function
-        if (key === 'dataSource' && this.dragElement) this.dragStart(this.dragElement, false);
+    _createClass(Storage, [{
+      key: "clear",
+      value: function clear() {
+        localStorage.removeItem(storeKey);
       }
+      /**
+       * Obtaining Synchronization Data
+       * @returns states: { from, to }
+       */
     }, {
-      key: "setOption",
-      value: function setOption(key, value) {
-        this.options[key] = value;
-        this.drag.set(key, value);
+      key: "getStore",
+      value: function getStore() {
+        try {
+          var result = JSON.parse(localStorage.getItem(storeKey));
+          return result || defaultStore;
+        } catch (e) {
+          return defaultStore;
+        }
       }
+      /**
+       * @returns states: { from, to }
+       */
     }, {
-      key: "init",
-      value: function init() {
-        var _this = this;
-        var _this$options = this.options,
-          disabled = _this$options.disabled,
-          draggable = _this$options.draggable,
-          ghostClass = _this$options.ghostClass,
-          ghostStyle = _this$options.ghostStyle,
-          chosenClass = _this$options.chosenClass,
-          animation = _this$options.animation,
-          autoScroll = _this$options.autoScroll,
-          scrollStep = _this$options.scrollStep,
-          scrollThreshold = _this$options.scrollThreshold;
-        this.drag = new SortableDnd(this.options.scrollEl, {
-          disabled: disabled,
-          draggable: draggable,
-          ghostClass: ghostClass,
-          ghostStyle: ghostStyle,
-          chosenClass: chosenClass,
-          animation: animation,
-          autoScroll: autoScroll,
-          scrollStep: scrollStep,
-          scrollThreshold: scrollThreshold,
-          onChange: function onChange(from, to) {
-            return _this.onChange(from, to);
-          },
-          onDrag: function onDrag(dragEl) {
-            return _this.dragStart(dragEl);
-          },
-          onDrop: function onDrop(changed) {
-            return _this.dragEnd(changed);
+      key: "getValue",
+      value: function getValue() {
+        return new Promise(function (resolve, reject) {
+          try {
+            var result = JSON.parse(localStorage.getItem(storeKey));
+            resolve(result || defaultStore);
+          } catch (e) {
+            reject(defaultStore);
           }
         });
       }
     }, {
-      key: "dragStart",
-      value: function dragStart(dragEl) {
-        var _this2 = this;
-        var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        this.dragElement = dragEl;
-        this.cloneList = _toConsumableArray(this.dataSource);
-        var key = dragEl.getAttribute('data-key');
-        this.dataSource.forEach(function (item, index) {
-          if (_this2.options.getKey(item) == key) _this2.dragState.from = {
-            item: item,
-            index: index,
-            key: key
-          };
+      key: "setValue",
+      value: function setValue(value) {
+        return new Promise(function (resolve, reject) {
+          try {
+            var store = JSON.parse(localStorage.getItem(storeKey));
+            var result = JSON.stringify(_objectSpread2(_objectSpread2({}, store), value));
+            localStorage.setItem(storeKey, result);
+            resolve(result);
+          } catch (e) {
+            reject('{}');
+          }
         });
-        if (callback) {
-          this.rangeIsChanged = false;
-          this.onDrag(this.dragState.from, dragEl);
+      }
+    }]);
+    return Storage;
+  }();
+  var Store = new Storage();
+
+  var attributes = ['group', 'handle', 'disabled', 'draggable', 'ghostClass', 'ghostStyle', 'chosenClass', 'animation', 'autoScroll', 'scrollThreshold'];
+  var dragEl = null;
+  var Sortable = /*#__PURE__*/function () {
+    function Sortable(context, callback) {
+      _classCallCheck(this, Sortable);
+      _defineProperty(this, "context", void 0);
+      _defineProperty(this, "callback", void 0);
+      _defineProperty(this, "initialList", void 0);
+      _defineProperty(this, "dynamicList", void 0);
+      _defineProperty(this, "sortable", void 0);
+      _defineProperty(this, "rangeChanged", void 0);
+      this.context = context;
+      this.callback = callback;
+      this.initialList = _toConsumableArray(context.list);
+      this.dynamicList = _toConsumableArray(context.list);
+      this.sortable = null;
+      this.rangeChanged = false;
+      this._init();
+    }
+    _createClass(Sortable, [{
+      key: "destroy",
+      value: function destroy() {
+        this.sortable && this.sortable.destroy();
+        this.sortable = null;
+      }
+    }, {
+      key: "setValue",
+      value: function setValue(key, value) {
+        if (key === 'list') {
+          this.initialList = _toConsumableArray(value);
+          // When the list data changes when dragging, need to execute onDrag function
+          if (dragEl) this._onDrag(dragEl, false);
         } else {
-          this.rangeIsChanged = true;
+          this.context[key] = value;
+          if (this.sortable) this.sortable.options[key] = value;
         }
       }
     }, {
-      key: "onChange",
-      value: function onChange(_old_, _new_) {
-        var _this3 = this;
-        var oldKey = this.dragState.from.key;
-        var newKey = _new_.node.getAttribute('data-key');
-        var from = {
-          item: null,
-          index: -1
+      key: "_init",
+      value: function _init() {
+        var _this = this;
+        var props = attributes.reduce(function (res, key) {
+          res[key] = _this.context[key];
+          return res;
+        }, {});
+        this.sortable = new SortableDnd(this.context.container, _objectSpread2(_objectSpread2({}, props), {}, {
+          fallbackOnBody: true,
+          list: this.dynamicList,
+          onDrag: function onDrag(_ref) {
+            var from = _ref.from;
+            return _this._onDrag(from.node);
+          },
+          onAdd: function onAdd(_ref2) {
+            var from = _ref2.from,
+              to = _ref2.to;
+            return _this._onAdd(from, to);
+          },
+          onRemove: function onRemove(_ref3) {
+            var from = _ref3.from,
+              to = _ref3.to;
+            return _this._onRemove(from, to);
+          },
+          onChange: function onChange(_ref4) {
+            var from = _ref4.from,
+              to = _ref4.to;
+            return _this._onChange(from, to);
+          },
+          onDrop: function onDrop(_ref5) {
+            var from = _ref5.from,
+              to = _ref5.to,
+              changed = _ref5.changed;
+            return _this._onDrop(from, to, changed);
+          }
+        }));
+      }
+    }, {
+      key: "_onDrag",
+      value: function () {
+        var _onDrag2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(node) {
+          var callback,
+            fromList,
+            fromState,
+            store,
+            _args = arguments;
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                callback = _args.length > 1 && _args[1] !== undefined ? _args[1] : true;
+                dragEl = node;
+                this.dynamicList = _toConsumableArray(this.initialList);
+                fromList = _toConsumableArray(this.initialList);
+                fromState = this._getFromTo({
+                  node: node
+                }, fromList);
+                _context.next = 7;
+                return Store.setValue({
+                  from: _objectSpread2({
+                    list: fromList
+                  }, fromState)
+                });
+              case 7:
+                if (!callback) {
+                  _context.next = 15;
+                  break;
+                }
+                this.rangeChanged = false;
+                _context.next = 11;
+                return Store.getValue();
+              case 11:
+                store = _context.sent;
+                this.context.emit('drag', _objectSpread2({
+                  list: fromList
+                }, store));
+                _context.next = 16;
+                break;
+              case 15:
+                this.rangeChanged = true;
+              case 16:
+              case "end":
+                return _context.stop();
+            }
+          }, _callee, this);
+        }));
+        function _onDrag(_x) {
+          return _onDrag2.apply(this, arguments);
+        }
+        return _onDrag;
+      }()
+    }, {
+      key: "_onAdd",
+      value: function () {
+        var _onAdd2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(from, to) {
+          var store, list, index, params, _store$from, _store$from2;
+          return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+            while (1) switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return Store.getValue();
+              case 2:
+                store = _context2.sent;
+                list = _toConsumableArray(this.dynamicList);
+                index = this._getIndex(list, to.node.dataset.key);
+                params = _objectSpread2(_objectSpread2({}, store.from), {}, {
+                  index: index
+                });
+                if (from.node === to.node) {
+                  // insert to end of list
+                  params.index = this.dynamicList.length;
+                  this.dynamicList.push((_store$from = store.from) === null || _store$from === void 0 ? void 0 : _store$from.item);
+                } else {
+                  this.dynamicList.splice(index, 0, (_store$from2 = store.from) === null || _store$from2 === void 0 ? void 0 : _store$from2.item);
+                }
+                this.context.emit('add', _objectSpread2({}, params));
+              case 8:
+              case "end":
+                return _context2.stop();
+            }
+          }, _callee2, this);
+        }));
+        function _onAdd(_x2, _x3) {
+          return _onAdd2.apply(this, arguments);
+        }
+        return _onAdd;
+      }()
+    }, {
+      key: "_onRemove",
+      value: function () {
+        var _onRemove2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(from, to) {
+          var list, state;
+          return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+            while (1) switch (_context3.prev = _context3.next) {
+              case 0:
+                list = _toConsumableArray(this.dynamicList);
+                state = this._getFromTo(from, list);
+                this.dynamicList.splice(state.index, 1);
+                this.context.emit('remove', _objectSpread2({}, state));
+              case 4:
+              case "end":
+                return _context3.stop();
+            }
+          }, _callee3, this);
+        }));
+        function _onRemove(_x4, _x5) {
+          return _onRemove2.apply(this, arguments);
+        }
+        return _onRemove;
+      }()
+    }, {
+      key: "_onChange",
+      value: function () {
+        var _onChange2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(from, to) {
+          var fromList, toList, fromState, toState;
+          return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+            while (1) switch (_context4.prev = _context4.next) {
+              case 0:
+                fromList = _toConsumableArray(this.dynamicList);
+                toList = _toConsumableArray(this.dynamicList);
+                fromState = this._getFromTo(from, fromList);
+                toState = this._getFromTo(to, toList);
+                this.dynamicList.splice(fromState.index, 1);
+                this.dynamicList.splice(toState.index, 0, fromState.item);
+              case 6:
+              case "end":
+                return _context4.stop();
+            }
+          }, _callee4, this);
+        }));
+        function _onChange(_x6, _x7) {
+          return _onChange2.apply(this, arguments);
+        }
+        return _onChange;
+      }()
+    }, {
+      key: "_onDrop",
+      value: function () {
+        var _onDrop2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(from, to, changed) {
+          var list, index, item, key, store, params;
+          return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+            while (1) switch (_context5.prev = _context5.next) {
+              case 0:
+                if (this.rangeChanged || from.sortable !== to.sortable) {
+                  dragEl && dragEl.remove();
+                }
+                list = _toConsumableArray(this.dynamicList);
+                index = this._getIndex(list, from.node.dataset.key);
+                item = this.initialList[index];
+                key = getDataKey(item, this.context.dataKey);
+                _context5.next = 7;
+                return Store.setValue({
+                  to: {
+                    list: _toConsumableArray(this.initialList),
+                    index: index,
+                    item: item,
+                    key: key
+                  }
+                });
+              case 7:
+                _context5.next = 9;
+                return Store.getValue();
+              case 9:
+                store = _context5.sent;
+                params = _objectSpread2(_objectSpread2({
+                  list: list
+                }, store), {}, {
+                  changed: changed
+                });
+                this.context.emit('drop', params);
+                this.callback && this.callback(params);
+                this.initialList = _toConsumableArray(list);
+                this._clear();
+              case 15:
+              case "end":
+                return _context5.stop();
+            }
+          }, _callee5, this);
+        }));
+        function _onDrop(_x8, _x9, _x10) {
+          return _onDrop2.apply(this, arguments);
+        }
+        return _onDrop;
+      }()
+    }, {
+      key: "_getFromTo",
+      value: function _getFromTo(fromTo, list) {
+        var key = fromTo.node.dataset.key;
+        var index = this._getIndex(list, key);
+        var item = list[index];
+        return {
+          key: key,
+          item: item,
+          index: index
         };
-        var to = {
-          item: null,
-          index: -1
-        };
-        this.cloneList.forEach(function (el, index) {
-          var key = _this3.options.getKey(el);
-          if (key == oldKey) Object.assign(from, {
-            item: el,
-            index: index
-          });
-          if (key == newKey) Object.assign(to, {
-            item: el,
-            index: index
-          });
+      }
+    }, {
+      key: "_getIndex",
+      value: function _getIndex(list, key) {
+        var _this2 = this;
+        return list.findIndex(function (item) {
+          return getDataKey(item, _this2.context.dataKey) == key;
         });
-        this.cloneList.splice(from.index, 1);
-        this.cloneList.splice(to.index, 0, from.item);
       }
     }, {
-      key: "dragEnd",
-      value: function dragEnd(changed) {
-        var _this4 = this;
-        var getKey = this.options.getKey;
-        if (this.rangeIsChanged && this.dragElement) this.dragElement.remove();
-        var from = this.dragState.from;
-        this.cloneList.forEach(function (el, index) {
-          if (getKey(el) == from.key) _this4.dragState.to = {
-            index: index,
-            key: getKey(_this4.dataSource[index]),
-            item: _this4.dataSource[index]
-          };
-        });
-        this.onDrop(this.cloneList, from, this.dragState.to, changed);
-        this.dataSource = _toConsumableArray(this.cloneList);
-        this.clear();
-      }
-    }, {
-      key: "clear",
-      value: function clear() {
-        this.dragElement = null;
-        this.rangeIsChanged = false;
-        this.dragState = new DragState();
-      }
-    }, {
-      key: "destroy",
-      value: function destroy() {
-        this.drag && this.drag.destroy();
-        this.drag = null;
+      key: "_clear",
+      value: function _clear() {
+        dragEl = null;
+        Store.clear();
+        this.rangeChanged = false;
       }
     }]);
     return Sortable;
   }();
 
-  // scroll range
   var Range = /*#__PURE__*/_createClass(function Range() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     _classCallCheck(this, Range);
@@ -1470,13 +2196,12 @@
     _defineProperty(this, "fixed", void 0);
     _defineProperty(this, "header", void 0);
     _defineProperty(this, "footer", void 0);
-    this.average = 0; // 计算首次加载每一项的评价高度
-    this.total = 0; // 首次加载的总高度
-    this.fixed = 0; // 记录固定高度值
-    this.header = 0; // 顶部插槽高度
-    this.footer = 0; // 底部插槽高度
+    this.average = 0;
+    this.total = 0;
+    this.fixed = 0;
+    this.header = 0;
+    this.footer = 0;
   });
-
   var CACLTYPE = {
     INIT: 'INIT',
     FIXED: 'FIXED',
@@ -1486,14 +2211,8 @@
     FRONT: 'FRONT',
     BEHIND: 'BEHIND'
   };
+  var LEADING_BUFFER = 2;
   var Virtual = /*#__PURE__*/function () {
-    // 用于存储列表项的高度
-    // 是否为横向滚动
-    // 记录上次计算的index
-    // 记录列表项高度是动态还是静态
-
-    // 滚动方向
-    // 记录滚动距离
     function Virtual(options, callback) {
       _classCallCheck(this, Virtual);
       _defineProperty(this, "options", void 0);
@@ -1518,13 +2237,11 @@
       this.range = Object.create(null);
       if (options) this.checkIfUpdate(0, options.keeps - 1);
     }
-    // --------------------------- update ------------------------------
     _createClass(Virtual, [{
       key: "updateUniqueKeys",
       value: function updateUniqueKeys(value) {
         this.options.uniqueKeys = value;
       }
-      // 更新 sizes，删除不在当前列表中的数据
     }, {
       key: "updateSizes",
       value: function updateSizes(uniqueKeys) {
@@ -1538,9 +2255,15 @@
       value: function updateRange() {
         var _this2 = this;
         // check if need to update until loaded enough list item
-        var start = Math.max(this.range.start, 0);
+        var start = this.range.start;
+        if (this.isFront()) {
+          start -= LEADING_BUFFER;
+        } else if (this.isBehind()) {
+          start += LEADING_BUFFER;
+        }
+        start = Math.max(start, 0);
         var length = Math.min(this.options.keeps, this.options.uniqueKeys.length);
-        if (this.sizes.size >= length - 2) {
+        if (this.sizes.size >= length - LEADING_BUFFER) {
           this.handleUpdate(start, this.getEndByStart(start));
         } else {
           if (window.requestAnimationFrame) {
@@ -1554,8 +2277,6 @@
           }
         }
       }
-      // --------------------------- scroll ------------------------------
-      // 滚动事件
     }, {
       key: "handleScroll",
       value: function handleScroll(offset) {
@@ -1589,12 +2310,9 @@
         var _this$calcSize = this.calcSize,
           fixed = _this$calcSize.fixed,
           header = _this$calcSize.header;
-        // 减去顶部插槽高度
         if (header) offset -= header;
         if (offset <= 0) return 0;
-        // 固定高度
         if (this.isFixed()) return Math.floor(offset / fixed);
-        // 非固定高度使用二分查找
         var low = 0,
           high = this.options.uniqueKeys.length;
         var middle = 0,
@@ -1689,28 +2407,22 @@
           keeps = _this$options2.keeps;
         return uniqueKeys.length > 0 ? uniqueKeys.length - 1 : keeps - 1;
       }
-      // --------------------------- size ------------------------------
-      // 获取列表项的高度
     }, {
       key: "getItemSize",
       value: function getItemSize() {
         return this.isFixed() ? this.calcSize.fixed : this.calcSize.average || this.options.size;
       }
-      // 列表项高度变化
     }, {
       key: "handleItemSizeChange",
-      value: function handleItemSizeChange(id, size) {
-        this.sizes.set(id, size);
-        // 'INIT' 状态表示每一项的高度都相同
+      value: function handleItemSizeChange(key, size) {
+        this.sizes.set(key, size);
         if (this.calcType === CACLTYPE.INIT) {
-          this.calcType = CACLTYPE.FIXED; // 固定高度
+          this.calcType = CACLTYPE.FIXED;
           this.calcSize.fixed = size;
         } else if (this.isFixed() && this.calcSize.fixed !== size) {
-          // 如果当前为 'FIXED' 状态并且 size 与固定高度不同，表示当前高度不固定，fixed值也就不需要了
           this.calcType = CACLTYPE.DYNAMIC;
           this.calcSize.fixed = 0;
         }
-        // 非固定高度的情况下，计算平均高度与总高度
         if (this.calcType !== CACLTYPE.FIXED) {
           this.calcSize.total = _toConsumableArray(this.sizes.values()).reduce(function (t, i) {
             return t + i;
@@ -1718,13 +2430,11 @@
           this.calcSize.average = Math.round(this.calcSize.total / this.sizes.size);
         }
       }
-      // header 插槽高度变化
     }, {
       key: "handleHeaderSizeChange",
       value: function handleHeaderSizeChange(size) {
         this.calcSize.header = size;
       }
-      // footer 插槽高度变化
     }, {
       key: "handleFooterSizeChange",
       value: function handleFooterSizeChange(size) {
@@ -1740,7 +2450,7 @@
       return props.isHorizontal ? 'offsetWidth' : 'offsetHeight';
     });
     var getCurrentSize = function getCurrentSize() {
-      return aRef !== null && aRef !== void 0 && aRef.value ? aRef.value[sizeKey.value] : 0;
+      return aRef.value ? aRef.value[sizeKey.value] : 0;
     };
     var onSizeChange = function onSizeChange() {
       var event = props.event,
@@ -1752,7 +2462,7 @@
         observer = new ResizeObserver(function () {
           onSizeChange();
         });
-        (aRef === null || aRef === void 0 ? void 0 : aRef.value) && observer.observe(aRef.value);
+        aRef.value && observer.observe(aRef.value);
       }
     });
     vue.onUpdated(function () {
@@ -1766,6 +2476,116 @@
     });
   };
 
+  var VirtualProps = {
+    dataSource: {
+      type: Array,
+      "default": function _default() {
+        return [];
+      }
+    },
+    dataKey: {
+      type: String,
+      required: true
+    },
+    draggable: {
+      type: [Function, String]
+    },
+    handle: {
+      type: [Function, String]
+    },
+    group: {
+      type: [Object, String]
+    },
+    direction: {
+      type: String,
+      "default": 'vertical'
+    },
+    keeps: {
+      type: Number,
+      "default": 30
+    },
+    size: {
+      type: Number
+    },
+    delay: {
+      type: Number,
+      "default": 0
+    },
+    animation: {
+      type: Number,
+      "default": 150
+    },
+    autoScroll: {
+      type: Boolean,
+      "default": true
+    },
+    scrollThreshold: {
+      type: Number,
+      "default": 25
+    },
+    keepOffset: {
+      type: Boolean,
+      "default": false
+    },
+    rootTag: {
+      type: String,
+      "default": 'div'
+    },
+    wrapTag: {
+      type: String,
+      "default": 'div'
+    },
+    wrapClass: {
+      type: String,
+      "default": ''
+    },
+    wrapStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
+    headerTag: {
+      type: String,
+      "default": 'div'
+    },
+    footerTag: {
+      type: String,
+      "default": 'div'
+    },
+    itemTag: {
+      type: String,
+      "default": 'div'
+    },
+    itemStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
+    itemClass: {
+      type: String,
+      "default": ''
+    },
+    disabled: {
+      type: Boolean,
+      "default": false
+    },
+    ghostClass: {
+      type: String,
+      "default": ''
+    },
+    ghostStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
+    chosenClass: {
+      type: String,
+      "default": ''
+    }
+  };
   var SlotsProps = {
     tag: {
       type: String,
@@ -1781,167 +2601,72 @@
       type: Boolean
     }
   };
+
   var Items = vue.defineComponent({
-    name: 'virtual-draglist-items',
+    name: 'VirtualDraglistItems',
     props: SlotsProps,
+    emits: ['resize'],
     setup: function setup(props, _ref) {
       var emit = _ref.emit,
         slots = _ref.slots;
       var itemRef = vue.ref(null);
       useObserver(props, itemRef, emit);
       return function () {
-        var _slots$default;
         var Tag = props.tag,
           dataKey = props.dataKey;
         return vue.h(Tag, {
           ref: itemRef,
           key: dataKey,
           'data-key': dataKey
-        }, (_slots$default = slots["default"]) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots));
+        }, {
+          "default": function _default() {
+            var _slots$default;
+            return (_slots$default = slots["default"]) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots);
+          }
+        });
       };
     }
   });
   var Slots = vue.defineComponent({
-    name: 'virtual-draglist-slots',
+    name: 'VirtualDraglistSlots',
     props: SlotsProps,
+    emits: ['resize'],
     setup: function setup(props, _ref2) {
       var emit = _ref2.emit,
         slots = _ref2.slots;
       var slotRef = vue.ref(null);
       useObserver(props, slotRef, emit);
       return function () {
-        var _slots$default2;
         var Tag = props.tag,
           dataKey = props.dataKey;
         return vue.h(Tag, {
           ref: slotRef,
           key: dataKey,
           'data-key': dataKey
-        }, (_slots$default2 = slots["default"]) === null || _slots$default2 === void 0 ? void 0 : _slots$default2.call(slots));
+        }, {
+          "default": function _default() {
+            var _slots$default2;
+            return (_slots$default2 = slots["default"]) === null || _slots$default2 === void 0 ? void 0 : _slots$default2.call(slots);
+          }
+        });
       };
     }
   });
 
   var VirtualDragList = vue.defineComponent({
-    props: {
-      dataSource: {
-        type: Array,
-        "default": function _default() {
-          return [];
-        }
-      },
-      dataKey: {
-        type: String,
-        required: true
-      },
-      direction: {
-        type: String,
-        "default": 'vertical'
-      },
-      keeps: {
-        type: Number,
-        "default": 30
-      },
-      size: {
-        type: Number
-      },
-      delay: {
-        type: Number,
-        "default": 10
-      },
-      rootTag: {
-        type: String,
-        "default": 'div'
-      },
-      wrapTag: {
-        type: String,
-        "default": 'div'
-      },
-      wrapClass: {
-        type: String,
-        "default": ''
-      },
-      wrapStyle: {
-        type: Object
-      },
-      headerTag: {
-        type: String,
-        "default": 'div'
-      },
-      footerTag: {
-        type: String,
-        "default": 'div'
-      },
-      itemTag: {
-        type: String,
-        "default": 'div'
-      },
-      itemStyle: {
-        type: Object
-      },
-      itemClass: {
-        type: String,
-        "default": ''
-      },
-      disabled: {
-        type: Boolean,
-        "default": false
-      },
-      draggable: {
-        type: [Function, String]
-      },
-      dragging: {
-        type: Function
-      },
-      ghostClass: {
-        type: String,
-        "default": ''
-      },
-      ghostStyle: {
-        type: Object,
-        "default": function _default() {
-          return {};
-        }
-      },
-      chosenClass: {
-        type: String,
-        "default": ''
-      },
-      animation: {
-        type: Number,
-        "default": 150
-      },
-      autoScroll: {
-        type: Boolean,
-        "default": true
-      },
-      scrollStep: {
-        type: Number,
-        "default": 5
-      },
-      scrollThreshold: {
-        type: Number,
-        "default": 15
-      },
-      keepOffset: {
-        type: Boolean,
-        "default": false
-      }
-    },
-    emits: ['top', 'bottom', 'ondragstart', 'ondragend'],
+    props: VirtualProps,
+    emits: ['top', 'bottom', 'drag', 'drop', 'add', 'remove'],
     setup: function setup(props, _ref) {
-      var _this = this;
       var emit = _ref.emit,
-        slots = _ref.slots;
+        slots = _ref.slots,
+        expose = _ref.expose;
       var range = vue.ref(new Range());
-      var dragState = vue.ref(new DragState());
       var rootRef = vue.ref(null);
       var groupRef = vue.ref(null);
       var lastRef = vue.ref(null);
       var viewlist = vue.ref([]);
       var uniqueKeys = vue.ref([]);
       var lastItem = null;
-      // --------------------------- usefull values ------------------------------
       var isHorizontal = props.direction !== 'vertical';
       var scrollSizeKey = isHorizontal ? 'scrollWidth' : 'scrollHeight';
       var scrollDirectionKey = isHorizontal ? 'scrollLeft' : 'scrollTop';
@@ -1950,10 +2675,29 @@
       var sortable;
       var virtual;
       /**
+       * reset component
+       */
+      function reset() {
+        scrollToTop();
+        init(props.dataSource);
+      }
+      /**
+       * git item size by data-key
+       */
+      function getSize(key) {
+        return virtual.sizes.get(key);
+      }
+      /**
        * Get the current scroll height
        */
       function getOffset() {
         return rootRef.value ? Math.ceil(rootRef.value[scrollDirectionKey]) : 0;
+      }
+      /**
+       * Scroll to top of list
+       */
+      function scrollToTop() {
+        if (rootRef.value) rootRef.value[scrollDirectionKey] = 0;
       }
       /**
        * Scroll to bottom of list
@@ -1995,16 +2739,15 @@
       function scrollToOffset(offset) {
         if (rootRef.value) rootRef.value[scrollDirectionKey] = offset;
       }
-      // --------------------------- private mehtods ------------------------------
       var init = function init(list) {
-        viewlist.value = list;
+        viewlist.value = _toConsumableArray(list);
         updateUniqueKeys();
         if (virtual) {
           virtual.updateUniqueKeys(uniqueKeys.value);
           virtual.updateSizes(uniqueKeys.value);
           virtual.updateRange();
         }
-        if (sortable) sortable.set('dataSource', _toConsumableArray(list));else vue.nextTick(function () {
+        if (sortable) sortable.setValue('dataSource', _toConsumableArray(list));else vue.nextTick(function () {
           return initSortable();
         });
         // if auto scroll to the last offset
@@ -2016,7 +2759,7 @@
       };
       var updateUniqueKeys = function updateUniqueKeys() {
         uniqueKeys.value = viewlist.value.map(function (item) {
-          return getDataKey(item);
+          return getDataKey(item, props.dataKey);
         });
       };
       var initVirtual = function initVirtual() {
@@ -2026,115 +2769,90 @@
           uniqueKeys: uniqueKeys.value,
           isHorizontal: isHorizontal
         }, function (newRange) {
-          if (dragState.value.to.key === undefined) range.value = newRange;
+          range.value = newRange;
+          if (!sortable) return;
+          var state = Store.getStore();
           var _range$value = range.value,
             start = _range$value.start,
             end = _range$value.end;
-          var index = dragState.value.from.index;
+          var index = state.from.index;
           if (index > -1 && !(index >= start && index <= end)) {
-            if (sortable) sortable.rangeIsChanged = true;
+            sortable.rangeChanged = true;
           }
         });
       };
-      // --------------------------- sortable ------------------------------
       var initSortable = function initSortable() {
-        sortable = new Sortable({
-          scrollEl: groupRef.value,
-          dataSource: viewlist.value,
-          getKey: getDataKey,
-          animation: props.animation,
-          autoScroll: props.autoScroll,
-          scrollStep: props.scrollStep,
-          scrollThreshold: props.scrollThreshold,
-          disabled: props.disabled,
-          draggable: props.draggable,
-          ghostClass: props.ghostClass,
-          ghostStyle: props.ghostStyle,
-          chosenClass: props.chosenClass
-        }, function (from, node) {
-          // on drag
-          dragState.value.from = from;
-          emit('ondragstart', viewlist.value, from, node);
-        }, function (list, from, to, changed) {
+        sortable = new Sortable(_objectSpread2({
+          container: groupRef.value,
+          list: viewlist.value,
+          emit: emit
+        }, props), function (_ref2) {
+          var list = _ref2.list,
+            changed = _ref2.changed;
           // on drop
-          dragState.value.to = to;
-          emit('ondragend', list, from, to, changed);
-          if (changed) {
-            if (sortable.rangeIsChanged && virtual.direction && range.value.start > 0) {
-              var index = list.indexOf(viewlist.value[range.value.start]);
-              if (index > -1) {
-                range.value.start = index;
-                range.value.end = index + props.keeps - 1;
-              }
+          if (!changed) return;
+          // recalculate the range once when scrolling down
+          if (sortable.rangeChanged && virtual.direction && range.value.start > 0) {
+            var index = list.indexOf(viewlist.value[range.value.start]);
+            if (index > -1) {
+              range.value.start = index;
+              range.value.end = index + props.keeps - 1;
             }
-            // list change
+          }
+          // fix error with vue: Failed to execute 'insertBefore' on 'Node'
+          viewlist.value = [];
+          vue.nextTick(function () {
             viewlist.value = _toConsumableArray(list);
             updateUniqueKeys();
             virtual.updateUniqueKeys(uniqueKeys.value);
-          }
-          clearDragState();
+          });
         });
       };
-      var clearDragState = throttle(function () {
-        dragState.value = new DragState();
-      }, props.delay + 17);
-      // --------------------------- handle scroll ------------------------------
       var handleScroll = debounce(function () {
-        // The scroll event is triggered when the mouseup event occurs, which is handled here to prevent the page from scrolling due to range changes.
-        if (dragState.value.to.key !== undefined) {
-          clearDragState();
-          return;
-        }
         if (!rootRef.value) return;
         var offset = getOffset();
         var clientSize = Math.ceil(rootRef.value[clientSizeKey]);
         var scrollSize = Math.ceil(rootRef.value[scrollSizeKey]);
-        if (!scrollSize || offset < 0 || offset + clientSize > scrollSize + 1) return;
+        if (!virtual || !scrollSize || offset < 0 || offset + clientSize > scrollSize + 1) return;
         virtual.handleScroll(offset);
         if (virtual.isFront()) {
-          if (!!viewlist.value.length && offset <= 0) handleToTop(_this);
+          if (!!viewlist.value.length && offset <= 0) handleToTop();
         } else if (virtual.isBehind()) {
-          if (clientSize + offset >= scrollSize) handleToBottom(_this);
+          if (clientSize + offset >= scrollSize) handleToBottom();
         }
       }, props.delay);
-      var handleToTop = debounce(function () {
+      var handleToTop = throttle(function () {
         emit('top');
         lastItem = viewlist.value[0];
       });
-      var handleToBottom = debounce(function () {
+      var handleToBottom = throttle(function () {
         emit('bottom');
       });
-      // --------------------------- handle size change ------------------------------
-      var onItemResized = function onItemResized(id, size) {
-        virtual.handleItemSizeChange(id, size);
+      var onItemResized = function onItemResized(key, size) {
+        virtual.handleItemSizeChange(key, size);
       };
-      var onHeaderResized = function onHeaderResized(id, size) {
+      var onHeaderResized = function onHeaderResized(key, size) {
         virtual.handleHeaderSizeChange(size);
       };
-      var onFooterResized = function onFooterResized(id, size) {
+      var onFooterResized = function onFooterResized(key, size) {
         virtual.handleFooterSizeChange(size);
-      };
-      // --------------------------- methods ------------------------------
-      var getDataKey = function getDataKey(item) {
-        var dataKey = props.dataKey;
-        return (!Array.isArray(dataKey) ? dataKey.replace(/\[/g, '.').replace(/\]/g, '.').split('.') : dataKey).reduce(function (o, k) {
-          return (o || {})[k];
-        }, item);
       };
       var getItemIndex = function getItemIndex(item) {
         return viewlist.value.findIndex(function (el) {
-          return getDataKey(item) == getDataKey(el);
+          return getDataKey(item, props.dataKey) == getDataKey(el, props.dataKey);
         });
       };
       var getItemStyle = function getItemStyle(dataKey) {
         if (!sortable) return {};
-        var key = dragState.value.from.key;
-        if (sortable.rangeIsChanged && dataKey == key) return {
-          display: 'none'
-        };
+        var state = Store.getStore();
+        var fromKey = state.from.key;
+        if (sortable.rangeChanged && dataKey == fromKey) {
+          return {
+            display: 'none'
+          };
+        }
         return {};
       };
-      // --------------------------- methods ------------------------------
       vue.watch(function () {
         return props.dataSource;
       }, function (newVal) {
@@ -2146,7 +2864,7 @@
       vue.watch(function () {
         return props.disabled;
       }, function (newVal) {
-        if (sortable) sortable.set('disabled', newVal);
+        sortable && sortable.setValue('disabled', newVal);
       }, {
         immediate: true
       });
@@ -2156,14 +2874,20 @@
       });
       // set back offset when awake from keep-alive
       vue.onActivated(function () {
-        scrollToOffset(virtual.offset);
+        virtual && scrollToOffset(virtual.offset);
       });
       vue.onUnmounted(function () {
         sortable && sortable.destroy();
-        sortable = null;
-        virtual = null;
       });
-      // --------------------------- render ------------------------------
+      expose({
+        reset: reset,
+        getSize: getSize,
+        getOffset: getOffset,
+        scrollToTop: scrollToTop,
+        scrollToBottom: scrollToBottom,
+        scrollToIndex: scrollToIndex,
+        scrollToOffset: scrollToOffset
+      });
       return function () {
         var RootTag = props.rootTag,
           WrapTag = props.wrapTag,
@@ -2184,65 +2908,76 @@
             overflow: isHorizontal ? 'auto hidden' : 'hidden auto'
           },
           onScroll: handleScroll
-        }, [
-        // header
-        slots.header ? vue.h(Slots, {
-          tag: HeaderTag,
-          dataKey: 'header',
-          event: 'onHeaderResized',
-          onHeaderResized: onHeaderResized
-        }, slots.header()) : null,
-        // list
-        vue.h(WrapTag, {
-          ref: groupRef,
-          role: 'group',
-          "class": props.wrapClass,
-          style: wrapStyle
-        }, viewlist.value.slice(start, end + 1).map(function (item) {
-          var index = getItemIndex(item);
-          var dataKey = getDataKey(item);
-          var itemStyle = _objectSpread2(_objectSpread2({}, props.itemStyle), getItemStyle(dataKey));
-          var itemProps = {
-            isHorizontal: isHorizontal,
-            dataKey: dataKey,
-            tag: ItemTag,
-            event: 'onItemResized'
-          };
-          return slots.item ? vue.h(Items, _objectSpread2(_objectSpread2({
-            key: dataKey
-          }, itemProps), {}, {
-            "class": props.itemClass,
-            style: itemStyle,
-            event: 'onItemResized',
-            onItemResized: onItemResized
-          }), slots.item({
-            record: item,
-            index: index,
-            dataKey: dataKey
-          })) : vue.h(ItemTag, {
-            key: dataKey,
-            'data-key': dataKey,
-            "class": props.itemClass,
-            style: _objectSpread2(_objectSpread2({}, itemStyle), {}, {
-              height: "".concat(props.size, "px")
-            })
-          }, dataKey);
-        })),
-        // footer
-        slots.footer ? vue.h(Slots, {
-          tag: FooterTag,
-          dataKey: 'footer',
-          event: 'onFooterResized',
-          onFooterResized: onFooterResized
-        }, slots.footer()) : null,
-        // last el
-        vue.h('div', {
-          ref: lastRef,
-          style: {
-            width: isHorizontal ? '0px' : '100%',
-            height: isHorizontal ? '100%' : '0px'
+        }, {
+          "default": function _default() {
+            return [
+            // header
+            slots.header ? vue.h(Slots, {
+              key: 'header',
+              tag: HeaderTag,
+              dataKey: 'header',
+              event: 'resize',
+              onResize: onHeaderResized
+            }, {
+              "default": function _default() {
+                return slots.header();
+              }
+            }) : null,
+            // list
+            vue.h(WrapTag, {
+              ref: groupRef,
+              role: 'group',
+              "class": props.wrapClass,
+              style: wrapStyle
+            }, {
+              "default": function _default() {
+                return viewlist.value.slice(start, end + 1).map(function (item) {
+                  var index = getItemIndex(item);
+                  var dataKey = getDataKey(item, props.dataKey);
+                  var itemStyle = _objectSpread2(_objectSpread2({}, props.itemStyle), getItemStyle(dataKey));
+                  return slots.item ? vue.h(Items, {
+                    key: dataKey,
+                    tag: ItemTag,
+                    "class": props.itemClass,
+                    style: itemStyle,
+                    event: 'resize',
+                    dataKey: dataKey,
+                    isHorizontal: isHorizontal,
+                    onResize: onItemResized
+                  }, {
+                    "default": function _default() {
+                      return slots.item({
+                        record: item,
+                        index: index,
+                        dataKey: dataKey
+                      });
+                    }
+                  }) : null;
+                });
+              }
+            }),
+            // footer
+            slots.footer ? vue.h(Slots, {
+              key: 'footer',
+              tag: FooterTag,
+              dataKey: 'footer',
+              event: 'resize',
+              onResize: onFooterResized
+            }, {
+              "default": function _default() {
+                return slots.footer();
+              }
+            }) : null,
+            // last el
+            vue.h('div', {
+              ref: lastRef,
+              style: {
+                width: isHorizontal ? '0px' : '100%',
+                height: isHorizontal ? '100%' : '0px'
+              }
+            })];
           }
-        })]);
+        });
       };
     }
   });

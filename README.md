@@ -1,6 +1,6 @@
 # vue-virtual-draglist
 
-[![npm](https://img.shields.io/npm/v/vue-virtual-draglist/next.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![npm](https://img.shields.io/npm/dt/vue-virtual-draglist.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![vue2](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)
+[![npm](https://img.shields.io/npm/v/vue-virtual-draglist/next.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![npm](https://img.shields.io/npm/dt/vue-virtual-draglist.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![vue2](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
 A virtual scrolling list component that can be sorted by dragging, support vue3
 
@@ -11,7 +11,7 @@ If you use vue with 2.x, see [here](https://github.com/mfuu/vue-virtual-drag-lis
 ## Simple usage
 
 ```bash
-npm i vue-virtual-draglist@next -D
+npm i vue-virtual-draglist@next
 ```
 
 Root component:
@@ -19,21 +19,21 @@ Root component:
 <template>
   <div>
     <!--
-      :draggable="'i'" // use tagName 
-      :draggable="'.drag'" // use class
-      :draggable="'#drag'" // use id
+      :handle="'i'" // use tagName 
+      :handle="'.drag'" // use class
+      :handle="'#drag'" // use id
     -->
-    <virtual-list
-      :data-key="'id'"
-      :data-source="items"
-      :draggable="'#drag'"
+    <VirtualList
+      :dataKey="'id'"
+      :dataSource="items"
+      :handle="'#drag'"
       style="height: 500px;"
     >
-      <template slot="item" slot-scope="{ record, index, dataKey }">
+      <template v-slot:item="{ record, index, dataKey }">
         <i id="drag" class="drag">drag me</i>
         <span>{{ record.text }}</span>
       </template>
-    </virtual-list>
+    </VirtualList>
   </div>
 </template>
 
@@ -50,8 +50,10 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 |--------------|-----------------|
 | `top`        | Event fired when scroll to top |
 | `bottom`     | Event fired when scroll to bottom |
-| `ondragstart`| Event fired when the drag is started, `(list, from, node) => {}` |
-| `ondragend`  | Event fired when the drag is completed, `(list, from, to, changed) => {}` |
+| `drag`       | Event fired when the drag is started |
+| `drop`       | Event fired when the drag is completed |
+| `add`        | Event fired when element is dropped into the list from another |
+| `remove`     | Event fired when element is removed from the list into another |
 
 ## Props
 
@@ -70,21 +72,22 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 | ------------ | ---------  | ----------- | --------------- |
 | `keeps`      | `Number`   | `30`        | The number of lines rendered by the virtual scroll |
 | `size`       | `Number`   | `-`         | The estimated height of each piece of data, you can choose to pass it or not, it will be automatically calculated |
-| `direction`  | `String`   | `vertical`  | `vertical/horizontal`, scroll direction |
-| `draggable`  | `Function/String` | `-`  | Specifies which items inside the element should be draggable |
-| `animation`  | `Number`   | `150`       | Animation speed moving items when sorting |
+| `handle`     | `Function/String` | `-`  | Drag handle selector within list items |
+| `group`      | `Function/String` | `-`  | string: 'name' or object: `{ name: 'group', put: true/false, pull: true/false }` |
 | `keepOffset` | `Boolean`  | `false`     | When scrolling up to load data, keep the same offset as the previous scroll |
-| `autoScroll` | `Boolean`  | `true`      | Automatic scrolling when moving to the edge of the container, **for browsers that do not support HTML5 drag events** |
-| `scrollStep` | `Number`   | `5`         | The distance to scroll each frame when autoscrolling |
-| `scrollThreshold` | `Number` | `15`     | Threshold to trigger autoscroll |
+| `direction`  | `String`   | `vertical`  | `vertical/horizontal`, scroll direction |
 
 
 **Uncommonly used**
 
 |  **Prop**    | **Type**   | **Default** | **Description** |
 |  --------    | --------   | ----------- | --------------- |
+| `draggable`  | `Function/String` | `-`  | Specifies which items inside the element should be draggable. If does not set a value, the default list element can be dragged |
 | `disabled`   | `Boolean`  | `false`     | Disables the sortable if set to true |
-| `delay`      | `Number`   | `10`        | Delay time of debounce function |
+| `delay`      | `Number`   | `0`        | Delay time of debounce function |
+| `animation`  | `Number`   | `150`       | Animation speed moving items when sorting |
+| `autoScroll` | `Boolean`  | `true`      | Automatic scrolling when moving to the edge of the container |
+| `scrollThreshold` | `Number` | `25`     | Threshold to trigger autoscroll |
 | `rootTag`    | `String`   | `div`       | Label type for root element |
 | `wrapTag`    | `String`   | `div`       | Label type for list wrap element |
 | `itemTag`    | `String`   | `div`       | Label type for list item element |
@@ -109,7 +112,3 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 | `scrollToBottom()` | Scroll to bottom of list |
 | `scrollToIndex(index)`  | Scroll to the specified index position |
 | `scrollToOffset(offset)` | Scroll to the specified offset |
-
-## License
-
-[MIT License.](https://github.com/mfuu/vue3-virtual-drag-list/blob/master/LICENSE)
