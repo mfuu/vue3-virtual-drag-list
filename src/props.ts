@@ -1,0 +1,122 @@
+import { PropType } from 'vue';
+
+type Direction = 'vertical' | 'horizontal';
+
+export const VirtualProps = {
+  dataSource: {
+    type: Array,
+    default: () => [],
+  },
+  dataKey: {
+    type: String,
+    required: true,
+  },
+  draggable: {
+    type: [Function, String],
+  },
+  handle: {
+    type: [Function, String],
+  },
+  group: {
+    type: [Object, String],
+  },
+  direction: {
+    type: String as PropType<Direction>,
+    default: 'vertical',
+  },
+  keeps: {
+    type: Number,
+    default: 30,
+  },
+  size: {
+    type: Number,
+  },
+  delay: {
+    type: Number,
+    default: 0,
+  },
+  animation: {
+    type: Number,
+    default: 150,
+  },
+  autoScroll: {
+    type: Boolean,
+    default: true,
+  },
+  scrollThreshold: {
+    type: Number,
+    default: 25,
+  },
+  keepOffset: {
+    type: Boolean,
+    default: false,
+  },
+  rootTag: {
+    type: String,
+    default: 'div',
+  },
+  wrapTag: {
+    type: String,
+    default: 'div',
+  },
+  wrapClass: {
+    type: String,
+    default: '',
+  },
+  wrapStyle: {
+    type: Object,
+    default: () => ({}),
+  },
+  headerTag: {
+    type: String,
+    default: 'div',
+  },
+  footerTag: {
+    type: String,
+    default: 'div',
+  },
+  itemTag: {
+    type: String,
+    default: 'div',
+  },
+  itemStyle: {
+    type: Object,
+    default: () => ({}),
+  },
+  itemClass: {
+    type: String,
+    default: '',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  ghostClass: {
+    type: String,
+    default: '',
+  },
+  ghostStyle: {
+    type: Object,
+    default: () => ({}),
+  },
+  chosenClass: {
+    type: String,
+    default: '',
+  },
+};
+
+export const SlotsProps = {
+  tag: {
+    type: String,
+    default: 'div',
+  },
+  event: {
+    type: String,
+  },
+  dataKey: {
+    type: [String, Number],
+  },
+  isHorizontal: {
+    type: Boolean,
+  },
+};
