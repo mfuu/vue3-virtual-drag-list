@@ -117,7 +117,7 @@ const VirtualDragList = defineComponent({
         virtual.updateRange();
       }
 
-      if (sortable) sortable.setValue('dataSource', [...list]);
+      if (sortable) sortable.setValue('list', [...list]);
       else nextTick(() => initSortable());
 
       // if auto scroll to the last offset

@@ -1,7 +1,7 @@
 export function debounce(fn: Function, delay = 50, immediate = false) {
   let timer: any | undefined;
   let result: Function;
-  const debounced = function (...args: any) {
+  const debounced = function (this: any, ...args: any) {
     if (timer) clearTimeout(timer);
     if (immediate) {
       const callNow = !timer;
@@ -25,7 +25,7 @@ export function debounce(fn: Function, delay = 50, immediate = false) {
 
 export function throttle(fn: Function, delay = 50) {
   let timer: any | undefined;
-  return function (...args: IArguments[]) {
+  return function (this: any, ...args: IArguments[]) {
     if (!timer) {
       timer = setTimeout(function () {
         timer = null;
