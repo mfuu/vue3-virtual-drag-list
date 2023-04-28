@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.1.0
+ * vue-virtual-draglist v3.1.1
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -2747,7 +2747,7 @@
           virtual.updateSizes(uniqueKeys.value);
           virtual.updateRange();
         }
-        if (sortable) sortable.setValue('dataSource', _toConsumableArray(list));else vue.nextTick(function () {
+        if (sortable) sortable.setValue('list', _toConsumableArray(list));else vue.nextTick(function () {
           return initSortable();
         });
         // if auto scroll to the last offset
