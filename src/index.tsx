@@ -11,8 +11,8 @@ import {
 import { debounce, throttle, getDataKey } from './utils';
 import Sortable from './Plugins/Sortable';
 import Virtual, { Range } from './Plugins/Virtual';
-import { Slots, Items } from './Plugins/Children';
 import { Store } from './Plugins/Storage';
+import { Slots, Items } from './slots';
 import { VirtualProps } from './props';
 
 const VirtualDragList = defineComponent({
@@ -221,13 +221,13 @@ const VirtualDragList = defineComponent({
       emit('bottom');
     });
 
-    const onItemResized = (key: string | number, size: number) => {
+    const onItemResized = (size: number, key) => {
       virtual.handleItemSizeChange(key, size);
     };
-    const onHeaderResized = (key: string | number, size: number) => {
+    const onHeaderResized = (size: number) => {
       virtual.handleHeaderSizeChange(size);
     };
-    const onFooterResized = (key: string | number, size: number) => {
+    const onFooterResized = (size: number) => {
       virtual.handleFooterSizeChange(size);
     };
 
@@ -329,7 +329,7 @@ const VirtualDragList = defineComponent({
                     event: 'resize',
                     onResize: onHeaderResized,
                   },
-                  { default: () => slots.header() }
+                  { default: () => slots.header?.() }
                 )
               : null,
 
@@ -367,7 +367,7 @@ const VirtualDragList = defineComponent({
                           },
                           {
                             default: () =>
-                              slots.item({ record: item, index, dataKey }),
+                              slots.item?.({ record: item, index, dataKey }),
                           }
                         )
                       : null;
@@ -386,7 +386,7 @@ const VirtualDragList = defineComponent({
                     event: 'resize',
                     onResize: onFooterResized,
                   },
-                  { default: () => slots.footer() }
+                  { default: () => slots.footer?.() }
                 )
               : null,
 

@@ -1,5 +1,5 @@
-import SortableDnd from 'sortable-dnd';
-import { Store, FromTo } from './Storage';
+import SortableDnd, { FromTo } from 'sortable-dnd';
+import { Store, State } from './Storage';
 import { getDataKey } from '../utils';
 
 const attributes = [
@@ -22,7 +22,7 @@ class Sortable {
   callback: Function;
   initialList: any[];
   dynamicList: any[];
-  sortable: any;
+  sortable: SortableDnd | null;
   rangeChanged: boolean;
 
   constructor(context, callback: Function) {
@@ -50,7 +50,7 @@ class Sortable {
       if (dragEl) this._onDrag(dragEl, false);
     } else {
       this.context[key] = value;
-      if (this.sortable) this.sortable.options[key] = value;
+      if (this.sortable) this.sortable.option(key, value);
     }
   }
 
@@ -83,14 +83,14 @@ class Sortable {
 
     if (callback) {
       this.rangeChanged = false;
-      const store: FromTo = await Store.getValue();
+      const store: State = await Store.getValue();
       this.context.emit('drag', { list: fromList, ...store });
     } else {
       this.rangeChanged = true;
     }
   }
 
-  async _onAdd(from, to) {
+  async _onAdd(from: FromTo, to: FromTo) {
     const store = await Store.getValue();
     const list = [...this.dynamicList];
     const index = this._getIndex(list, to.node.dataset.key);
@@ -102,11 +102,11 @@ class Sortable {
     } else {
       this.dynamicList.splice(index, 0, store.from?.item);
     }
-
+    delete params.list;
     this.context.emit('add', { ...params });
   }
 
-  async _onRemove(from, to) {
+  async _onRemove(from: FromTo) {
     const list = [...this.dynamicList];
     const state = this._getFromTo(from, list);
 
@@ -115,7 +115,7 @@ class Sortable {
     this.context.emit('remove', { ...state });
   }
 
-  async _onChange(from, to) {
+  async _onChange(from: FromTo, to: FromTo) {
     const fromList = [...this.dynamicList];
     const toList = [...this.dynamicList];
     const fromState = this._getFromTo(from, fromList);
@@ -125,7 +125,7 @@ class Sortable {
     this.dynamicList.splice(toState.index, 0, fromState.item);
   }
 
-  async _onDrop(from, to, changed) {
+  async _onDrop(from: FromTo, to: FromTo, changed) {
     if (this.rangeChanged || from.sortable !== to.sortable) {
       dragEl && dragEl.remove();
     }

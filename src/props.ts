@@ -9,6 +9,7 @@ export const VirtualProps = {
   },
   dataKey: {
     type: String,
+    default: '',
     required: true,
   },
   draggable: {
@@ -30,6 +31,7 @@ export const VirtualProps = {
   },
   size: {
     type: Number,
+    default: 0,
   },
   delay: {
     type: Number,

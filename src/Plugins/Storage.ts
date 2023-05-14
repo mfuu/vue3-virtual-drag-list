@@ -7,7 +7,7 @@ type Item = {
   index: number;
 };
 
-export interface FromTo {
+export interface State {
   from?: Item;
   to?: Item;
 }
@@ -36,7 +36,7 @@ class Storage {
    * @returns states: { from, to }
    */
   getValue() {
-    return new Promise<FromTo>((resolve, reject) => {
+    return new Promise<State>((resolve, reject) => {
       try {
         const result = JSON.parse(localStorage.getItem(storeKey));
         resolve(result || defaultStore);
@@ -46,7 +46,7 @@ class Storage {
     });
   }
 
-  setValue(value: FromTo) {
+  setValue(value: State) {
     return new Promise<string>((resolve, reject) => {
       try {
         const store = JSON.parse(localStorage.getItem(storeKey));

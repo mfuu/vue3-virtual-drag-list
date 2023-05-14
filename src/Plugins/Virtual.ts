@@ -231,7 +231,7 @@ class Virtual {
       : this.calcSize.average || this.options.size;
   }
 
-  handleItemSizeChange(key: string | number, size: number) {
+  handleItemSizeChange(key, size: number) {
     this.sizes.set(key, size);
 
     if (this.calcType === CACLTYPE.INIT) {

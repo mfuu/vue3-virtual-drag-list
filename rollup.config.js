@@ -2,6 +2,7 @@ import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonJs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
+import dts from 'rollup-plugin-dts';
 import { uglify } from 'rollup-plugin-uglify';
 
 const packageJson = require('./package.json');
@@ -23,7 +24,7 @@ export default [
     output: [
       {
         format: 'umd',
-        file: 'dist/draglist.js',
+        file: 'dist/virtual-drag-list.js',
         name: 'VirtualDragList',
         sourcemap: false,
         globals: {
@@ -33,7 +34,7 @@ export default [
       },
       {
         format: 'umd',
-        file: 'dist/draglist.min.js',
+        file: 'dist/virtual-drag-list.min.js',
         name: 'VirtualDragList',
         sourcemap: false,
         globals: {
@@ -49,5 +50,13 @@ export default [
       typescript(),
       babel({ extensions, babelHelpers: 'bundled' }),
     ],
+  },
+  {
+    input: 'src/index.tsx',
+    output: {
+      file: 'types/index.d.ts',
+      format: 'es',
+    },
+    plugins: [dts()],
   },
 ];
