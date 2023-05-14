@@ -1,10 +1,9 @@
 {
   "name": "vue-virtual-draglist",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "A virtual scrolling list component that can be sorted by dragging, support vue3",
-  "main": "dist/draglist.js",
+  "main": "dist/virtual-drag-list.min.js",
   "files": [
-    "src",
     "dist"
   ],
   "scripts": {
@@ -39,7 +38,7 @@
   },
   "homepage": "https://github.com/mfuu/vue3-virtual-drag-list#readme",
   "dependencies": {
-    "sortable-dnd": "0.4.11"
+    "sortable-dnd": "0.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
@@ -49,14 +48,7 @@
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.3",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^7.0.0",
     "cross-env": "^7.0.3",
-    "eslint": "^7.32.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^7.16.0",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "rollup": "^2.56.2",
