@@ -12,7 +12,7 @@ export class Range {
 }
 
 export interface VirtualOptions {
-  size: number;
+  size?: number;
   keeps: number;
   uniqueKeys: any[];
   isHorizontal: boolean;

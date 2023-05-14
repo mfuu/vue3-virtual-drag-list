@@ -31,7 +31,6 @@ export const VirtualProps = {
   },
   size: {
     type: Number,
-    default: 0,
   },
   delay: {
     type: Number,
