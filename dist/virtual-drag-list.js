@@ -1745,8 +1745,7 @@
       "default": 30
     },
     size: {
-      type: Number,
-      "default": 0
+      type: Number
     },
     delay: {
       type: Number,
