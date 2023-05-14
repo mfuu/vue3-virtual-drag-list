@@ -29,7 +29,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     };
     size: {
         type: NumberConstructor;
-        default: number;
     };
     delay: {
         type: NumberConstructor;
@@ -134,7 +133,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     };
     size: {
         type: NumberConstructor;
-        default: number;
     };
     delay: {
         type: NumberConstructor;
@@ -220,7 +218,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     dataKey: string;
     direction: "vertical" | "horizontal";
     keeps: number;
-    size: number;
     delay: number;
     animation: number;
     autoScroll: boolean;
