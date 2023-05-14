@@ -1,6 +1,6 @@
 # vue-virtual-draglist
 
-[![npm](https://img.shields.io/npm/v/vue-virtual-draglist/next.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![npm](https://img.shields.io/npm/dt/vue-virtual-draglist.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![vue2](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/vue-virtual-draglist/next.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![npm](https://img.shields.io/npm/dm/vue-virtual-draglist.svg)](https://www.npmjs.com/package/vue-virtual-draglist)  [![vue2](https://img.shields.io/badge/vue-3.x-brightgreen.svg)](https://vuejs.org/)  [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
 A virtual scrolling list component that can be sorted by dragging, support vue3
 
@@ -73,7 +73,7 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 | `keeps`      | `Number`   | `30`        | The number of lines rendered by the virtual scroll |
 | `size`       | `Number`   | `-`         | The estimated height of each piece of data, you can choose to pass it or not, it will be automatically calculated |
 | `handle`     | `Function/String` | `-`  | Drag handle selector within list items |
-| `group`      | `Function/String` | `-`  | string: 'name' or object: `{ name: 'group', put: true/false, pull: true/false }` |
+| `group`      | `Object/String` | `-`  | string: 'name' or object: `{ name: 'group', put: true/false, pull: true/false }` |
 | `keepOffset` | `Boolean`  | `false`     | When scrolling up to load data, keep the same offset as the previous scroll |
 | `direction`  | `String`   | `vertical`  | `vertical/horizontal`, scroll direction |
 
