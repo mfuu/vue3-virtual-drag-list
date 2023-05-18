@@ -91,7 +91,7 @@ const VirtualDragList = defineComponent({
           const offset = getOffset();
           const clientSize = Math.ceil(rootRef.value[clientSizeKey]);
           const scrollSize = Math.ceil(rootRef.value[scrollSizeKey]);
-          if (offset + clientSize < scrollSize) scrollToBottom();
+          if (offset + clientSize + 1 < scrollSize) scrollToBottom();
         }, 5);
       }
     }
