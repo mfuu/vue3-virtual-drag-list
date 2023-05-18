@@ -13,6 +13,9 @@ const attributes = [
   'animation',
   'autoScroll',
   'scrollThreshold',
+  'fallbackOnBody',
+  'pressDelay',
+  'pressDelayOnTouchOnly',
 ];
 
 let dragEl: HTMLElement | null = null;
@@ -56,13 +59,15 @@ class Sortable {
 
   _init() {
     const props = attributes.reduce((res, key) => {
-      res[key] = this.context[key];
+      let name = key;
+      if (key === 'pressDelay') name = 'delay';
+      if (key === 'pressDelayOnTouchOnly') name = 'delayOnTouchOnly';
+      res[name] = this.context[key];
       return res;
     }, {});
 
     this.sortable = new SortableDnd(this.context.container, {
       ...props,
-      fallbackOnBody: true,
       list: this.dynamicList,
       onDrag: ({ from }) => this._onDrag(from.node),
       onAdd: ({ from, to }) => this._onAdd(from, to),

@@ -1,6 +1,7 @@
 import {
   h,
   ref,
+  isRef,
   watch,
   nextTick,
   onActivated,
@@ -15,11 +16,23 @@ import { Store } from './Plugins/Storage';
 import { Slots, Items } from './slots';
 import { VirtualProps } from './props';
 
+const getList = (source) => {
+  return isRef(source) ? source.value : source;
+};
+
 const VirtualDragList = defineComponent({
   props: VirtualProps,
-  emits: ['top', 'bottom', 'drag', 'drop', 'add', 'remove'],
+  emits: [
+    'update:dataSource',
+    'top',
+    'bottom',
+    'drag',
+    'drop',
+    'add',
+    'remove',
+  ],
   setup(props, { emit, slots, expose }) {
-    const range = ref<Range>(new Range());
+    const range = ref<Range>(Object.create(null));
 
     const rootRef = ref<HTMLElement | null>(null);
     const groupRef = ref<HTMLElement | null>(null);
@@ -107,18 +120,24 @@ const VirtualDragList = defineComponent({
       if (rootRef.value) rootRef.value[scrollDirectionKey] = offset;
     }
 
-    const init = (list: any[]) => {
+    const init = (source) => {
+      const list = getList(source);
+      if (!list) return;
+
       viewlist.value = [...list];
       updateUniqueKeys();
 
-      if (virtual) {
-        virtual.updateUniqueKeys(uniqueKeys.value);
-        virtual.updateSizes(uniqueKeys.value);
-        virtual.updateRange();
-      }
+      console.log(virtual);
 
-      if (sortable) sortable.setValue('list', [...list]);
-      else nextTick(() => initSortable());
+      virtual.updateUniqueKeys(uniqueKeys.value);
+      virtual.updateSizes(uniqueKeys.value);
+      nextTick(() => virtual.updateRange());
+
+      if (!sortable) {
+        nextTick(() => initSortable());
+      } else {
+        sortable.setValue('list', [...list]);
+      }
 
       // if auto scroll to the last offset
       if (lastItem && props.keepOffset) {
@@ -140,7 +159,6 @@ const VirtualDragList = defineComponent({
           size: props.size,
           keeps: props.keeps,
           uniqueKeys: uniqueKeys.value,
-          isHorizontal: isHorizontal,
         },
         (newRange: Range) => {
           range.value = newRange;
@@ -164,7 +182,6 @@ const VirtualDragList = defineComponent({
           ...props,
         },
         ({ list, changed }: { list: any[]; changed: boolean }) => {
-          // on drop
           if (!changed) return;
           // recalculate the range once when scrolling down
           if (
@@ -178,13 +195,10 @@ const VirtualDragList = defineComponent({
               range.value.end = index + props.keeps - 1;
             }
           }
-          // fix error with vue: Failed to execute 'insertBefore' on 'Node'
-          viewlist.value = [];
-          nextTick(() => {
-            viewlist.value = [...list];
-            updateUniqueKeys();
-            virtual.updateUniqueKeys(uniqueKeys.value);
-          });
+          viewlist.value = [...list];
+          updateUniqueKeys();
+          virtual.updateUniqueKeys(uniqueKeys.value);
+          emit('update:dataSource', [...list]);
         }
       );
     };
@@ -200,8 +214,9 @@ const VirtualDragList = defineComponent({
         !scrollSize ||
         offset < 0 ||
         offset + clientSize > scrollSize + 1
-      )
+      ) {
         return;
+      }
 
       virtual.handleScroll(offset);
 
@@ -224,11 +239,9 @@ const VirtualDragList = defineComponent({
     const onItemResized = (size: number, key) => {
       virtual.handleItemSizeChange(key, size);
     };
-    const onHeaderResized = (size: number) => {
-      virtual.handleHeaderSizeChange(size);
-    };
-    const onFooterResized = (size: number) => {
-      virtual.handleFooterSizeChange(size);
+
+    const onSlotsResized = (size: number, key) => {
+      virtual.handleSlotSizeChange(key, size);
     };
 
     const getItemIndex = (item: any) => {
@@ -254,7 +267,6 @@ const VirtualDragList = defineComponent({
       },
       {
         deep: true,
-        immediate: true,
       }
     );
 
@@ -271,6 +283,7 @@ const VirtualDragList = defineComponent({
     // init range
     onBeforeMount(() => {
       initVirtual();
+      init(props.dataSource);
     });
 
     // set back offset when awake from keep-alive
@@ -281,6 +294,54 @@ const VirtualDragList = defineComponent({
     onUnmounted(() => {
       sortable && sortable.destroy();
     });
+
+    const renderSlots = (key, TagName) => {
+      const slot = slots[key];
+      return slot
+        ? h(
+            Slots,
+            {
+              key: key,
+              tag: TagName,
+              dataKey: key,
+              event: 'resize',
+              onResize: onSlotsResized,
+            },
+            { default: () => slot?.() }
+          )
+        : null;
+    };
+
+    const renderItems = () => {
+      const { start, end } = range.value;
+      return viewlist.value.slice(start, end + 1).map((item) => {
+        const index = getItemIndex(item);
+        const dataKey = getDataKey(item, props.dataKey);
+        const itemStyle = {
+          ...props.itemStyle,
+          ...getItemStyle(dataKey),
+        };
+
+        return slots.item
+          ? h(
+              Items,
+              {
+                key: dataKey,
+                tag: props.itemTag,
+                class: props.itemClass,
+                style: itemStyle,
+                event: 'resize',
+                dataKey: dataKey,
+                isHorizontal: isHorizontal,
+                onResize: onItemResized,
+              },
+              {
+                default: () => slots.item?.({ record: item, index, dataKey }),
+              }
+            )
+          : null;
+      });
+    };
 
     expose({
       reset,
@@ -293,15 +354,8 @@ const VirtualDragList = defineComponent({
     });
 
     return () => {
-      const {
-        rootTag: RootTag,
-        wrapTag: WrapTag,
-        itemTag: ItemTag,
-        headerTag: HeaderTag,
-        footerTag: FooterTag,
-      } = props;
-
-      const { start, end, front, behind } = range.value;
+      const { rootTag: RootTag, wrapTag: WrapTag } = props;
+      const { front, behind } = range.value;
       const wrapStyle = {
         ...props.wrapStyle,
         padding: isHorizontal
@@ -318,22 +372,7 @@ const VirtualDragList = defineComponent({
         },
         {
           default: () => [
-            // header
-            slots.header
-              ? h(
-                  Slots,
-                  {
-                    key: 'header',
-                    tag: HeaderTag,
-                    dataKey: 'header',
-                    event: 'resize',
-                    onResize: onHeaderResized,
-                  },
-                  { default: () => slots.header?.() }
-                )
-              : null,
-
-            // list
+            renderSlots('header', props.headerTag),
             h(
               WrapTag,
               {
@@ -343,52 +382,10 @@ const VirtualDragList = defineComponent({
                 style: wrapStyle,
               },
               {
-                default: () =>
-                  viewlist.value.slice(start, end + 1).map((item) => {
-                    const index = getItemIndex(item);
-                    const dataKey = getDataKey(item, props.dataKey);
-                    const itemStyle = {
-                      ...props.itemStyle,
-                      ...getItemStyle(dataKey),
-                    };
-
-                    return slots.item
-                      ? h(
-                          Items,
-                          {
-                            key: dataKey,
-                            tag: ItemTag,
-                            class: props.itemClass,
-                            style: itemStyle,
-                            event: 'resize',
-                            dataKey: dataKey,
-                            isHorizontal: isHorizontal,
-                            onResize: onItemResized,
-                          },
-                          {
-                            default: () =>
-                              slots.item?.({ record: item, index, dataKey }),
-                          }
-                        )
-                      : null;
-                  }),
+                default: () => renderItems(),
               }
             ),
-
-            // footer
-            slots.footer
-              ? h(
-                  Slots,
-                  {
-                    key: 'footer',
-                    tag: FooterTag,
-                    dataKey: 'footer',
-                    event: 'resize',
-                    onResize: onFooterResized,
-                  },
-                  { default: () => slots.footer?.() }
-                )
-              : null,
+            renderSlots('footer', props.footerTag),
 
             // last el
             h('div', {

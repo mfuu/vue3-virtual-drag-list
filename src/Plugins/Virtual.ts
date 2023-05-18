@@ -1,36 +1,22 @@
-export class Range {
-  start: number;
-  end: number;
-  front: number;
-  behind: number;
-  constructor(options: any = {}) {
-    this.start = options.start || 0;
-    this.end = options.end || 0;
-    this.front = options.front || 0;
-    this.behind = options.behind || 0;
-  }
-}
-
 export interface VirtualOptions {
   size?: number;
   keeps: number;
   uniqueKeys: any[];
-  isHorizontal: boolean;
 }
 
-export class CalcSize {
+export interface CalcSize {
   average: number;
   total: number;
   fixed: number;
   header: number;
   footer: number;
-  constructor() {
-    this.average = 0;
-    this.total = 0;
-    this.fixed = 0;
-    this.header = 0;
-    this.footer = 0;
-  }
+}
+
+export interface Range {
+  start: number;
+  end: number;
+  front: number;
+  behind: number;
 }
 
 const CACLTYPE = {
@@ -50,7 +36,6 @@ class Virtual {
   options: VirtualOptions;
   callback: Function;
   sizes: Map<any, number>;
-  isHorizontal: boolean;
   calcIndex: number;
   calcType: string;
   calcSize: CalcSize;
@@ -63,11 +48,10 @@ class Virtual {
     this.callback = callback;
 
     this.sizes = new Map();
-    this.isHorizontal = options.isHorizontal;
 
     this.calcIndex = 0;
     this.calcType = CACLTYPE.INIT;
-    this.calcSize = new CalcSize();
+    this.calcSize = Object.create(null);
 
     this.direction = '';
     this.offset = 0;
@@ -86,7 +70,8 @@ class Virtual {
     });
   }
 
-  updateRange() {
+  updateRange(n = 1) {
+    if (n > 10) return;
     // check if need to update until loaded enough list item
     let start = this.range.start;
     if (this.isFront()) {
@@ -101,9 +86,9 @@ class Virtual {
       this.handleUpdate(start, this.getEndByStart(start));
     } else {
       if (window.requestAnimationFrame) {
-        window.requestAnimationFrame(() => this.updateRange());
+        window.requestAnimationFrame(() => this.updateRange(n++));
       } else {
-        setTimeout(() => this.updateRange(), 3);
+        setTimeout(() => this.updateRange(n++), 3);
       }
     }
   }
@@ -166,7 +151,7 @@ class Virtual {
 
   checkIfUpdate(start: number, end: number) {
     const { uniqueKeys, keeps } = this.options;
-    if (uniqueKeys.length <= keeps) {
+    if (uniqueKeys.length && uniqueKeys.length <= keeps) {
       start = 0;
       end = uniqueKeys.length - 1;
     } else if (end - start < keeps - 1) {
@@ -247,12 +232,8 @@ class Virtual {
     }
   }
 
-  handleHeaderSizeChange(size: number) {
-    this.calcSize.header = size;
-  }
-
-  handleFooterSizeChange(size: number) {
-    this.calcSize.footer = size;
+  handleSlotSizeChange(key, size: number) {
+    this.calcSize[key] = size;
   }
 }
 

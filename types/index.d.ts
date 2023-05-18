@@ -1,10 +1,7 @@
 import * as vue from 'vue';
 
 declare const VirtualDragList: vue.DefineComponent<{
-    dataSource: {
-        type: ArrayConstructor;
-        default: () => never[];
-    };
+    dataSource: {};
     dataKey: {
         type: StringConstructor;
         default: string;
@@ -50,6 +47,22 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    disabled: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    fallbackOnBody: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    pressDelay: {
+        type: NumberConstructor;
+        default: number;
+    };
+    pressDelayOnTouchOnly: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     rootTag: {
         type: StringConstructor;
         default: string;
@@ -57,14 +70,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     wrapTag: {
         type: StringConstructor;
         default: string;
-    };
-    wrapClass: {
-        type: StringConstructor;
-        default: string;
-    };
-    wrapStyle: {
-        type: ObjectConstructor;
-        default: () => {};
     };
     headerTag: {
         type: StringConstructor;
@@ -78,6 +83,14 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    wrapClass: {
+        type: StringConstructor;
+        default: string;
+    };
+    wrapStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
     itemStyle: {
         type: ObjectConstructor;
         default: () => {};
@@ -85,10 +98,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     itemClass: {
         type: StringConstructor;
         default: string;
-    };
-    disabled: {
-        type: BooleanConstructor;
-        default: boolean;
     };
     ghostClass: {
         type: StringConstructor;
@@ -104,11 +113,8 @@ declare const VirtualDragList: vue.DefineComponent<{
     };
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
-    dataSource: {
-        type: ArrayConstructor;
-        default: () => never[];
-    };
+}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
+    dataSource: {};
     dataKey: {
         type: StringConstructor;
         default: string;
@@ -154,6 +160,22 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    disabled: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    fallbackOnBody: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
+    pressDelay: {
+        type: NumberConstructor;
+        default: number;
+    };
+    pressDelayOnTouchOnly: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     rootTag: {
         type: StringConstructor;
         default: string;
@@ -161,14 +183,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     wrapTag: {
         type: StringConstructor;
         default: string;
-    };
-    wrapClass: {
-        type: StringConstructor;
-        default: string;
-    };
-    wrapStyle: {
-        type: ObjectConstructor;
-        default: () => {};
     };
     headerTag: {
         type: StringConstructor;
@@ -182,6 +196,14 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    wrapClass: {
+        type: StringConstructor;
+        default: string;
+    };
+    wrapStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
     itemStyle: {
         type: ObjectConstructor;
         default: () => {};
@@ -189,10 +211,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     itemClass: {
         type: StringConstructor;
         default: string;
-    };
-    disabled: {
-        type: BooleanConstructor;
-        default: boolean;
     };
     ghostClass: {
         type: StringConstructor;
@@ -207,6 +225,7 @@ declare const VirtualDragList: vue.DefineComponent<{
         default: string;
     };
 }>> & {
+    "onUpdate:dataSource"?: ((...args: any[]) => any) | undefined;
     onTop?: ((...args: any[]) => any) | undefined;
     onBottom?: ((...args: any[]) => any) | undefined;
     onDrag?: ((...args: any[]) => any) | undefined;
@@ -214,7 +233,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     onAdd?: ((...args: any[]) => any) | undefined;
     onRemove?: ((...args: any[]) => any) | undefined;
 }, {
-    dataSource: unknown[];
     dataKey: string;
     direction: "vertical" | "horizontal";
     keeps: number;
@@ -223,16 +241,19 @@ declare const VirtualDragList: vue.DefineComponent<{
     autoScroll: boolean;
     scrollThreshold: number;
     keepOffset: boolean;
+    disabled: boolean;
+    fallbackOnBody: boolean;
+    pressDelay: number;
+    pressDelayOnTouchOnly: boolean;
     rootTag: string;
     wrapTag: string;
-    wrapClass: string;
-    wrapStyle: Record<string, any>;
     headerTag: string;
     footerTag: string;
     itemTag: string;
+    wrapClass: string;
+    wrapStyle: Record<string, any>;
     itemStyle: Record<string, any>;
     itemClass: string;
-    disabled: boolean;
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
