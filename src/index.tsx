@@ -127,8 +127,6 @@ const VirtualDragList = defineComponent({
       viewlist.value = [...list];
       updateUniqueKeys();
 
-      console.log(virtual);
-
       virtual.updateUniqueKeys(uniqueKeys.value);
       virtual.updateSizes(uniqueKeys.value);
       nextTick(() => virtual.updateRange());
