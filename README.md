@@ -19,13 +19,14 @@ Root component:
 <template>
   <div>
     <!--
+      :dataSource="items"
       :handle="'i'" // use tagName 
       :handle="'.drag'" // use class
       :handle="'#drag'" // use id
     -->
     <VirtualList
+      v-model:dataSource="items"
       :dataKey="'id'"
-      :dataSource="items"
       :handle="'#drag'"
       style="height: 500px;"
     >
@@ -40,7 +41,16 @@ Root component:
 <script setup lang="ts">
 import VirtualList from 'vue-virtual-draglist';
 
-const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
+// const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
+const items = computed({
+  get() {
+    return [];
+  },
+  set(val) {
+    // trigger when drag state changed if you use then `v-model:dataSource`
+    console.log(val);
+  }
+})
 </script>
 
 ```
@@ -62,7 +72,7 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 | **Prop** | **Type**  | **Description** |
 |------------------|-------------|------------------|
 | `data-key`       | String      | The unique identifier of each piece of data, in the form of `'a.b.c'` |
-| `data-source`    | Array       | data list  |
+| `data-source`    | Array/Ref   | The list you want to render  |
 
 ### Optional props
 
@@ -84,10 +94,13 @@ const items = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 |  --------    | --------   | ----------- | --------------- |
 | `draggable`  | `Function/String` | `-`  | Specifies which items inside the element should be draggable. If does not set a value, the default list element can be dragged |
 | `disabled`   | `Boolean`  | `false`     | Disables the sortable if set to true |
-| `delay`      | `Number`   | `0`        | Delay time of debounce function |
+| `delay`      | `Number`   | `0`         | Delay time of debounce function |
 | `animation`  | `Number`   | `150`       | Animation speed moving items when sorting |
 | `autoScroll` | `Boolean`  | `true`      | Automatic scrolling when moving to the edge of the container |
-| `scrollThreshold` | `Number` | `25`     | Threshold to trigger autoscroll |
+| `scrollThreshold` | `Number` | `55`     | Threshold to trigger autoscroll |
+| `pressDelay` | `Number`   | `0`         | Time in milliseconds to define when the sorting should start |
+| `pressDelayOnTouchOnly` | `Boolean`   | `false`         | Only delay on press if user is using touch |
+| `fallbackOnBody` | `Boolean` | `false`  | Appends the ghost element into the document's body |
 | `rootTag`    | `String`   | `div`       | Label type for root element |
 | `wrapTag`    | `String`   | `div`       | Label type for list wrap element |
 | `itemTag`    | `String`   | `div`       | Label type for list item element |
