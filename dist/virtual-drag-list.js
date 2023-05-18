@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.1.2
+ * vue-virtual-draglist v3.1.3
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -1203,7 +1203,7 @@
   }();
   var Store = new Storage();
 
-  var attributes = ['group', 'handle', 'disabled', 'draggable', 'ghostClass', 'ghostStyle', 'chosenClass', 'animation', 'autoScroll', 'scrollThreshold'];
+  var attributes = ['group', 'handle', 'disabled', 'draggable', 'ghostClass', 'ghostStyle', 'chosenClass', 'animation', 'autoScroll', 'scrollThreshold', 'fallbackOnBody', 'pressDelay', 'pressDelayOnTouchOnly'];
   var dragEl = null;
   var Sortable = /*#__PURE__*/function () {
     function Sortable(context, callback) {
@@ -1239,11 +1239,13 @@
       value: function _init() {
         var _this = this;
         var props = attributes.reduce(function (res, key) {
-          res[key] = _this.context[key];
+          var name = key;
+          if (key === 'pressDelay') name = 'delay';
+          if (key === 'pressDelayOnTouchOnly') name = 'delayOnTouchOnly';
+          res[name] = _this.context[key];
           return res;
         }, {});
         this.sortable = new SortableDnd(this.context.container, Object.assign(Object.assign({}, props), {
-          fallbackOnBody: true,
           list: this.dynamicList,
           onDrag: function onDrag(_ref) {
             var from = _ref.from;
@@ -1467,22 +1469,6 @@
     return Sortable;
   }();
 
-  var Range = /*#__PURE__*/_createClass(function Range() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    _classCallCheck(this, Range);
-    this.start = options.start || 0;
-    this.end = options.end || 0;
-    this.front = options.front || 0;
-    this.behind = options.behind || 0;
-  });
-  var CalcSize = /*#__PURE__*/_createClass(function CalcSize() {
-    _classCallCheck(this, CalcSize);
-    this.average = 0;
-    this.total = 0;
-    this.fixed = 0;
-    this.header = 0;
-    this.footer = 0;
-  });
   var CACLTYPE = {
     INIT: 'INIT',
     FIXED: 'FIXED',
@@ -1499,10 +1485,9 @@
       this.options = Object.assign({}, options);
       this.callback = callback;
       this.sizes = new Map();
-      this.isHorizontal = options.isHorizontal;
       this.calcIndex = 0;
       this.calcType = CACLTYPE.INIT;
-      this.calcSize = new CalcSize();
+      this.calcSize = Object.create(null);
       this.direction = '';
       this.offset = 0;
       this.range = Object.create(null);
@@ -1525,6 +1510,8 @@
       key: "updateRange",
       value: function updateRange() {
         var _this2 = this;
+        var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+        if (n > 10) return;
         // check if need to update until loaded enough list item
         var start = this.range.start;
         if (this.isFront()) {
@@ -1539,11 +1526,11 @@
         } else {
           if (window.requestAnimationFrame) {
             window.requestAnimationFrame(function () {
-              return _this2.updateRange();
+              return _this2.updateRange(n++);
             });
           } else {
             setTimeout(function () {
-              return _this2.updateRange();
+              return _this2.updateRange(n++);
             }, 3);
           }
         }
@@ -1614,7 +1601,7 @@
         var _this$options = this.options,
           uniqueKeys = _this$options.uniqueKeys,
           keeps = _this$options.keeps;
-        if (uniqueKeys.length <= keeps) {
+        if (uniqueKeys.length && uniqueKeys.length <= keeps) {
           start = 0;
           end = uniqueKeys.length - 1;
         } else if (end - start < keeps - 1) {
@@ -1702,26 +1689,16 @@
         }
       }
     }, {
-      key: "handleHeaderSizeChange",
-      value: function handleHeaderSizeChange(size) {
-        this.calcSize.header = size;
-      }
-    }, {
-      key: "handleFooterSizeChange",
-      value: function handleFooterSizeChange(size) {
-        this.calcSize.footer = size;
+      key: "handleSlotSizeChange",
+      value: function handleSlotSizeChange(key, size) {
+        this.calcSize[key] = size;
       }
     }]);
     return Virtual;
   }();
 
   var VirtualProps = {
-    dataSource: {
-      type: Array,
-      "default": function _default() {
-        return [];
-      }
-    },
+    dataSource: {},
     dataKey: {
       type: String,
       "default": '',
@@ -1761,9 +1738,25 @@
     },
     scrollThreshold: {
       type: Number,
-      "default": 25
+      "default": 55
     },
     keepOffset: {
+      type: Boolean,
+      "default": false
+    },
+    disabled: {
+      type: Boolean,
+      "default": false
+    },
+    fallbackOnBody: {
+      type: Boolean,
+      "default": false
+    },
+    pressDelay: {
+      type: Number,
+      "default": 0
+    },
+    pressDelayOnTouchOnly: {
       type: Boolean,
       "default": false
     },
@@ -1774,16 +1767,6 @@
     wrapTag: {
       type: String,
       "default": 'div'
-    },
-    wrapClass: {
-      type: String,
-      "default": ''
-    },
-    wrapStyle: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
     },
     headerTag: {
       type: String,
@@ -1797,6 +1780,16 @@
       type: String,
       "default": 'div'
     },
+    wrapClass: {
+      type: String,
+      "default": ''
+    },
+    wrapStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
     itemStyle: {
       type: Object,
       "default": function _default() {
@@ -1806,10 +1799,6 @@
     itemClass: {
       type: String,
       "default": ''
-    },
-    disabled: {
-      type: Boolean,
-      "default": false
     },
     ghostClass: {
       type: String,
@@ -1924,14 +1913,17 @@
     }
   });
 
+  var getList = function getList(source) {
+    return vue.isRef(source) ? source.value : source;
+  };
   var VirtualDragList = vue.defineComponent({
     props: VirtualProps,
-    emits: ['top', 'bottom', 'drag', 'drop', 'add', 'remove'],
+    emits: ['update:dataSource', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
     setup: function setup(props, _ref) {
       var emit = _ref.emit,
         slots = _ref.slots,
         expose = _ref.expose;
-      var range = vue.ref(new Range());
+      var range = vue.ref(Object.create(null));
       var rootRef = vue.ref(null);
       var groupRef = vue.ref(null);
       var lastRef = vue.ref(null);
@@ -1983,7 +1975,7 @@
             var offset = getOffset();
             var clientSize = Math.ceil(rootRef.value[clientSizeKey]);
             var scrollSize = Math.ceil(rootRef.value[scrollSizeKey]);
-            if (offset + clientSize < scrollSize) scrollToBottom();
+            if (offset + clientSize + 1 < scrollSize) scrollToBottom();
           }, 5);
         }
       }
@@ -2010,17 +2002,24 @@
       function scrollToOffset(offset) {
         if (rootRef.value) rootRef.value[scrollDirectionKey] = offset;
       }
-      var init = function init(list) {
+      var init = function init(source) {
+        var list = getList(source);
+        if (!list) return;
         viewlist.value = _toConsumableArray(list);
         updateUniqueKeys();
-        if (virtual) {
-          virtual.updateUniqueKeys(uniqueKeys.value);
-          virtual.updateSizes(uniqueKeys.value);
-          virtual.updateRange();
-        }
-        if (sortable) sortable.setValue('list', _toConsumableArray(list));else vue.nextTick(function () {
-          return initSortable();
+        console.log(virtual);
+        virtual.updateUniqueKeys(uniqueKeys.value);
+        virtual.updateSizes(uniqueKeys.value);
+        vue.nextTick(function () {
+          return virtual.updateRange();
         });
+        if (!sortable) {
+          vue.nextTick(function () {
+            return initSortable();
+          });
+        } else {
+          sortable.setValue('list', _toConsumableArray(list));
+        }
         // if auto scroll to the last offset
         if (lastItem && props.keepOffset) {
           var index = getItemIndex(lastItem);
@@ -2037,8 +2036,7 @@
         virtual = new Virtual({
           size: props.size,
           keeps: props.keeps,
-          uniqueKeys: uniqueKeys.value,
-          isHorizontal: isHorizontal
+          uniqueKeys: uniqueKeys.value
         }, function (newRange) {
           range.value = newRange;
           if (!sortable) return;
@@ -2060,7 +2058,6 @@
         }, props), function (_ref2) {
           var list = _ref2.list,
             changed = _ref2.changed;
-          // on drop
           if (!changed) return;
           // recalculate the range once when scrolling down
           if (sortable.rangeChanged && virtual.direction && range.value.start > 0) {
@@ -2070,13 +2067,10 @@
               range.value.end = index + props.keeps - 1;
             }
           }
-          // fix error with vue: Failed to execute 'insertBefore' on 'Node'
-          viewlist.value = [];
-          vue.nextTick(function () {
-            viewlist.value = _toConsumableArray(list);
-            updateUniqueKeys();
-            virtual.updateUniqueKeys(uniqueKeys.value);
-          });
+          viewlist.value = _toConsumableArray(list);
+          updateUniqueKeys();
+          virtual.updateUniqueKeys(uniqueKeys.value);
+          emit('update:dataSource', _toConsumableArray(list));
         });
       };
       var handleScroll = debounce(function () {
@@ -2084,7 +2078,9 @@
         var offset = getOffset();
         var clientSize = Math.ceil(rootRef.value[clientSizeKey]);
         var scrollSize = Math.ceil(rootRef.value[scrollSizeKey]);
-        if (!virtual || !scrollSize || offset < 0 || offset + clientSize > scrollSize + 1) return;
+        if (!virtual || !scrollSize || offset < 0 || offset + clientSize > scrollSize + 1) {
+          return;
+        }
         virtual.handleScroll(offset);
         if (virtual.isFront()) {
           if (!!viewlist.value.length && offset <= 0) handleToTop();
@@ -2102,11 +2098,8 @@
       var onItemResized = function onItemResized(size, key) {
         virtual.handleItemSizeChange(key, size);
       };
-      var onHeaderResized = function onHeaderResized(size) {
-        virtual.handleHeaderSizeChange(size);
-      };
-      var onFooterResized = function onFooterResized(size) {
-        virtual.handleFooterSizeChange(size);
+      var onSlotsResized = function onSlotsResized(size, key) {
+        virtual.handleSlotSizeChange(key, size);
       };
       var getItemIndex = function getItemIndex(item) {
         return viewlist.value.findIndex(function (el) {
@@ -2129,8 +2122,7 @@
       }, function (newVal) {
         init(newVal);
       }, {
-        deep: true,
-        immediate: true
+        deep: true
       });
       vue.watch(function () {
         return props.disabled;
@@ -2142,6 +2134,7 @@
       // init range
       vue.onBeforeMount(function () {
         initVirtual();
+        init(props.dataSource);
       });
       // set back offset when awake from keep-alive
       vue.onActivated(function () {
@@ -2150,6 +2143,49 @@
       vue.onUnmounted(function () {
         sortable && sortable.destroy();
       });
+      var renderSlots = function renderSlots(key, TagName) {
+        var slot = slots[key];
+        return slot ? vue.h(Slots, {
+          key: key,
+          tag: TagName,
+          dataKey: key,
+          event: 'resize',
+          onResize: onSlotsResized
+        }, {
+          "default": function _default() {
+            return slot === null || slot === void 0 ? void 0 : slot();
+          }
+        }) : null;
+      };
+      var renderItems = function renderItems() {
+        var _range$value2 = range.value,
+          start = _range$value2.start,
+          end = _range$value2.end;
+        return viewlist.value.slice(start, end + 1).map(function (item) {
+          var index = getItemIndex(item);
+          var dataKey = getDataKey(item, props.dataKey);
+          var itemStyle = Object.assign(Object.assign({}, props.itemStyle), getItemStyle(dataKey));
+          return slots.item ? vue.h(Items, {
+            key: dataKey,
+            tag: props.itemTag,
+            "class": props.itemClass,
+            style: itemStyle,
+            event: 'resize',
+            dataKey: dataKey,
+            isHorizontal: isHorizontal,
+            onResize: onItemResized
+          }, {
+            "default": function _default() {
+              var _a;
+              return (_a = slots.item) === null || _a === void 0 ? void 0 : _a.call(slots, {
+                record: item,
+                index: index,
+                dataKey: dataKey
+              });
+            }
+          }) : null;
+        });
+      };
       expose({
         reset: reset,
         getSize: getSize,
@@ -2161,15 +2197,10 @@
       });
       return function () {
         var RootTag = props.rootTag,
-          WrapTag = props.wrapTag,
-          ItemTag = props.itemTag,
-          HeaderTag = props.headerTag,
-          FooterTag = props.footerTag;
-        var _range$value2 = range.value,
-          start = _range$value2.start,
-          end = _range$value2.end,
-          front = _range$value2.front,
-          behind = _range$value2.behind;
+          WrapTag = props.wrapTag;
+        var _range$value3 = range.value,
+          front = _range$value3.front,
+          behind = _range$value3.behind;
         var wrapStyle = Object.assign(Object.assign({}, props.wrapStyle), {
           padding: isHorizontal ? "0px ".concat(behind, "px 0px ").concat(front, "px") : "".concat(front, "px 0px ").concat(behind, "px")
         });
@@ -2181,67 +2212,16 @@
           onScroll: handleScroll
         }, {
           "default": function _default() {
-            return [
-            // header
-            slots.header ? vue.h(Slots, {
-              key: 'header',
-              tag: HeaderTag,
-              dataKey: 'header',
-              event: 'resize',
-              onResize: onHeaderResized
-            }, {
-              "default": function _default() {
-                var _a;
-                return (_a = slots.header) === null || _a === void 0 ? void 0 : _a.call(slots);
-              }
-            }) : null,
-            // list
-            vue.h(WrapTag, {
+            return [renderSlots('header', props.headerTag), vue.h(WrapTag, {
               ref: groupRef,
               role: 'group',
               "class": props.wrapClass,
               style: wrapStyle
             }, {
               "default": function _default() {
-                return viewlist.value.slice(start, end + 1).map(function (item) {
-                  var index = getItemIndex(item);
-                  var dataKey = getDataKey(item, props.dataKey);
-                  var itemStyle = Object.assign(Object.assign({}, props.itemStyle), getItemStyle(dataKey));
-                  return slots.item ? vue.h(Items, {
-                    key: dataKey,
-                    tag: ItemTag,
-                    "class": props.itemClass,
-                    style: itemStyle,
-                    event: 'resize',
-                    dataKey: dataKey,
-                    isHorizontal: isHorizontal,
-                    onResize: onItemResized
-                  }, {
-                    "default": function _default() {
-                      var _a;
-                      return (_a = slots.item) === null || _a === void 0 ? void 0 : _a.call(slots, {
-                        record: item,
-                        index: index,
-                        dataKey: dataKey
-                      });
-                    }
-                  }) : null;
-                });
+                return renderItems();
               }
-            }),
-            // footer
-            slots.footer ? vue.h(Slots, {
-              key: 'footer',
-              tag: FooterTag,
-              dataKey: 'footer',
-              event: 'resize',
-              onResize: onFooterResized
-            }, {
-              "default": function _default() {
-                var _a;
-                return (_a = slots.footer) === null || _a === void 0 ? void 0 : _a.call(slots);
-              }
-            }) : null,
+            }), renderSlots('footer', props.footerTag),
             // last el
             vue.h('div', {
               ref: lastRef,
