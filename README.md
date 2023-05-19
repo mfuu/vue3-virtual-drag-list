@@ -47,7 +47,7 @@ const items = computed({
     return [];
   },
   set(val) {
-    // trigger when drag state changed if you use then `v-model:dataSource`
+    // trigger when drag state changed if you use with `v-model:dataSource`
     console.log(val);
   }
 })
@@ -72,7 +72,7 @@ const items = computed({
 | **Prop** | **Type**  | **Description** |
 |------------------|-------------|------------------|
 | `data-key`       | String      | The unique identifier of each piece of data, in the form of `'a.b.c'` |
-| `data-source`    | Array/Ref   | The list you want to render  |
+| `data-source`    | Array/Ref   | The data that needs to be rendered |
 
 ### Optional props
 
