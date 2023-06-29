@@ -3,7 +3,7 @@ const storeKey = 'virtualSortableState';
 type Item = {
   list: any[];
   item: any;
-  key: string;
+  key: any;
   index: number;
 };
 
@@ -16,7 +16,7 @@ const defaultStore = { from: {}, to: {} };
 
 class Storage {
   clear() {
-    localStorage.removeItem(storeKey);
+    window[storeKey] = null;
   }
 
   /**
@@ -25,7 +25,7 @@ class Storage {
    */
   getStore() {
     try {
-      const result = JSON.parse(localStorage.getItem(storeKey));
+      const result = JSON.parse(window[storeKey]);
       return result || defaultStore;
     } catch (e) {
       return defaultStore;
@@ -38,7 +38,7 @@ class Storage {
   getValue() {
     return new Promise<State>((resolve, reject) => {
       try {
-        const result = JSON.parse(localStorage.getItem(storeKey));
+        const result = JSON.parse(window[storeKey]);
         resolve(result || defaultStore);
       } catch (e) {
         reject(defaultStore);
@@ -49,12 +49,12 @@ class Storage {
   setValue(value: State) {
     return new Promise<string>((resolve, reject) => {
       try {
-        const store = JSON.parse(localStorage.getItem(storeKey));
-        const result = JSON.stringify({ ...store, ...value });
-        localStorage.setItem(storeKey, result);
+        const store = JSON.parse(window[storeKey] || '{}');
+        const result = { ...store, ...value };
+        window[storeKey] = JSON.stringify(result);
         resolve(result);
       } catch (e) {
-        reject('{}');
+        reject(defaultStore);
       }
     });
   }

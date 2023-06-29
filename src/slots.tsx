@@ -1,24 +1,9 @@
-import {
-  h,
-  ref,
-  Ref,
-  computed,
-  onMounted,
-  onUpdated,
-  onUnmounted,
-  defineComponent,
-} from 'vue';
+import { h, ref, Ref, computed, onMounted, onUpdated, onUnmounted, defineComponent } from 'vue';
 import { SlotsProps } from './props';
 
-export const useObserver = (
-  props: any,
-  aRef: Ref<HTMLElement | null>,
-  emit: any
-) => {
+export const useObserver = (props: any, aRef: Ref<HTMLElement | null>, emit: any) => {
   let observer: ResizeObserver | null = null;
-  const sizeKey = computed(() =>
-    props.isHorizontal ? 'offsetWidth' : 'offsetHeight'
-  );
+  const sizeKey = computed(() => (props.isHorizontal ? 'offsetWidth' : 'offsetHeight'));
 
   const getCurrentSize = () => {
     return aRef.value ? aRef.value[sizeKey.value] : 0;

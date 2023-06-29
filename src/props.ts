@@ -18,6 +18,10 @@ export const VirtualProps = {
   group: {
     type: [Object, String],
   },
+  pageMode: {
+    type: Boolean,
+    default: false,
+  },
   direction: {
     type: String as PropType<Direction>,
     default: 'vertical',
