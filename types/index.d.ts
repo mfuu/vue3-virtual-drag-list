@@ -16,6 +16,10 @@ declare const VirtualDragList: vue.DefineComponent<{
     group: {
         type: (StringConstructor | ObjectConstructor)[];
     };
+    pageMode: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     direction: {
         type: vue.PropType<"vertical" | "horizontal">;
         default: string;
@@ -129,6 +133,10 @@ declare const VirtualDragList: vue.DefineComponent<{
     group: {
         type: (StringConstructor | ObjectConstructor)[];
     };
+    pageMode: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     direction: {
         type: vue.PropType<"vertical" | "horizontal">;
         default: string;
@@ -234,6 +242,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     onRemove?: ((...args: any[]) => any) | undefined;
 }, {
     dataKey: string;
+    pageMode: boolean;
     direction: "vertical" | "horizontal";
     keeps: number;
     delay: number;
