@@ -86,6 +86,7 @@ const items = computed({
 | `group`      | `Object/String` | `-`  | string: 'name' or object: `{ name: 'group', put: true/false, pull: true/false }` |
 | `keepOffset` | `Boolean`  | `false`     | When scrolling up to load data, keep the same offset as the previous scroll |
 | `direction`  | `String`   | `vertical`  | `vertical/horizontal`, scroll direction |
+| `pageMode`   | `Boolean`  | `false`     | Let virtual list using global document to scroll through the list |
 
 
 **Uncommonly used**
@@ -118,9 +119,10 @@ const items = computed({
 
 | **Method**         | **Description** |
 | ------------------ | --------------- |
-| `reset()`          | Reset to initial |
 | `getSize(key)`     | Get the size of the current item by unique key value |
 | `getOffset()`      | Get the current scroll height |
+| `getClientSize()`  | Get wrapper element client viewport size (width or height) |
+| `getScrollSize()`  | Get all scroll size (scrollHeight or scrollWidth) |
 | `scrollToTop()`    | Scroll to top of list |
 | `scrollToBottom()` | Scroll to bottom of list |
 | `scrollToIndex(index)`  | Scroll to the specified index position |
