@@ -92,6 +92,9 @@ declare const VirtualDragList: vue.DefineComponent<{
         default: string;
     };
     wrapStyle: {
+        /**
+         * reset component
+         */
         type: ObjectConstructor;
         default: () => {};
     };
@@ -102,6 +105,14 @@ declare const VirtualDragList: vue.DefineComponent<{
     itemClass: {
         type: StringConstructor;
         default: string;
+    };
+    headerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
+    footerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
     };
     ghostClass: {
         type: StringConstructor;
@@ -209,6 +220,9 @@ declare const VirtualDragList: vue.DefineComponent<{
         default: string;
     };
     wrapStyle: {
+        /**
+         * reset component
+         */
         type: ObjectConstructor;
         default: () => {};
     };
@@ -219,6 +233,14 @@ declare const VirtualDragList: vue.DefineComponent<{
     itemClass: {
         type: StringConstructor;
         default: string;
+    };
+    headerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
+    footerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
     };
     ghostClass: {
         type: StringConstructor;
@@ -263,9 +285,11 @@ declare const VirtualDragList: vue.DefineComponent<{
     wrapStyle: Record<string, any>;
     itemStyle: Record<string, any>;
     itemClass: string;
+    headerStyle: Record<string, any>;
+    footerStyle: Record<string, any>;
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
-}>;
+}, {}>;
 
 export { VirtualDragList as default };

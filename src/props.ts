@@ -105,6 +105,14 @@ export const VirtualProps = {
     type: String,
     default: '',
   },
+  headerStyle: {
+    type: Object,
+    default: () => ({}),
+  },
+  footerStyle: {
+    type: Object,
+    default: () => ({}),
+  },
   ghostClass: {
     type: String,
     default: '',
