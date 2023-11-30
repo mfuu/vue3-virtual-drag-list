@@ -379,12 +379,15 @@ const VirtualDragList = defineComponent({
 
     const renderSlots = (key, TagName) => {
       const slot = slots[key];
+      const headerStyle = { ...props.headerStyle };
+      const footerStyle = { ...props.footerStyle };
       return slot
         ? h(
             Slots,
             {
               key: key,
               tag: TagName,
+              style: key === 'header' ? headerStyle : key === 'footer' ? footerStyle : undefined,
               dataKey: key,
               event: 'resize',
               onResize: onSlotsResized,
