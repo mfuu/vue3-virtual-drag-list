@@ -18,10 +18,7 @@ export const VirtualProps = {
   group: {
     type: [Object, String],
   },
-  pageMode: {
-    type: Boolean,
-    default: false,
-  },
+  scroller: {},
   direction: {
     type: String as PropType<Direction>,
     default: 'vertical',
@@ -33,7 +30,11 @@ export const VirtualProps = {
   size: {
     type: Number,
   },
-  delay: {
+  debounceTime: {
+    type: Number,
+    default: 0,
+  },
+  throttleTime: {
     type: Number,
     default: 0,
   },
@@ -61,11 +62,11 @@ export const VirtualProps = {
     type: Boolean,
     default: false,
   },
-  pressDelay: {
+  delay: {
     type: Number,
     default: 0,
   },
-  pressDelayOnTouchOnly: {
+  delayOnTouchOnly: {
     type: Boolean,
     default: false,
   },

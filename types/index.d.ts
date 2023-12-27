@@ -16,10 +16,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     group: {
         type: (StringConstructor | ObjectConstructor)[];
     };
-    pageMode: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
+    scroller: {};
     direction: {
         type: vue.PropType<"vertical" | "horizontal">;
         default: string;
@@ -31,7 +28,11 @@ declare const VirtualDragList: vue.DefineComponent<{
     size: {
         type: NumberConstructor;
     };
-    delay: {
+    debounceTime: {
+        type: NumberConstructor;
+        default: number;
+    };
+    throttleTime: {
         type: NumberConstructor;
         default: number;
     };
@@ -59,11 +60,11 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
-    pressDelay: {
+    delay: {
         type: NumberConstructor;
         default: number;
     };
-    pressDelayOnTouchOnly: {
+    delayOnTouchOnly: {
         type: BooleanConstructor;
         default: boolean;
     };
@@ -133,10 +134,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     group: {
         type: (StringConstructor | ObjectConstructor)[];
     };
-    pageMode: {
-        type: BooleanConstructor;
-        default: boolean;
-    };
+    scroller: {};
     direction: {
         type: vue.PropType<"vertical" | "horizontal">;
         default: string;
@@ -148,7 +146,11 @@ declare const VirtualDragList: vue.DefineComponent<{
     size: {
         type: NumberConstructor;
     };
-    delay: {
+    debounceTime: {
+        type: NumberConstructor;
+        default: number;
+    };
+    throttleTime: {
         type: NumberConstructor;
         default: number;
     };
@@ -176,11 +178,11 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
-    pressDelay: {
+    delay: {
         type: NumberConstructor;
         default: number;
     };
-    pressDelayOnTouchOnly: {
+    delayOnTouchOnly: {
         type: BooleanConstructor;
         default: boolean;
     };
@@ -242,18 +244,18 @@ declare const VirtualDragList: vue.DefineComponent<{
     onRemove?: ((...args: any[]) => any) | undefined;
 }, {
     dataKey: string;
-    pageMode: boolean;
     direction: "vertical" | "horizontal";
     keeps: number;
-    delay: number;
+    debounceTime: number;
+    throttleTime: number;
     animation: number;
     autoScroll: boolean;
     scrollThreshold: number;
     keepOffset: boolean;
     disabled: boolean;
     fallbackOnBody: boolean;
-    pressDelay: number;
-    pressDelayOnTouchOnly: boolean;
+    delay: number;
+    delayOnTouchOnly: boolean;
     rootTag: string;
     wrapTag: string;
     headerTag: string;
