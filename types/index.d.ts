@@ -1,14 +1,17 @@
 import * as vue from 'vue';
 
 declare const VirtualDragList: vue.DefineComponent<{
-    dataSource: {};
+    dataSource: {
+        default: never[];
+        required: boolean;
+    };
     dataKey: {
         type: StringConstructor;
         default: string;
         required: boolean;
     };
     draggable: {
-        type: (StringConstructor | FunctionConstructor)[];
+        type: StringConstructor[];
     };
     handle: {
         type: (StringConstructor | FunctionConstructor)[];
@@ -119,14 +122,17 @@ declare const VirtualDragList: vue.DefineComponent<{
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
 }>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
-    dataSource: {};
+    dataSource: {
+        default: never[];
+        required: boolean;
+    };
     dataKey: {
         type: StringConstructor;
         default: string;
         required: boolean;
     };
     draggable: {
-        type: (StringConstructor | FunctionConstructor)[];
+        type: StringConstructor[];
     };
     handle: {
         type: (StringConstructor | FunctionConstructor)[];
@@ -243,6 +249,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     onAdd?: ((...args: any[]) => any) | undefined;
     onRemove?: ((...args: any[]) => any) | undefined;
 }, {
+    dataSource: never[];
     dataKey: string;
     direction: "vertical" | "horizontal";
     keeps: number;
@@ -268,6 +275,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
-}>;
+}, {}>;
 
 export { VirtualDragList as default };

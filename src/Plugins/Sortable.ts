@@ -40,13 +40,11 @@ class Sortable {
 
     this.sortable = new Dnd(this.ctx.container, {
       ...props,
-      swapOnDrop: false,
-      onChoose: (params) => this._onChoose(params),
+      swapOnDrop: (params) => params.from === params.to,
       onDrag: (params) => this._onDrag(params),
       onAdd: (params) => this._onAdd(params),
       onRemove: (params) => this._onRemove(params),
       onChange: (params) => this._onChange(params),
-      onUnchoose: (params) => this._onUnchoose(params),
       onDrop: (params) => this._onDrop(params),
     });
   }
@@ -66,7 +64,7 @@ class Sortable {
     }
   }
 
-  _onChoose(params: SortableEvent) {
+  _onDrag(params: SortableEvent) {
     const key = params.node.dataset.key;
     const index = this._getIndex(this.list, key);
     const item = this.list[index];
@@ -80,12 +78,9 @@ class Sortable {
     };
 
     this.sortable?.option('store', this.store);
-  }
 
-  _onDrag(params) {
-    const { item, key, origin } = this.store;
     this.onDrag();
-    this.ctx.emit('drag', { item, key, index: origin.index });
+    this.ctx.emit('drag', { item, key, index });
   }
 
   _onRemove(params: SortableEvent) {
@@ -166,15 +161,7 @@ class Sortable {
     });
   }
 
-  _onUnchoose(params: SortableEvent) {
-    // const { from, to } = this._getStore(params);
-
-    if (params.from === params.to) {
-      this.sortable?.option('swapOnDrop', true);
-    }
-  }
-
-  async _onDrop(params: SortableEvent) {
+  _onDrop(params: SortableEvent) {
     const { from, to } = this._getStore(params);
     const changed = params.from !== params.to || from.origin.index !== to.to.index;
 
@@ -189,14 +176,12 @@ class Sortable {
       to: to.to,
     });
 
-    if (params.from !== params.to && params.pullMode === 'clone') {
-      params.clone?.remove();
+    if (params.from !== params.to) {
+      Dnd.clone?.remove();
     }
-    if (params.from === params.to && from.origin.index !== to.to.index) {
+    if (from.origin.index !== to.to.index) {
       Dnd.dragged?.remove();
     }
-
-    this.sortable?.option('swapOnDrop', false);
   }
 
   _getIndex(list, key) {

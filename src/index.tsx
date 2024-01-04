@@ -35,7 +35,7 @@ const VirtualDragList = defineComponent({
     const viewlist = ref<any[]>([]);
     const uniqueKeys = ref<any[]>([]);
 
-    const isHorizontal = props.direction !== 'vertical';
+    const isHorizontal = computed(() => props.direction !== 'vertical');
 
     const virtualAttributes = computed(() => {
       return VirtualAttrs.reduce((res, key) => {
@@ -78,6 +78,13 @@ const VirtualDragList = defineComponent({
       return virtual.getScrollSize();
     }
 
+    function scrollToKey(key: number | string) {
+      const index = uniqueKeys.value.indexOf(key);
+      if (index > -1) {
+        virtual.scrollToIndex(index);
+      }
+    }
+
     // Scroll to the specified offset
     function scrollToOffset(offset: number) {
       virtual.scrollToOffset(offset);
@@ -105,6 +112,7 @@ const VirtualDragList = defineComponent({
       getScrollSize,
       scrollToTop,
       scrollToBottom,
+      scrollToKey,
       scrollToIndex,
       scrollToOffset,
     });
@@ -244,12 +252,10 @@ const VirtualDragList = defineComponent({
         },
         ({ list }: { list: any[] }) => {
           if (list.length === viewlist.value.length && start < range.value.start) {
-            range.value.front += Dnd.clone?.[isHorizontal ? 'offsetWidth' : 'offsetHeight'] || 0;
+            range.value.front += Dnd.clone?.[isHorizontal.value ? 'offsetWidth' : 'offsetHeight'] || 0;
             start = range.value.start;
           }
 
-          viewlist.value = list;
-          updateUniqueKeys();
           emit('update:dataSource', list);
         }
       );
@@ -344,7 +350,7 @@ const VirtualDragList = defineComponent({
                     style: itemStyle,
                     event: 'resize',
                     dataKey: dataKey,
-                    isHorizontal: isHorizontal,
+                    isHorizontal: isHorizontal.value,
                     onResize: onItemResized,
                   },
                   {
@@ -364,14 +370,14 @@ const VirtualDragList = defineComponent({
       const { front, behind } = range.value;
       const wrapStyle = {
         ...props.wrapStyle,
-        padding: isHorizontal ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`,
+        padding: isHorizontal.value ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`,
       };
 
       return h(
         rootTag,
         {
           ref: rootRef,
-          style: !pageMode && { overflow: isHorizontal ? 'auto hidden' : 'hidden auto' },
+          style: !pageMode && { overflow: isHorizontal.value ? 'auto hidden' : 'hidden auto' },
         },
         {
           default: () => [

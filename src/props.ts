@@ -3,14 +3,17 @@ import { PropType } from 'vue';
 type Direction = 'vertical' | 'horizontal';
 
 export const VirtualProps = {
-  dataSource: {},
+  dataSource: {
+    default: [],
+    required: true,
+  },
   dataKey: {
     type: String,
     default: '',
     required: true,
   },
   draggable: {
-    type: [Function, String],
+    type: [String],
   },
   handle: {
     type: [Function, String],

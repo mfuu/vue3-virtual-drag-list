@@ -133,11 +133,11 @@ class Virtual {
     return this.scrollEl[offsetSize[this.options.direction]];
   }
 
-  scrollToOffset(offset) {
+  scrollToOffset(offset: number) {
     this.scrollEl[scrollType[this.options.direction]] = offset;
   }
 
-  scrollToIndex(index) {
+  scrollToIndex(index: number) {
     if (index >= this.options.uniqueKeys.length - 1) {
       this.scrollToBottom();
     } else {
