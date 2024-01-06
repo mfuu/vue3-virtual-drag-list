@@ -24,6 +24,7 @@ class Sortable {
   list: any[];
   store: any;
   sortable: Dnd | null;
+  reRendered: boolean;
 
   constructor(ctx, onDrag: Function, onDrop: Function) {
     this.ctx = ctx;
@@ -32,6 +33,7 @@ class Sortable {
 
     this.list = [...ctx.list];
     this.store = {};
+    this.reRendered = false;
 
     const props = attributes.reduce((res, key) => {
       res[key] = this.ctx[key];
@@ -176,12 +178,14 @@ class Sortable {
       to: to.to,
     });
 
-    if (params.from !== params.to) {
-      Dnd.clone?.remove();
-    }
-    if (from.origin.index !== to.to.index) {
+    if (this.ctx.container === params.from && this.reRendered) {
       Dnd.dragged?.remove();
     }
+    if (params.from !== params.to && params.pullMode === 'clone') {
+      Dnd.clone?.remove();
+    }
+
+    this.reRendered = false;
   }
 
   _getIndex(list, key) {

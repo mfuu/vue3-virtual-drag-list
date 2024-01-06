@@ -205,8 +205,10 @@ const VirtualDragList = defineComponent({
 
       // if auto scroll to the last offset
       if (lastLength && props.keepOffset) {
-        const index = Math.abs(list.length - lastLength);
-        scrollToIndex(index);
+        const index = list.length - lastLength
+        if (index > 0) {
+          scrollToIndex(index);
+        }
         lastLength = null;
       }
     };
@@ -227,6 +229,7 @@ const VirtualDragList = defineComponent({
         debounceTime: props.debounceTime,
         throttleTime: props.throttleTime,
         onScroll: (params) => {
+          lastLength = null;
           if (!!viewlist.value.length && params.top) {
             handleToTop();
           } else if (params.bottom) {
@@ -234,6 +237,9 @@ const VirtualDragList = defineComponent({
           }
         },
         onUpdate: (newRange) => {
+          if (Dnd.dragged && sortable && newRange.start !== range.value.start) {
+            sortable.reRendered = true;
+          }
           range.value = newRange;
         },
       });

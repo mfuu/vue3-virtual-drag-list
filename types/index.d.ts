@@ -275,6 +275,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
-}, {}>;
+}>;
 
 export { VirtualDragList as default };
