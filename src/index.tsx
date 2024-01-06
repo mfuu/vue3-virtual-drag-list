@@ -327,6 +327,7 @@ const VirtualDragList = defineComponent({
             {
               key: key,
               tag: TagName,
+              style: props[`${key}Style`],
               dataKey: key,
               event: 'resize',
               onResize: onSlotsResized,

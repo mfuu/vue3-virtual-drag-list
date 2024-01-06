@@ -119,6 +119,14 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    headerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
+    footerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
 }>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
@@ -240,6 +248,14 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
+    headerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
+    footerStyle: {
+        type: ObjectConstructor;
+        default: () => {};
+    };
 }>> & {
     "onUpdate:dataSource"?: ((...args: any[]) => any) | undefined;
     onTop?: ((...args: any[]) => any) | undefined;
@@ -275,6 +291,8 @@ declare const VirtualDragList: vue.DefineComponent<{
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
+    headerStyle: Record<string, any>;
+    footerStyle: Record<string, any>;
 }>;
 
 export { VirtualDragList as default };
