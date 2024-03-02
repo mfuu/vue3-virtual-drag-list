@@ -142,7 +142,7 @@ export const SlotsProps = {
   dataKey: {
     type: [String, Number],
   },
-  isHorizontal: {
-    type: Boolean,
+  sizeKey: {
+    type: String,
   },
 };
