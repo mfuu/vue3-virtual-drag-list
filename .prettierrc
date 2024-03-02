@@ -3,6 +3,7 @@
   "tabWidth": 2,
   "useTabs": false,
   "semi": true,
+  "endOfLine": "auto",
   "singleQuote": true,
   "jsxSingleQuote": true,
   "trailingComma": "es5",
@@ -10,6 +11,5 @@
   "jsxBracketSameLine": true,
   "arrowParens": "always",
   "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css",
-  "endOfLine": "auto"
+  "htmlWhitespaceSensitivity": "css"
 }
