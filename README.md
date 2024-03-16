@@ -19,13 +19,12 @@ Root component:
 <template>
   <div>
     <!--
-      :dataSource="items"
       :handle="'i'" // use tagName 
       :handle="'.drag'" // use class
       :handle="'#drag'" // use id
     -->
     <VirtualList
-      v-model:dataSource="items"
+      v-model="items"
       :dataKey="'id'"
       :handle="'#drag'"
       style="height: 500px;"
