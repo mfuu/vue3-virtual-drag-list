@@ -1,12 +1,11 @@
 import { PropType } from 'vue';
 
 type Direction = 'vertical' | 'horizontal';
+type LockAxis = 'x' | 'y';
 
 export const VirtualProps = {
-  dataSource: {
-    default: [],
-    required: true,
-  },
+  dataSource: {},
+  modelValue: {},
   dataKey: {
     type: String,
     default: '',
@@ -21,7 +20,13 @@ export const VirtualProps = {
   group: {
     type: [Object, String],
   },
-  scroller: {},
+  scroller: {
+    type: [Document, HTMLElement],
+  },
+  lockAxis: {
+    type: String as PropType<LockAxis>,
+    default: '',
+  },
   direction: {
     type: String as PropType<Direction>,
     default: 'vertical',
@@ -81,14 +86,6 @@ export const VirtualProps = {
     type: String,
     default: 'div',
   },
-  headerTag: {
-    type: String,
-    default: 'div',
-  },
-  footerTag: {
-    type: String,
-    default: 'div',
-  },
   itemTag: {
     type: String,
     default: 'div',
@@ -121,23 +118,12 @@ export const VirtualProps = {
     type: String,
     default: '',
   },
-  headerStyle: {
-    type: Object,
-    default: () => ({}),
-  },
-  footerStyle: {
-    type: Object,
-    default: () => ({}),
-  },
 };
 
 export const SlotsProps = {
   tag: {
     type: String,
     default: 'div',
-  },
-  event: {
-    type: String,
   },
   dataKey: {
     type: [String, Number],

@@ -13,7 +13,7 @@ import {
   defineComponent,
 } from 'vue';
 import Dnd from 'sortable-dnd';
-import { Slots, Items } from './slots';
+import { Items } from './slots';
 import { VirtualProps } from './props';
 import {
   Range,
@@ -31,7 +31,7 @@ const getList = (source) => {
 
 const VirtualDragList = defineComponent({
   props: VirtualProps,
-  emits: ['update:dataSource', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
+  emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
   setup(props, { emit, slots, expose }) {
     const range = ref<Range>({ start: 0, end: props.keeps, front: 0, behind: 0 });
 
@@ -58,9 +58,7 @@ const VirtualDragList = defineComponent({
       }, {});
     });
 
-    let lastLength: any = null;
-    let start: number = 0;
-
+    let lastLength: number = 0;
     let sortable: Sortable;
     let virtual: Virtual;
 
@@ -124,7 +122,7 @@ const VirtualDragList = defineComponent({
     });
 
     watch(
-      () => props.dataSource,
+      () => [props.dataSource, props.modelValue],
       () => {
         onUpdate();
       },
@@ -188,7 +186,7 @@ const VirtualDragList = defineComponent({
     });
 
     const onUpdate = () => {
-      const list = getList(props.dataSource);
+      const list = getList(props.modelValue || props.dataSource);
       if (!list) return;
 
       const oldList = [...viewlist.value];
@@ -209,7 +207,7 @@ const VirtualDragList = defineComponent({
         if (index > 0) {
           scrollToIndex(index);
         }
-        lastLength = null;
+        lastLength = 0;
       }
     };
 
@@ -229,7 +227,7 @@ const VirtualDragList = defineComponent({
         debounceTime: props.debounceTime,
         throttleTime: props.throttleTime,
         onScroll: (params) => {
-          lastLength = null;
+          lastLength = 0;
           if (!!viewlist.value.length && params.top) {
             handleToTop();
           } else if (params.bottom) {
@@ -250,7 +248,6 @@ const VirtualDragList = defineComponent({
         list: viewlist.value,
         ...props,
         onDrag: (params) => {
-          start = range.value.start;
           emit('drag', params);
         },
         onAdd: (params) => {
@@ -260,12 +257,10 @@ const VirtualDragList = defineComponent({
           emit('remove', params);
         },
         onDrop: (params) => {
-          if (params.list.length === viewlist.value.length && start < range.value.start) {
-            range.value.front += Dnd.clone?.[itemSizeKey.value] || 0;
-            start = range.value.start;
+          if (params.changed) {
+            emit('update:dataSource', params.list);
+            emit('update:modelValue', params.list);
           }
-
-          emit('update:dataSource', params.list);
           emit('drop', params);
         },
       });
@@ -308,35 +303,12 @@ const VirtualDragList = defineComponent({
       }
     };
 
-    const onSlotsResized = (size: number, key) => {
-      virtual.onSlotResized(key, size);
-    };
-
     const getItemStyle = (dataKey: any) => {
       const fromKey = Dnd.dragged?.dataset.key;
       if (dataKey == fromKey) {
         return { display: 'none' };
       }
       return {};
-    };
-
-    const renderSlots = (key, TagName) => {
-      const slot = slots[key];
-      return slot
-        ? h(
-            Slots,
-            {
-              key: key,
-              tag: TagName,
-              style: props[`${key}Style`],
-              dataKey: key,
-              event: 'resize',
-              sizeKey: itemSizeKey.value,
-              onResize: onSlotsResized,
-            },
-            { default: () => slot?.() }
-          )
-        : null;
     };
 
     const renderItems = () => {
@@ -357,7 +329,6 @@ const VirtualDragList = defineComponent({
                     tag: props.itemTag,
                     class: props.itemClass,
                     style: itemStyle,
-                    event: 'resize',
                     dataKey: dataKey,
                     sizeKey: itemSizeKey.value,
                     onResize: onItemResized,
@@ -374,35 +345,31 @@ const VirtualDragList = defineComponent({
     };
 
     return () => {
-      const pageMode = virtual.useWindowScroll;
-      const { rootTag, wrapTag, wrapClass, headerTag, footerTag } = props;
       const { front, behind } = range.value;
-      const wrapStyle = {
-        ...props.wrapStyle,
-        padding: isHorizontal.value ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`,
-      };
+      const { rootTag, wrapTag, scroller, wrapClass, wrapStyle } = props;
+      const padding = isHorizontal.value ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`;
 
       return h(
         rootTag,
         {
           ref: rootRef,
-          style: !pageMode && { overflow: isHorizontal.value ? 'auto hidden' : 'hidden auto' },
+          style: !scroller && { overflow: isHorizontal.value ? 'auto hidden' : 'hidden auto' },
         },
         {
           default: () => [
-            renderSlots('header', headerTag),
+            slots.header?.(),
             h(
               wrapTag,
               {
                 ref: groupRef,
                 class: wrapClass,
-                style: wrapStyle,
+                style: { ...wrapStyle, padding },
               },
               {
                 default: () => renderItems(),
               }
             ),
-            renderSlots('footer', footerTag),
+            slots.footer?.(),
           ],
         }
       );

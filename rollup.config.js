@@ -1,9 +1,9 @@
 import babel from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import commonJs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import dts from 'rollup-plugin-dts';
-import { uglify } from 'rollup-plugin-uglify';
 
 const packageJson = require('./package.json');
 const version = packageJson.version;
@@ -41,15 +41,10 @@ export default [
           vue: 'Vue',
         },
         banner: banner.replace(/\n/, ''),
-        plugins: [uglify()],
+        plugins: [terser()],
       },
     ],
-    plugins: [
-      resolve(),
-      commonJs(),
-      typescript(),
-      babel({ extensions, babelHelpers: 'bundled' }),
-    ],
+    plugins: [resolve(), commonJs(), typescript(), babel({ extensions, babelHelpers: 'bundled' })],
   },
   {
     input: 'src/index.tsx',

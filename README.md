@@ -74,6 +74,7 @@ const items = computed({
 |------------------|-------------|------------------|
 | `data-key`       | String      | The unique identifier of each piece of data, in the form of `'a.b.c'` |
 | `data-source`    | Array/Ref   | The data that needs to be rendered |
+| `v-model`    | Array/Ref   | Choose between `data-source` and `v-model`(recommend) |
 
 ### Optional props
 
@@ -86,8 +87,9 @@ const items = computed({
 | `handle`     | `Function/String` | `-`  | Drag handle selector within list items |
 | `group`      | `Object/String` | `-`    | string: 'name' or object: `{ name: 'group', put: true/false, pull: true/false/'clone', revertDrag: true/false }` |
 | `keepOffset` | `Boolean`  | `false`     | When scrolling up to load data, keep the same offset as the previous scroll |
-| `direction`  | `String`   | `vertical`  | `vertical/horizontal`, scroll direction |
-| `scroller`   | `HTMLElement`  | `false` | Virtual list scrolling element |
+| `direction`  | `vertical \| horizontal`   | `vertical`  | Scroll direction |
+| `scroller`   | `Document \| HTMLElement`  | `-` | Virtual list scrolling element |
+| `lockAxis`   | `x \| y`   |  `-`    | Axis on which dragging will be locked |
 | `debounceTime`| `Number`   | `0`        | scroll debounce time |
 | `throttleTime`| `Number`   | `0`        | scroll throttle time |
 
@@ -107,10 +109,6 @@ const items = computed({
 | `rootTag`    | `String`   | `div`       | Label type for root element |
 | `wrapTag`    | `String`   | `div`       | Label type for list wrap element |
 | `itemTag`    | `String`   | `div`       | Label type for list item element |
-| `headerTag`  | `String`   | `div`       | Label type for header slot element |
-| `headerStyle`| `Object`   | `{}`        | header slot style |
-| `footerTag`  | `String`   | `div`       | Label type for footer slot element |
-| `footerStyle`| `Object`   | `{}`        | footer slot style |
 | `wrapClass`  | `String`   | `''`        | List wrapper element class |
 | `wrapStyle`  | `Object`   | `{}`        | List wrapper element style |
 | `itemClass`  | `String`   | `''`        | List item element class |

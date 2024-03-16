@@ -1,10 +1,8 @@
 import * as vue from 'vue';
 
 declare const VirtualDragList: vue.DefineComponent<{
-    dataSource: {
-        default: never[];
-        required: boolean;
-    };
+    dataSource: {};
+    modelValue: {};
     dataKey: {
         type: StringConstructor;
         default: string;
@@ -19,7 +17,19 @@ declare const VirtualDragList: vue.DefineComponent<{
     group: {
         type: (StringConstructor | ObjectConstructor)[];
     };
-    scroller: {};
+    scroller: {
+        type: ({
+            new (): Document;
+            prototype: Document;
+        } | {
+            new (): HTMLElement;
+            prototype: HTMLElement;
+        })[];
+    };
+    lockAxis: {
+        type: vue.PropType<"x" | "y">;
+        default: string;
+    };
     direction: {
         type: vue.PropType<"vertical" | "horizontal">;
         default: string;
@@ -79,14 +89,6 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    headerTag: {
-        type: StringConstructor;
-        default: string;
-    };
-    footerTag: {
-        type: StringConstructor;
-        default: string;
-    };
     itemTag: {
         type: StringConstructor;
         default: string;
@@ -118,22 +120,12 @@ declare const VirtualDragList: vue.DefineComponent<{
     chosenClass: {
         type: StringConstructor;
         default: string;
-    };
-    headerStyle: {
-        type: ObjectConstructor;
-        default: () => {};
-    };
-    footerStyle: {
-        type: ObjectConstructor;
-        default: () => {};
     };
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "update:dataSource" | "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
-    dataSource: {
-        default: never[];
-        required: boolean;
-    };
+}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
+    dataSource: {};
+    modelValue: {};
     dataKey: {
         type: StringConstructor;
         default: string;
@@ -148,7 +140,19 @@ declare const VirtualDragList: vue.DefineComponent<{
     group: {
         type: (StringConstructor | ObjectConstructor)[];
     };
-    scroller: {};
+    scroller: {
+        type: ({
+            new (): Document;
+            prototype: Document;
+        } | {
+            new (): HTMLElement;
+            prototype: HTMLElement;
+        })[];
+    };
+    lockAxis: {
+        type: vue.PropType<"x" | "y">;
+        default: string;
+    };
     direction: {
         type: vue.PropType<"vertical" | "horizontal">;
         default: string;
@@ -208,14 +212,6 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    headerTag: {
-        type: StringConstructor;
-        default: string;
-    };
-    footerTag: {
-        type: StringConstructor;
-        default: string;
-    };
     itemTag: {
         type: StringConstructor;
         default: string;
@@ -248,16 +244,9 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    headerStyle: {
-        type: ObjectConstructor;
-        default: () => {};
-    };
-    footerStyle: {
-        type: ObjectConstructor;
-        default: () => {};
-    };
 }>> & {
     "onUpdate:dataSource"?: ((...args: any[]) => any) | undefined;
+    "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onTop?: ((...args: any[]) => any) | undefined;
     onBottom?: ((...args: any[]) => any) | undefined;
     onDrag?: ((...args: any[]) => any) | undefined;
@@ -265,8 +254,8 @@ declare const VirtualDragList: vue.DefineComponent<{
     onAdd?: ((...args: any[]) => any) | undefined;
     onRemove?: ((...args: any[]) => any) | undefined;
 }, {
-    dataSource: never[];
     dataKey: string;
+    lockAxis: "x" | "y";
     direction: "vertical" | "horizontal";
     keeps: number;
     debounceTime: number;
@@ -281,8 +270,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     delayOnTouchOnly: boolean;
     rootTag: string;
     wrapTag: string;
-    headerTag: string;
-    footerTag: string;
     itemTag: string;
     wrapClass: string;
     wrapStyle: Record<string, any>;
@@ -291,8 +278,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
-    headerStyle: Record<string, any>;
-    footerStyle: Record<string, any>;
 }>;
 
 export { VirtualDragList as default };
