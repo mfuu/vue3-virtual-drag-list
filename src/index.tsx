@@ -53,7 +53,7 @@ const VirtualDragList = defineComponent({
 
     const sortableAttributes = computed(() => {
       return SortableAttrs.reduce((res, key) => {
-        res[key] = this[key];
+        res[key] = props[key];
         return res;
       }, {});
     });
