@@ -47,6 +47,7 @@ const VirtualDragList = defineComponent({
     const virtualAttributes = computed(() => {
       return VirtualAttrs.reduce((res, key) => {
         res[key] = props[key];
+        console.log('virtual', res, key);
         return res;
       }, {});
     });
@@ -54,6 +55,7 @@ const VirtualDragList = defineComponent({
     const sortableAttributes = computed(() => {
       return SortableAttrs.reduce((res, key) => {
         res[key] = props[key];
+        console.log('sortable', res, key);
         return res;
       }, {});
     });
@@ -134,6 +136,7 @@ const VirtualDragList = defineComponent({
     watch(
       () => virtualAttributes,
       (newVal, oldVal) => {
+        console.log('virtual watch', virtual, newVal, oldVal);
         if (!virtual) return;
         for (let key in newVal) {
           if (newVal[key] != oldVal[key]) {
@@ -146,6 +149,7 @@ const VirtualDragList = defineComponent({
     watch(
       () => sortableAttributes,
       (newVal, oldVal) => {
+        console.log('sortable watch', virtual, newVal, oldVal);
         if (!virtual) return;
         for (let key in newVal) {
           if (newVal[key] != oldVal[key]) {
