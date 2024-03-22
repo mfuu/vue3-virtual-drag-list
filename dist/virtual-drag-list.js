@@ -1591,11 +1591,9 @@
     props: VirtualProps,
     emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
     setup: function setup(props, _ref) {
-      var _this = this;
       var emit = _ref.emit,
         slots = _ref.slots,
         expose = _ref.expose;
-      console.log('Setup props', props);
       var range = vue.ref({
         start: 0,
         end: props.keeps,
@@ -1613,19 +1611,14 @@
         return props.direction !== 'vertical' ? 'offsetWidth' : 'offsetHeight';
       });
       var virtualAttributes = vue.computed(function () {
-        console.log('virtual attributes');
         return VirtualAttrs.reduce(function (res, key) {
           res[key] = props[key];
-          console.log('virtual', res, key);
           return res;
         }, {});
       });
       var sortableAttributes = vue.computed(function () {
-        console.log('sortable attributes');
         return SortableAttrs.reduce(function (res, key) {
-          console.log('this', _this);
           res[key] = props[key];
-          console.log('sortable', res, key);
           return res;
         }, {});
       });
@@ -1689,7 +1682,6 @@
         deep: true
       });
       vue.watch(virtualAttributes, function (newVal, oldVal) {
-        console.log('virtual watch', virtual, newVal, oldVal);
         if (!virtual) return;
         for (var key in newVal) {
           if (newVal[key] != oldVal[key]) {
@@ -1698,7 +1690,6 @@
         }
       });
       vue.watch(sortableAttributes, function (newVal, oldVal) {
-        console.log('sortable watch', virtual, newVal, oldVal);
         if (!virtual) return;
         for (var key in newVal) {
           if (newVal[key] != oldVal[key]) {
