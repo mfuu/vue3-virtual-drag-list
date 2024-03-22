@@ -1594,6 +1594,7 @@
       var emit = _ref.emit,
         slots = _ref.slots,
         expose = _ref.expose;
+      console.log('Setup props', props);
       var range = vue.ref({
         start: 0,
         end: props.keeps,
@@ -1611,6 +1612,7 @@
         return props.direction !== 'vertical' ? 'offsetWidth' : 'offsetHeight';
       });
       var virtualAttributes = vue.computed(function () {
+        console.log('virtual attributes');
         return VirtualAttrs.reduce(function (res, key) {
           res[key] = props[key];
           console.log('virtual', res, key);
@@ -1618,6 +1620,7 @@
         }, {});
       });
       var sortableAttributes = vue.computed(function () {
+        console.log('sortable attributes');
         return SortableAttrs.reduce(function (res, key) {
           res[key] = props[key];
           console.log('sortable', res, key);
