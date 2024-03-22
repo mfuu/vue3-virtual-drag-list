@@ -1591,6 +1591,7 @@
     props: VirtualProps,
     emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
     setup: function setup(props, _ref) {
+      var _this = this;
       var emit = _ref.emit,
         slots = _ref.slots,
         expose = _ref.expose;
@@ -1622,6 +1623,7 @@
       var sortableAttributes = vue.computed(function () {
         console.log('sortable attributes');
         return SortableAttrs.reduce(function (res, key) {
+          console.log('this', _this);
           res[key] = props[key];
           console.log('sortable', res, key);
           return res;
@@ -1696,6 +1698,8 @@
             virtual.option(key, newVal[key]);
           }
         }
+      }, {
+        deep: true
       });
       vue.watch(function () {
         return sortableAttributes;
@@ -1707,6 +1711,8 @@
             sortable.option(key, newVal[key]);
           }
         }
+      }, {
+        deep: true
       });
       // init range
       vue.onBeforeMount(function () {

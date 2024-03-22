@@ -71,6 +71,8 @@ const VirtualDragList = defineComponent({
       console.log('sortable attributes');
 
       return SortableAttrs.reduce((res, key) => {
+        console.log('this', this);
+
         res[key] = props[key];
         console.log('sortable', res, key);
         return res;
@@ -160,6 +162,9 @@ const VirtualDragList = defineComponent({
             virtual.option(key as any, newVal[key]);
           }
         }
+      },
+      {
+        deep: true,
       }
     );
 
@@ -173,6 +178,9 @@ const VirtualDragList = defineComponent({
             sortable.option(key as any, newVal[key]);
           }
         }
+      },
+      {
+        deep: true,
       }
     );
 
