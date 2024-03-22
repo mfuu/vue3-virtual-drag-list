@@ -1688,9 +1688,7 @@
       }, {
         deep: true
       });
-      vue.watch(function () {
-        return virtualAttributes;
-      }, function (newVal, oldVal) {
+      vue.watch(virtualAttributes, function (newVal, oldVal) {
         console.log('virtual watch', virtual, newVal, oldVal);
         if (!virtual) return;
         for (var key in newVal) {
@@ -1698,12 +1696,8 @@
             virtual.option(key, newVal[key]);
           }
         }
-      }, {
-        deep: true
       });
-      vue.watch(function () {
-        return sortableAttributes;
-      }, function (newVal, oldVal) {
+      vue.watch(sortableAttributes, function (newVal, oldVal) {
         console.log('sortable watch', virtual, newVal, oldVal);
         if (!virtual) return;
         for (var key in newVal) {
@@ -1711,8 +1705,6 @@
             sortable.option(key, newVal[key]);
           }
         }
-      }, {
-        deep: true
       });
       // init range
       vue.onBeforeMount(function () {
