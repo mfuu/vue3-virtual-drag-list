@@ -10,26 +10,40 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.VirtualDragList = factory(global.Vue));
 })(this, (function (vue) { 'use strict';
 
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
+  function ownKeys(e, r) {
+    var t = Object.keys(e);
     if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      enumerableOnly && (symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      })), keys.push.apply(keys, symbols);
+      var o = Object.getOwnPropertySymbols(e);
+      r && (o = o.filter(function (r) {
+        return Object.getOwnPropertyDescriptor(e, r).enumerable;
+      })), t.push.apply(t, o);
     }
-    return keys;
+    return t;
   }
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = null != arguments[i] ? arguments[i] : {};
-      i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+  function _objectSpread2(e) {
+    for (var r = 1; r < arguments.length; r++) {
+      var t = null != arguments[r] ? arguments[r] : {};
+      r % 2 ? ownKeys(Object(t), !0).forEach(function (r) {
+        _defineProperty(e, r, t[r]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) {
+        Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r));
       });
     }
-    return target;
+    return e;
+  }
+  function _toPrimitive(t, r) {
+    if ("object" != typeof t || !t) return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i = e.call(t, r || "default");
+      if ("object" != typeof i) return i;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return ("string" === r ? String : Number)(t);
+  }
+  function _toPropertyKey(t) {
+    var i = _toPrimitive(t, "string");
+    return "symbol" == typeof i ? i : i + "";
   }
   function _defineProperty(obj, key, value) {
     key = _toPropertyKey(key);
@@ -69,20 +83,6 @@
   }
   function _nonIterableSpread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }
-  function _toPrimitive(input, hint) {
-    if (typeof input !== "object" || input === null) return input;
-    var prim = input[Symbol.toPrimitive];
-    if (prim !== undefined) {
-      var res = prim.call(input, hint || "default");
-      if (typeof res !== "object") return res;
-      throw new TypeError("@@toPrimitive must return a primitive value.");
-    }
-    return (hint === "string" ? String : Number)(input);
-  }
-  function _toPropertyKey(arg) {
-    var key = _toPrimitive(arg, "string");
-    return typeof key === "symbol" ? key : String(key);
   }
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -1245,11 +1245,11 @@
       });
       if (params.from === this.el && this.reRendered) {
         var _Dnd$dragged;
-        (_Dnd$dragged = Dnd.dragged) === null || _Dnd$dragged === void 0 ? void 0 : _Dnd$dragged.remove();
+        (_Dnd$dragged = Dnd.dragged) === null || _Dnd$dragged === void 0 || _Dnd$dragged.remove();
       }
       if (params.from !== params.to && params.pullMode === 'clone') {
         var _Dnd$clone;
-        (_Dnd$clone = Dnd.clone) === null || _Dnd$clone === void 0 ? void 0 : _Dnd$clone.remove();
+        (_Dnd$clone = Dnd.clone) === null || _Dnd$clone === void 0 || _Dnd$clone.remove();
       }
       this.reRendered = false;
     },
@@ -1267,7 +1267,6 @@
     }
   };
 
-  var _rectDir, _scrollDir, _scrollSize, _offsetSize;
   var VirtualAttrs = ['size', 'keeps', 'scroller', 'direction', 'debounceTime', 'throttleTime'];
   var CACLTYPE = {
     INIT: 'INIT',
@@ -1283,10 +1282,10 @@
     HORIZONTAL: 'horizontal',
     VERTICAL: 'vertical'
   };
-  var rectDir = (_rectDir = {}, _defineProperty(_rectDir, DIRECTION.VERTICAL, 'top'), _defineProperty(_rectDir, DIRECTION.HORIZONTAL, 'left'), _rectDir);
-  var scrollDir = (_scrollDir = {}, _defineProperty(_scrollDir, DIRECTION.VERTICAL, 'scrollTop'), _defineProperty(_scrollDir, DIRECTION.HORIZONTAL, 'scrollLeft'), _scrollDir);
-  var scrollSize = (_scrollSize = {}, _defineProperty(_scrollSize, DIRECTION.VERTICAL, 'scrollHeight'), _defineProperty(_scrollSize, DIRECTION.HORIZONTAL, 'scrollWidth'), _scrollSize);
-  var offsetSize = (_offsetSize = {}, _defineProperty(_offsetSize, DIRECTION.VERTICAL, 'offsetHeight'), _defineProperty(_offsetSize, DIRECTION.HORIZONTAL, 'offsetWidth'), _offsetSize);
+  var rectDir = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'top'), DIRECTION.HORIZONTAL, 'left');
+  var scrollDir = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'scrollTop'), DIRECTION.HORIZONTAL, 'scrollLeft');
+  var scrollSize = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'scrollHeight'), DIRECTION.HORIZONTAL, 'scrollWidth');
+  var offsetSize = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'offsetHeight'), DIRECTION.HORIZONTAL, 'offsetWidth');
   function Virtual(options) {
     this.options = options;
     var defaults = {
@@ -1592,7 +1591,6 @@
     props: VirtualProps,
     emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
     setup: function setup(props, _ref) {
-      var _this = this;
       var emit = _ref.emit,
         slots = _ref.slots,
         expose = _ref.expose;
@@ -1620,7 +1618,7 @@
       });
       var sortableAttributes = vue.computed(function () {
         return SortableAttrs.reduce(function (res, key) {
-          res[key] = _this[key];
+          res[key] = props[key];
           return res;
         }, {});
       });
@@ -1683,9 +1681,7 @@
       }, {
         deep: true
       });
-      vue.watch(function () {
-        return virtualAttributes;
-      }, function (newVal, oldVal) {
+      vue.watch(virtualAttributes, function (newVal, oldVal) {
         if (!virtual) return;
         for (var key in newVal) {
           if (newVal[key] != oldVal[key]) {
@@ -1693,9 +1689,7 @@
           }
         }
       });
-      vue.watch(function () {
-        return sortableAttributes;
-      }, function (newVal, oldVal) {
+      vue.watch(sortableAttributes, function (newVal, oldVal) {
         if (!virtual) return;
         for (var key in newVal) {
           if (newVal[key] != oldVal[key]) {
