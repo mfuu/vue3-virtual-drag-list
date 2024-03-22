@@ -31,8 +31,19 @@ const getList = (source) => {
 
 const VirtualDragList = defineComponent({
   props: VirtualProps,
-  emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
+  emits: [
+    'update:dataSource',
+    'update:modelValue',
+    'top',
+    'bottom',
+    'drag',
+    'drop',
+    'add',
+    'remove',
+  ],
   setup(props, { emit, slots, expose }) {
+    console.log('Setup props', props);
+
     const range = ref<Range>({ start: 0, end: props.keeps, front: 0, behind: 0 });
 
     const rootRef = ref<HTMLElement | null>(null);
@@ -42,9 +53,13 @@ const VirtualDragList = defineComponent({
     const uniqueKeys = ref<any[]>([]);
 
     const isHorizontal = computed(() => props.direction !== 'vertical');
-    const itemSizeKey = computed(() => props.direction !== 'vertical' ? 'offsetWidth' : 'offsetHeight');
+    const itemSizeKey = computed(() =>
+      props.direction !== 'vertical' ? 'offsetWidth' : 'offsetHeight'
+    );
 
     const virtualAttributes = computed(() => {
+      console.log('virtual attributes');
+
       return VirtualAttrs.reduce((res, key) => {
         res[key] = props[key];
         console.log('virtual', res, key);
@@ -53,6 +68,8 @@ const VirtualDragList = defineComponent({
     });
 
     const sortableAttributes = computed(() => {
+      console.log('sortable attributes');
+
       return SortableAttrs.reduce((res, key) => {
         res[key] = props[key];
         console.log('sortable', res, key);
@@ -351,7 +368,9 @@ const VirtualDragList = defineComponent({
     return () => {
       const { front, behind } = range.value;
       const { rootTag, wrapTag, scroller, wrapClass, wrapStyle } = props;
-      const padding = isHorizontal.value ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`;
+      const padding = isHorizontal.value
+        ? `0px ${behind}px 0px ${front}px`
+        : `${front}px 0px ${behind}px`;
 
       return h(
         rootTag,
