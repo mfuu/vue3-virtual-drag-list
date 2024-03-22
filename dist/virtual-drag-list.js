@@ -1267,6 +1267,7 @@
     }
   };
 
+  var _rectDir, _scrollDir, _scrollSize, _offsetSize;
   var VirtualAttrs = ['size', 'keeps', 'scroller', 'direction', 'debounceTime', 'throttleTime'];
   var CACLTYPE = {
     INIT: 'INIT',
@@ -1282,10 +1283,10 @@
     HORIZONTAL: 'horizontal',
     VERTICAL: 'vertical'
   };
-  var rectDir = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'top'), DIRECTION.HORIZONTAL, 'left');
-  var scrollDir = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'scrollTop'), DIRECTION.HORIZONTAL, 'scrollLeft');
-  var scrollSize = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'scrollHeight'), DIRECTION.HORIZONTAL, 'scrollWidth');
-  var offsetSize = _defineProperty(_defineProperty({}, DIRECTION.VERTICAL, 'offsetHeight'), DIRECTION.HORIZONTAL, 'offsetWidth');
+  var rectDir = (_rectDir = {}, _defineProperty(_rectDir, DIRECTION.VERTICAL, 'top'), _defineProperty(_rectDir, DIRECTION.HORIZONTAL, 'left'), _rectDir);
+  var scrollDir = (_scrollDir = {}, _defineProperty(_scrollDir, DIRECTION.VERTICAL, 'scrollTop'), _defineProperty(_scrollDir, DIRECTION.HORIZONTAL, 'scrollLeft'), _scrollDir);
+  var scrollSize = (_scrollSize = {}, _defineProperty(_scrollSize, DIRECTION.VERTICAL, 'scrollHeight'), _defineProperty(_scrollSize, DIRECTION.HORIZONTAL, 'scrollWidth'), _scrollSize);
+  var offsetSize = (_offsetSize = {}, _defineProperty(_offsetSize, DIRECTION.VERTICAL, 'offsetHeight'), _defineProperty(_offsetSize, DIRECTION.HORIZONTAL, 'offsetWidth'), _offsetSize);
   function Virtual(options) {
     this.options = options;
     var defaults = {
