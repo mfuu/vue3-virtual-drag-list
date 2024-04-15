@@ -12,7 +12,12 @@ export const VirtualProps = {
     required: true,
   },
   draggable: {
-    type: [String],
+    type: String,
+    default: '.virtual-dnd-list-item'
+  },
+  sortable: {
+    type: Boolean,
+    default: true
   },
   handle: {
     type: [Function, String],

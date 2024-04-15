@@ -24,7 +24,7 @@ Root component:
       :handle="'#drag'" // use id
     -->
     <VirtualList
-      v-model="items"
+      v-model="list"
       :dataKey="'id'"
       :handle="'#drag'"
       style="height: 500px;"
@@ -32,6 +32,12 @@ Root component:
       <template v-slot:item="{ record, index, dataKey }">
         <i id="drag" class="drag">drag me</i>
         <span>{{ record.text }}</span>
+      </template>
+      <template v-slot:header>
+        <div class="header">header</div>
+      </template>
+      <template v-slot:footer>
+        <div class="footer">footer</div>
       </template>
     </VirtualList>
   </div>
@@ -41,16 +47,16 @@ Root component:
 import VirtualList from 'vue-virtual-draglist';
 
 const list = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
-const items = computed({
-  get() {
-    return list.value;
-  },
-  set(val) {
-    // trigger when drag state changed if you use with `v-model:dataSource`
-    list.value = val;
-    console.log(val);
-  }
-})
+// const items = computed({
+//   get() {
+//     return list.value;
+//   },
+//   set(val) {
+//     // trigger when drag state changed if you use with `v-model:dataSource`
+//     list.value = val;
+//     console.log(val);
+//   }
+// })
 </script>
 
 ```
@@ -97,7 +103,8 @@ const items = computed({
 
 |  **Prop**    | **Type**   | **Default** | **Description** |
 |  --------    | --------   | ----------- | --------------- |
-| `draggable`  | `String` | `-`  | Specifies which items inside the element should be draggable. If does not set a value, the default list element can be dragged |
+| `sortable`   | `Boolean`  | `true`      | Whether the current list can be sorted by dragging |
+| `draggable`  | `String` | `.virtual-dnd-list-item`  | Specifies which items inside the element should be draggable. If does not set a value, the default list element can be dragged |
 | `disabled`   | `Boolean`  | `false`     | Disables the sortable if set to true |
 | `animation`  | `Number`   | `150`       | Animation speed moving items when sorting |
 | `autoScroll` | `Boolean`  | `true`      | Automatic scrolling when moving to the edge of the container |
@@ -110,11 +117,11 @@ const items = computed({
 | `itemTag`    | `String`   | `div`       | Label type for list item element |
 | `wrapClass`  | `String`   | `''`        | List wrapper element class |
 | `wrapStyle`  | `Object`   | `{}`        | List wrapper element style |
-| `itemClass`  | `String`   | `''`        | List item element class |
+| `itemClass`  | `String`   | `virtual-dnd-list-item`        | List item element class |
 | `itemStyle`  | `Object`   | `{}`        | List item element style |
 | `ghostClass` | `String`   | `''`        | The class of the mask element when dragging |
 | `ghostStyle` | `Object`   | `{}`        | The style of the mask element when dragging |
-| `chosenClass`| `String`   | `''`        | The class of the selected element when dragging |
+| `chosenClass`| `String`   | `''`        | Class name for the chosen item |
 
 ## Methods
 

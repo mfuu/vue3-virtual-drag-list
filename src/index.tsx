@@ -1,10 +1,11 @@
 import {
   h,
   ref,
+  Ref,
   isRef,
   watch,
   computed,
-  nextTick,
+  onUpdated,
   onMounted,
   onActivated,
   onUnmounted,
@@ -13,8 +14,7 @@ import {
   defineComponent,
 } from 'vue';
 import Dnd from 'sortable-dnd';
-import { Items } from './slots';
-import { VirtualProps } from './props';
+import { VirtualProps, SlotsProps } from './props';
 import {
   Range,
   Virtual,
@@ -25,24 +25,87 @@ import {
   VirtualAttrs,
 } from './core';
 
+const useObserver = (props: any, aRef: Ref<HTMLElement | null>, emit: any) => {
+  let observer: ResizeObserver | null = null;
+
+  const getCurrentSize = () => {
+    return aRef.value ? aRef.value[props.sizeKey] : 0;
+  };
+
+  const onSizeChange = () => {
+    emit('resize', getCurrentSize(), props.dataKey);
+  };
+
+  onMounted(() => {
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(() => {
+        onSizeChange();
+      });
+      aRef.value && observer.observe(aRef.value);
+    }
+  });
+
+  onUpdated(() => {
+    onSizeChange();
+  });
+
+  onUnmounted(() => {
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+  });
+};
+
+const Items = defineComponent({
+  name: 'VirtualDraglistItems',
+  props: SlotsProps,
+  emits: ['resize'],
+  setup(props, { emit, slots }) {
+    const elRef = ref<HTMLElement | null>(null);
+    useObserver(props, elRef, emit);
+
+    return () => {
+      const { tag: Tag, dataKey } = props;
+
+      return h(
+        Tag,
+        {
+          ref: elRef,
+          key: dataKey,
+          'data-key': dataKey,
+          class: 'virtual-dnd-list-item',
+        },
+        { default: () => slots.default?.() }
+      );
+    };
+  },
+});
+
 const getList = (source) => {
   return isRef(source) ? source.value : source;
 };
 
 const VirtualDragList = defineComponent({
   props: VirtualProps,
-  emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
+  emits: [
+    'update:dataSource',
+    'update:modelValue',
+    'top',
+    'bottom',
+    'drag',
+    'drop',
+    'add',
+    'remove',
+  ],
   setup(props, { emit, slots, expose }) {
-    const range = ref<Range>({ start: 0, end: props.keeps, front: 0, behind: 0 });
+    const rangeRef = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0 });
 
     const rootRef = ref<HTMLElement | null>(null);
-    const groupRef = ref<HTMLElement | null>(null);
-
-    const viewlist = ref<any[]>([]);
-    const uniqueKeys = ref<any[]>([]);
+    const wrapRef = ref<HTMLElement | null>(null);
+    const listRef = ref<any[]>([]);
 
     const isHorizontal = computed(() => props.direction !== 'vertical');
-    const itemSizeKey = computed(() => props.direction !== 'vertical' ? 'offsetWidth' : 'offsetHeight');
 
     const virtualAttributes = computed(() => {
       return VirtualAttrs.reduce((res, key) => {
@@ -58,9 +121,10 @@ const VirtualDragList = defineComponent({
       }, {});
     });
 
-    let lastLength: number = 0;
-    let sortable: Sortable;
     let virtual: Virtual;
+    let sortable: Sortable;
+    let uniqueKeys: any[] = [];
+    let lastLength: number = 0;
 
     // git item size by data-key
     function getSize(key: string | number) {
@@ -83,7 +147,7 @@ const VirtualDragList = defineComponent({
     }
 
     function scrollToKey(key: number | string) {
-      const index = uniqueKeys.value.indexOf(key);
+      const index = uniqueKeys.indexOf(key);
       if (index > -1) {
         virtual.scrollToIndex(index);
       }
@@ -141,7 +205,7 @@ const VirtualDragList = defineComponent({
     });
 
     watch(sortableAttributes, (newVal, oldVal) => {
-      if (!virtual) return;
+      if (!sortable) return;
       for (let key in newVal) {
         if (newVal[key] != oldVal[key]) {
           sortable.option(key as any, newVal[key]);
@@ -167,7 +231,8 @@ const VirtualDragList = defineComponent({
     });
 
     onMounted(() => {
-      virtual.option('wrapper', groupRef.value as any);
+      initSortable();
+      virtual.option('wrapper', wrapRef.value as any);
 
       if (!props.scroller) {
         virtual.option('scroller', rootRef.value as any);
@@ -183,17 +248,13 @@ const VirtualDragList = defineComponent({
       const list = getList(props.modelValue || props.dataSource);
       if (!list) return;
 
-      const oldList = [...viewlist.value];
+      const oldList = [...listRef.value];
 
-      viewlist.value = list;
+      listRef.value = list;
       updateUniqueKeys();
       updateRange(oldList, list);
 
-      if (!sortable) {
-        nextTick(() => initSortable());
-      } else {
-        sortable.option('list', list);
-      }
+      sortable?.option('list', list);
 
       // if auto scroll to the last offset
       if (lastLength && props.keepOffset) {
@@ -206,8 +267,8 @@ const VirtualDragList = defineComponent({
     };
 
     const updateUniqueKeys = () => {
-      uniqueKeys.value = viewlist.value.map((item) => getDataKey(item, props.dataKey));
-      virtual.option('uniqueKeys', uniqueKeys.value);
+      uniqueKeys = listRef.value.map((item) => getDataKey(item, props.dataKey));
+      virtual.option('uniqueKeys', uniqueKeys);
     };
 
     const initVirtual = () => {
@@ -217,51 +278,58 @@ const VirtualDragList = defineComponent({
         buffer: Math.round(props.keeps / 3),
         scroller: props.scroller as any,
         direction: props.direction,
-        uniqueKeys: uniqueKeys.value,
+        uniqueKeys: uniqueKeys,
         debounceTime: props.debounceTime,
         throttleTime: props.throttleTime,
-        onScroll: (params) => {
+        onScroll: (event) => {
           lastLength = 0;
-          if (!!viewlist.value.length && params.top) {
+          if (!!listRef.value.length && event.top) {
             handleToTop();
-          } else if (params.bottom) {
+          } else if (event.bottom) {
             handleToBottom();
           }
         },
         onUpdate: (newRange) => {
-          if (Dnd.dragged && sortable && newRange.start !== range.value.start) {
+          if (Dnd.dragged && sortable && newRange.start !== rangeRef.value.start) {
             sortable.reRendered = true;
           }
-          range.value = newRange;
+          rangeRef.value = newRange;
         },
       });
     };
 
     const initSortable = () => {
-      sortable = new Sortable(groupRef.value as any, {
-        list: viewlist.value,
-        ...props,
-        onDrag: (params) => {
-          emit('drag', params);
-        },
-        onAdd: (params) => {
-          emit('add', params);
-        },
-        onRemove: (params) => {
-          emit('remove', params);
-        },
-        onDrop: (params) => {
-          if (params.changed) {
-            emit('update:dataSource', params.list);
-            emit('update:modelValue', params.list);
+      sortable = new Sortable(rootRef.value as any, {
+        ...sortableAttributes.value,
+        list: listRef.value,
+        dataKey: props.dataKey,
+        onDrag: (event) => {
+          if (!props.sortable) {
+            virtual.enableScroll(false);
           }
-          emit('drop', params);
+          emit('drag', event);
+        },
+        onAdd: (event) => {
+          emit('add', event);
+        },
+        onRemove: (event) => {
+          emit('remove', event);
+        },
+        onDrop: (event) => {
+          if (!props.sortable) {
+            virtual.enableScroll(true);
+          }
+          if (event.changed) {
+            emit('update:dataSource', event.list);
+            emit('update:modelValue', event.list);
+          }
+          emit('drop', event);
         },
       });
     };
 
     const updateRange = (oldList, newList) => {
-      let newRange = { ...range.value };
+      let newRange = { ...rangeRef.value };
       if (
         newList.length > oldList.length &&
         newRange.end === oldList.length - 1 &&
@@ -282,7 +350,7 @@ const VirtualDragList = defineComponent({
 
     const handleToTop = throttle(() => {
       emit('top');
-      lastLength = viewlist.value.length;
+      lastLength = listRef.value.length;
     }, 50);
 
     const handleToBottom = throttle(() => {
@@ -290,10 +358,12 @@ const VirtualDragList = defineComponent({
     }, 50);
 
     const onItemResized = (size: number, key) => {
-      const renders = virtual.sizes.size;
+      const sizes = virtual.sizes.size;
+      const renders = Math.min(props.keeps, listRef.value.length);
       virtual.onItemResized(key, size);
-      if (renders === 0) {
-        updateRange(viewlist.value, viewlist.value);
+
+      if (sizes === renders - 1) {
+        updateRange(listRef.value, listRef.value);
       }
     };
 
@@ -307,10 +377,10 @@ const VirtualDragList = defineComponent({
 
     const renderItems = () => {
       const renders: any[] = [];
-      const { start, end } = range.value;
+      const { start, end } = rangeRef.value;
 
       for (let index = start; index <= end; index++) {
-        const record = viewlist.value[index];
+        const record = listRef.value[index];
         if (record) {
           const dataKey = getDataKey(record, props.dataKey);
           const itemStyle = { ...props.itemStyle, ...getItemStyle(dataKey) };
@@ -324,7 +394,7 @@ const VirtualDragList = defineComponent({
                     class: props.itemClass,
                     style: itemStyle,
                     dataKey: dataKey,
-                    sizeKey: itemSizeKey.value,
+                    sizeKey: props.direction === 'vertical' ? 'offsetHeight' : 'offsetWidth',
                     onResize: onItemResized,
                   },
                   {
@@ -339,7 +409,7 @@ const VirtualDragList = defineComponent({
     };
 
     return () => {
-      const { front, behind } = range.value;
+      const { front, behind } = rangeRef.value;
       const { rootTag, wrapTag, scroller, wrapClass, wrapStyle } = props;
       const padding = isHorizontal.value ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`;
 
@@ -355,7 +425,7 @@ const VirtualDragList = defineComponent({
             h(
               wrapTag,
               {
-                ref: groupRef,
+                ref: wrapRef,
                 class: wrapClass,
                 style: { ...wrapStyle, padding },
               },

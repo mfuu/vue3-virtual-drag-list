@@ -9,7 +9,12 @@ declare const VirtualDragList: vue.DefineComponent<{
         required: boolean;
     };
     draggable: {
-        type: StringConstructor[];
+        type: StringConstructor;
+        default: string;
+    };
+    sortable: {
+        type: BooleanConstructor;
+        default: boolean;
     };
     handle: {
         type: (StringConstructor | FunctionConstructor)[];
@@ -132,7 +137,12 @@ declare const VirtualDragList: vue.DefineComponent<{
         required: boolean;
     };
     draggable: {
-        type: StringConstructor[];
+        type: StringConstructor;
+        default: string;
+    };
+    sortable: {
+        type: BooleanConstructor;
+        default: boolean;
     };
     handle: {
         type: (StringConstructor | FunctionConstructor)[];
@@ -255,6 +265,8 @@ declare const VirtualDragList: vue.DefineComponent<{
     onRemove?: ((...args: any[]) => any) | undefined;
 }, {
     dataKey: string;
+    draggable: string;
+    sortable: boolean;
     lockAxis: "x" | "y";
     direction: "vertical" | "horizontal";
     keeps: number;
