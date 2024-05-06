@@ -20,18 +20,18 @@ Root component:
   <div>
     <!--
       :handle="'i'" // use tagName 
-      :handle="'.drag'" // use class
-      :handle="'#drag'" // use id
+      :handle="'.handle'" // use class
+      :handle="'#handle'" // use id
     -->
     <VirtualList
       v-model="list"
       :dataKey="'id'"
-      :handle="'#drag'"
+      :handle="'#handle'"
       style="height: 500px;"
     >
       <template v-slot:item="{ record, index, dataKey }">
-        <i id="drag" class="drag">drag me</i>
-        <span>{{ record.text }}</span>
+        <i id="handle" class="handle">handle</i>
+        <p>{{ record.text }}</p>
       </template>
       <template v-slot:header>
         <div class="header">header</div>
@@ -64,12 +64,12 @@ const list = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 
 |   **Emit**   | **Description** |
 |--------------|-----------------|
-| `top`        | Event fired when scroll to top |
-| `bottom`     | Event fired when scroll to bottom |
-| `drag`       | Event fired when the drag is started |
-| `drop`       | Event fired when the drag is completed |
-| `add`        | Event fired when element is dropped into the list from another |
-| `remove`     | Event fired when element is removed from the list into another |
+| `top`        | scrolled to top |
+| `bottom`     | scrolled to bottom |
+| `drag`       | drag is started |
+| `drop`       | drag is completed |
+| `add`        | element is dropped into the list from another |
+| `remove`     | element is removed from the list into another |
 
 ## Props
 
@@ -78,8 +78,7 @@ const list = ref([{id: '1', text: 'abc'}, {id: '2', text: 'def'}]);
 | **Prop** | **Type**  | **Description** |
 |------------------|-------------|------------------|
 | `data-key`       | String      | The unique identifier of each piece of data, in the form of `'a.b.c'` |
-| `data-source`    | Array/Ref   | The data that needs to be rendered |
-| `v-model`    | Array/Ref   | Choose between `data-source` and `v-model`(recommend) |
+| `v-model`    | Array/Ref   | The data that needs to be rendered |
 
 ### Optional props
 
