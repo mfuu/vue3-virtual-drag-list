@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.2.4
+ * vue-virtual-draglist v3.2.5
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -840,146 +840,6 @@
   })(sortableDnd_min);
   var Dnd = sortableDnd_min.exports;
 
-  var VirtualProps = {
-    dataSource: {},
-    modelValue: {},
-    dataKey: {
-      type: String,
-      "default": '',
-      required: true
-    },
-    draggable: {
-      type: String,
-      "default": '.virtual-dnd-list-item'
-    },
-    sortable: {
-      type: Boolean,
-      "default": true
-    },
-    handle: {
-      type: [Function, String]
-    },
-    group: {
-      type: [Object, String]
-    },
-    scroller: {
-      type: [Document, HTMLElement]
-    },
-    lockAxis: {
-      type: String,
-      "default": ''
-    },
-    direction: {
-      type: String,
-      "default": 'vertical'
-    },
-    keeps: {
-      type: Number,
-      "default": 30
-    },
-    size: {
-      type: Number
-    },
-    debounceTime: {
-      type: Number,
-      "default": 0
-    },
-    throttleTime: {
-      type: Number,
-      "default": 0
-    },
-    animation: {
-      type: Number,
-      "default": 150
-    },
-    autoScroll: {
-      type: Boolean,
-      "default": true
-    },
-    scrollThreshold: {
-      type: Number,
-      "default": 55
-    },
-    keepOffset: {
-      type: Boolean,
-      "default": false
-    },
-    disabled: {
-      type: Boolean,
-      "default": false
-    },
-    fallbackOnBody: {
-      type: Boolean,
-      "default": false
-    },
-    delay: {
-      type: Number,
-      "default": 0
-    },
-    delayOnTouchOnly: {
-      type: Boolean,
-      "default": false
-    },
-    rootTag: {
-      type: String,
-      "default": 'div'
-    },
-    wrapTag: {
-      type: String,
-      "default": 'div'
-    },
-    itemTag: {
-      type: String,
-      "default": 'div'
-    },
-    wrapClass: {
-      type: String,
-      "default": ''
-    },
-    wrapStyle: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
-    },
-    itemStyle: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
-    },
-    itemClass: {
-      type: String,
-      "default": ''
-    },
-    ghostClass: {
-      type: String,
-      "default": ''
-    },
-    ghostStyle: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
-    },
-    chosenClass: {
-      type: String,
-      "default": ''
-    }
-  };
-  var SlotsProps = {
-    tag: {
-      type: String,
-      "default": 'div'
-    },
-    dataKey: {
-      type: [String, Number]
-    },
-    sizeKey: {
-      type: String
-    }
-  };
-
   var SortableAttrs = ['delay', 'group', 'handle', 'lockAxis', 'disabled', 'sortable', 'draggable', 'animation', 'autoScroll', 'ghostClass', 'ghostStyle', 'chosenClass', 'fallbackOnBody', 'scrollThreshold', 'delayOnTouchOnly'];
   function Sortable(el, options) {
     this.el = el;
@@ -1543,6 +1403,146 @@
     }
   };
 
+  var VirtualProps = {
+    dataSource: {},
+    modelValue: {},
+    dataKey: {
+      type: String,
+      "default": '',
+      required: true
+    },
+    draggable: {
+      type: String,
+      "default": '.virtual-dnd-list-item'
+    },
+    sortable: {
+      type: Boolean,
+      "default": true
+    },
+    handle: {
+      type: [Function, String]
+    },
+    group: {
+      type: [Object, String]
+    },
+    scroller: {
+      type: [Document, HTMLElement]
+    },
+    lockAxis: {
+      type: String,
+      "default": ''
+    },
+    direction: {
+      type: String,
+      "default": 'vertical'
+    },
+    keeps: {
+      type: Number,
+      "default": 30
+    },
+    size: {
+      type: Number
+    },
+    debounceTime: {
+      type: Number,
+      "default": 0
+    },
+    throttleTime: {
+      type: Number,
+      "default": 0
+    },
+    animation: {
+      type: Number,
+      "default": 150
+    },
+    autoScroll: {
+      type: Boolean,
+      "default": true
+    },
+    scrollThreshold: {
+      type: Number,
+      "default": 55
+    },
+    keepOffset: {
+      type: Boolean,
+      "default": false
+    },
+    disabled: {
+      type: Boolean,
+      "default": false
+    },
+    fallbackOnBody: {
+      type: Boolean,
+      "default": false
+    },
+    delay: {
+      type: Number,
+      "default": 0
+    },
+    delayOnTouchOnly: {
+      type: Boolean,
+      "default": false
+    },
+    rootTag: {
+      type: String,
+      "default": 'div'
+    },
+    wrapTag: {
+      type: String,
+      "default": 'div'
+    },
+    itemTag: {
+      type: String,
+      "default": 'div'
+    },
+    wrapClass: {
+      type: String,
+      "default": ''
+    },
+    wrapStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
+    itemStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
+    itemClass: {
+      type: String,
+      "default": ''
+    },
+    ghostClass: {
+      type: String,
+      "default": ''
+    },
+    ghostStyle: {
+      type: Object,
+      "default": function _default() {
+        return {};
+      }
+    },
+    chosenClass: {
+      type: String,
+      "default": ''
+    }
+  };
+  var SlotsProps = {
+    tag: {
+      type: String,
+      "default": 'div'
+    },
+    dataKey: {
+      type: [String, Number]
+    },
+    sizeKey: {
+      type: String
+    }
+  };
+
   var useObserver = function useObserver(props, aRef, emit) {
     var observer = null;
     var getCurrentSize = function getCurrentSize() {
@@ -1600,7 +1600,7 @@
   };
   var VirtualDragList = vue.defineComponent({
     props: VirtualProps,
-    emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove'],
+    emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove', 'rangeChange'],
     setup: function setup(props, _ref2) {
       var emit = _ref2.emit,
         slots = _ref2.slots,
@@ -1771,10 +1771,12 @@
             }
           },
           onUpdate: function onUpdate(range) {
-            if (Dnd.dragged && range.start !== rangeRef.value.start) {
+            var rangeChanged = range.start !== rangeRef.value.start;
+            if (dragging.value && rangeChanged) {
               sortable && (sortable.reRendered = true);
             }
             rangeRef.value = range;
+            rangeChanged && emit('rangeChange', range);
           }
         });
       };

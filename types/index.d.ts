@@ -128,7 +128,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     };
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
+}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -263,6 +263,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     onDrop?: ((...args: any[]) => any) | undefined;
     onAdd?: ((...args: any[]) => any) | undefined;
     onRemove?: ((...args: any[]) => any) | undefined;
+    onRangeChange?: ((...args: any[]) => any) | undefined;
 }, {
     dataKey: string;
     draggable: string;

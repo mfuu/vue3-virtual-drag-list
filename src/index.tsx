@@ -13,8 +13,6 @@ import {
   onBeforeMount,
   defineComponent,
 } from 'vue';
-import Dnd from 'sortable-dnd';
-import { VirtualProps, SlotsProps } from './props';
 import {
   Range,
   Virtual,
@@ -24,6 +22,7 @@ import {
   SortableAttrs,
   VirtualAttrs,
 } from './core';
+import { VirtualProps, SlotsProps } from './props';
 
 const useObserver = (props: any, aRef: Ref<HTMLElement | null>, emit: any) => {
   let observer: ResizeObserver | null = null;
@@ -97,6 +96,7 @@ const VirtualDragList = defineComponent({
     'drop',
     'add',
     'remove',
+    'rangeChange'
   ],
   setup(props, { emit, slots, expose }) {
     const rangeRef = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0 });
@@ -289,10 +289,12 @@ const VirtualDragList = defineComponent({
           }
         },
         onUpdate: (range) => {
-          if (Dnd.dragged && range.start !== rangeRef.value.start) {
+          const rangeChanged = range.start !== rangeRef.value.start;
+          if (dragging.value && rangeChanged) {
             sortable && (sortable.reRendered = true);
           }
           rangeRef.value = range;
+          rangeChanged && emit('rangeChange', range);
         },
       });
     };
