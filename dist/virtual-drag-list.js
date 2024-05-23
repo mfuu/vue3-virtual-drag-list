@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.2.5
+ * vue-virtual-draglist v3.3.0
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -10,6 +10,33 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.VirtualDragList = factory(global.Vue));
 })(this, (function (vue) { 'use strict';
 
+  function _iterableToArrayLimit(arr, i) {
+    var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+    if (null != _i) {
+      var _s,
+        _e,
+        _x,
+        _r,
+        _arr = [],
+        _n = !0,
+        _d = !1;
+      try {
+        if (_x = (_i = _i.call(arr)).next, 0 === i) {
+          if (Object(_i) !== _i) return;
+          _n = !1;
+        } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0);
+      } catch (err) {
+        _d = !0, _e = err;
+      } finally {
+        try {
+          if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return;
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+      return _arr;
+    }
+  }
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
     if (Object.getOwnPropertySymbols) {
@@ -45,11 +72,17 @@
     }
     return obj;
   }
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
   function _toConsumableArray(arr) {
     return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
   }
   function _arrayWithoutHoles(arr) {
     if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
   }
   function _iterableToArray(iter) {
     if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
@@ -69,6 +102,9 @@
   }
   function _nonIterableSpread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
   function _toPrimitive(input, hint) {
     if (typeof input !== "object" || input === null) return input;
@@ -1491,10 +1527,6 @@
       type: String,
       "default": 'div'
     },
-    itemTag: {
-      type: String,
-      "default": 'div'
-    },
     wrapClass: {
       type: String,
       "default": ''
@@ -1504,16 +1536,6 @@
       "default": function _default() {
         return {};
       }
-    },
-    itemStyle: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
-    },
-    itemClass: {
-      type: String,
-      "default": ''
     },
     ghostClass: {
       type: String,
@@ -1531,59 +1553,77 @@
     }
   };
   var SlotsProps = {
-    tag: {
-      type: String,
-      "default": 'div'
-    },
     dataKey: {
       type: [String, Number]
     },
     sizeKey: {
-      type: String
+      type: String,
+      "default": 'offsetHeight'
     }
   };
 
-  var useObserver = function useObserver(props, aRef, emit) {
-    var observer = null;
-    var getCurrentSize = function getCurrentSize() {
-      return aRef.value ? aRef.value[props.sizeKey] : 0;
-    };
-    var onSizeChange = function onSizeChange() {
-      emit('resize', getCurrentSize(), props.dataKey);
-    };
-    vue.onMounted(function () {
-      if (typeof ResizeObserver !== 'undefined') {
-        observer = new ResizeObserver(function () {
-          onSizeChange();
-        });
-        aRef.value && observer.observe(aRef.value);
-      }
-    });
-    vue.onUpdated(function () {
-      onSizeChange();
-    });
-    vue.onUnmounted(function () {
-      if (observer) {
-        observer.disconnect();
-        observer = null;
+  var createSlot = function createSlot(_ref) {
+    var _mounted = _ref.mounted,
+      updated = _ref.updated,
+      unmounted = _ref.unmounted;
+    return vue.defineComponent({
+      props: ['vnode'],
+      mounted: function mounted() {
+        _mounted(this.$el);
+      },
+      onUpdated: function onUpdated() {
+        updated(this.$el);
+      },
+      onUnmounted: function onUnmounted() {
+        unmounted(this.$el);
+      },
+      render: function render(props) {
+        return props.vnode;
       }
     });
   };
   var Items = vue.defineComponent({
-    name: 'VirtualDraglistItems',
     props: SlotsProps,
     emits: ['resize'],
-    setup: function setup(props, _ref) {
-      var emit = _ref.emit,
-        slots = _ref.slots;
-      var elRef = vue.ref(null);
-      useObserver(props, elRef, emit);
+    setup: function setup(props, _ref2) {
+      var emit = _ref2.emit,
+        slots = _ref2.slots;
+      var observer = null;
+      var onSizeChange = function onSizeChange(el) {
+        var size = el ? el[props.sizeKey] : 0;
+        emit('resize', size, props.dataKey);
+      };
+      var mounted = function mounted(el) {
+        if (typeof ResizeObserver !== 'undefined') {
+          observer = new ResizeObserver(function () {
+            onSizeChange(el);
+          });
+          el && observer.observe(el);
+        }
+      };
+      var updated = function updated(el) {
+        onSizeChange(el);
+      };
+      var unmounted = function unmounted() {
+        if (observer) {
+          observer.disconnect();
+          observer = null;
+        }
+      };
+      var mySlot = createSlot({
+        mounted: mounted,
+        updated: updated,
+        unmounted: unmounted
+      });
       return function () {
-        var Tag = props.tag,
-          dataKey = props.dataKey;
-        return vue.h(Tag, {
-          ref: elRef,
+        var _a;
+        var dataKey = props.dataKey;
+        var _ref3 = ((_a = slots["default"]) === null || _a === void 0 ? void 0 : _a.call(slots)) || [],
+          _ref4 = _slicedToArray(_ref3, 1),
+          defaultSlot = _ref4[0];
+        return vue.h(mySlot, {
           key: dataKey,
+          vnode: defaultSlot,
           'data-key': dataKey,
           "class": 'virtual-dnd-list-item'
         }, {
@@ -1601,10 +1641,10 @@
   var VirtualDragList = vue.defineComponent({
     props: VirtualProps,
     emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove', 'rangeChange'],
-    setup: function setup(props, _ref2) {
-      var emit = _ref2.emit,
-        slots = _ref2.slots,
-        expose = _ref2.expose;
+    setup: function setup(props, _ref5) {
+      var emit = _ref5.emit,
+        slots = _ref5.slots,
+        expose = _ref5.expose;
       var rangeRef = vue.ref({
         start: 0,
         end: props.keeps - 1,
@@ -1800,10 +1840,8 @@
           },
           onDrop: function onDrop(event) {
             dragging.value = '';
-            if (!props.sortable) {
-              virtual.enableScroll(true);
-              sortable.option('autoScroll', props.autoScroll);
-            }
+            virtual.enableScroll(true);
+            sortable.option('autoScroll', props.autoScroll);
             if (event.changed) {
               emit('update:dataSource', event.list);
               emit('update:modelValue', event.list);
@@ -1859,12 +1897,10 @@
           var record = listRef.value[index];
           if (record) {
             var dataKey = getDataKey(record, props.dataKey);
-            var itemStyle = Object.assign(Object.assign({}, props.itemStyle), getItemStyle(dataKey));
             renders.push(slots.item ? vue.h(Items, {
               key: dataKey,
-              tag: props.itemTag,
-              "class": props.itemClass,
-              style: itemStyle,
+              "class": 'virtual-dnd-list-item',
+              style: getItemStyle(dataKey),
               dataKey: dataKey,
               sizeKey: sizeKey,
               onResize: onItemResized

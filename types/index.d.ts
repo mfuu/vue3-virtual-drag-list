@@ -94,10 +94,6 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    itemTag: {
-        type: StringConstructor;
-        default: string;
-    };
     wrapClass: {
         type: StringConstructor;
         default: string;
@@ -105,14 +101,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     wrapStyle: {
         type: ObjectConstructor;
         default: () => {};
-    };
-    itemStyle: {
-        type: ObjectConstructor;
-        default: () => {};
-    };
-    itemClass: {
-        type: StringConstructor;
-        default: string;
     };
     ghostClass: {
         type: StringConstructor;
@@ -222,10 +210,6 @@ declare const VirtualDragList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    itemTag: {
-        type: StringConstructor;
-        default: string;
-    };
     wrapClass: {
         type: StringConstructor;
         default: string;
@@ -233,14 +217,6 @@ declare const VirtualDragList: vue.DefineComponent<{
     wrapStyle: {
         type: ObjectConstructor;
         default: () => {};
-    };
-    itemStyle: {
-        type: ObjectConstructor;
-        default: () => {};
-    };
-    itemClass: {
-        type: StringConstructor;
-        default: string;
     };
     ghostClass: {
         type: StringConstructor;
@@ -283,11 +259,8 @@ declare const VirtualDragList: vue.DefineComponent<{
     delayOnTouchOnly: boolean;
     rootTag: string;
     wrapTag: string;
-    itemTag: string;
     wrapClass: string;
     wrapStyle: Record<string, any>;
-    itemStyle: Record<string, any>;
-    itemClass: string;
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;

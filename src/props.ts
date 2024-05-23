@@ -13,11 +13,11 @@ export const VirtualProps = {
   },
   draggable: {
     type: String,
-    default: '.virtual-dnd-list-item'
+    default: '.virtual-dnd-list-item',
   },
   sortable: {
     type: Boolean,
-    default: true
+    default: true,
   },
   handle: {
     type: [Function, String],
@@ -91,10 +91,6 @@ export const VirtualProps = {
     type: String,
     default: 'div',
   },
-  itemTag: {
-    type: String,
-    default: 'div',
-  },
   wrapClass: {
     type: String,
     default: '',
@@ -102,14 +98,6 @@ export const VirtualProps = {
   wrapStyle: {
     type: Object,
     default: () => ({}),
-  },
-  itemStyle: {
-    type: Object,
-    default: () => ({}),
-  },
-  itemClass: {
-    type: String,
-    default: '',
   },
   ghostClass: {
     type: String,
@@ -126,14 +114,11 @@ export const VirtualProps = {
 };
 
 export const SlotsProps = {
-  tag: {
-    type: String,
-    default: 'div',
-  },
   dataKey: {
     type: [String, Number],
   },
   sizeKey: {
     type: String,
+    default: 'offsetHeight',
   },
 };

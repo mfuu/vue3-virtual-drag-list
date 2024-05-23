@@ -1,11 +1,9 @@
 import {
   h,
   ref,
-  Ref,
   isRef,
   watch,
   computed,
-  onUpdated,
   onMounted,
   onActivated,
   onUnmounted,
@@ -24,54 +22,67 @@ import {
 } from './core';
 import { VirtualProps, SlotsProps } from './props';
 
-const useObserver = (props: any, aRef: Ref<HTMLElement | null>, emit: any) => {
-  let observer: ResizeObserver | null = null;
-
-  const getCurrentSize = () => {
-    return aRef.value ? aRef.value[props.sizeKey] : 0;
-  };
-
-  const onSizeChange = () => {
-    emit('resize', getCurrentSize(), props.dataKey);
-  };
-
-  onMounted(() => {
-    if (typeof ResizeObserver !== 'undefined') {
-      observer = new ResizeObserver(() => {
-        onSizeChange();
-      });
-      aRef.value && observer.observe(aRef.value);
-    }
-  });
-
-  onUpdated(() => {
-    onSizeChange();
-  });
-
-  onUnmounted(() => {
-    if (observer) {
-      observer.disconnect();
-      observer = null;
-    }
+type CallFun = (vnodeEl: HTMLElement) => void;
+type Funs = Record<'mounted' | 'updated' | 'unmounted', CallFun>;
+const createSlot = ({ mounted, updated, unmounted }: Funs) => {
+  return defineComponent({
+    props: ['vnode'],
+    mounted() {
+      mounted(this.$el);
+    },
+    onUpdated() {
+      updated(this.$el);
+    },
+    onUnmounted() {
+      unmounted(this.$el);
+    },
+    render(props: any) {
+      return props.vnode;
+    },
   });
 };
 
 const Items = defineComponent({
-  name: 'VirtualDraglistItems',
   props: SlotsProps,
   emits: ['resize'],
   setup(props, { emit, slots }) {
-    const elRef = ref<HTMLElement | null>(null);
-    useObserver(props, elRef, emit);
+    let observer: ResizeObserver | null = null;
+
+    const onSizeChange = (el: HTMLElement) => {
+      const size = el ? el[props.sizeKey] : 0;
+      emit('resize', size, props.dataKey);
+    };
+
+    const mounted = (el: HTMLElement) => {
+      if (typeof ResizeObserver !== 'undefined') {
+        observer = new ResizeObserver(() => {
+          onSizeChange(el);
+        });
+        el && observer.observe(el);
+      }
+    };
+
+    const updated = (el: HTMLElement) => {
+      onSizeChange(el);
+    };
+
+    const unmounted = () => {
+      if (observer) {
+        observer.disconnect();
+        observer = null;
+      }
+    };
+
+    const mySlot = createSlot({ mounted, updated, unmounted });
 
     return () => {
-      const { tag: Tag, dataKey } = props;
-
+      const { dataKey } = props;
+      const [defaultSlot] = slots.default?.() || [];
       return h(
-        Tag,
+        mySlot,
         {
-          ref: elRef,
           key: dataKey,
+          vnode: defaultSlot,
           'data-key': dataKey,
           class: 'virtual-dnd-list-item',
         },
@@ -96,7 +107,7 @@ const VirtualDragList = defineComponent({
     'drop',
     'add',
     'remove',
-    'rangeChange'
+    'rangeChange',
   ],
   setup(props, { emit, slots, expose }) {
     const rangeRef = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0 });
@@ -320,10 +331,9 @@ const VirtualDragList = defineComponent({
         },
         onDrop: (event) => {
           dragging.value = '';
-          if (!props.sortable) {
-            virtual.enableScroll(true);
-            sortable.option('autoScroll', props.autoScroll);
-          }
+          virtual.enableScroll(true);
+          sortable.option('autoScroll', props.autoScroll);
+
           if (event.changed) {
             emit('update:dataSource', event.list);
             emit('update:modelValue', event.list);
@@ -388,16 +398,14 @@ const VirtualDragList = defineComponent({
         const record = listRef.value[index];
         if (record) {
           const dataKey = getDataKey(record, props.dataKey);
-          const itemStyle = { ...props.itemStyle, ...getItemStyle(dataKey) };
           renders.push(
             slots.item
               ? h(
                   Items,
                   {
                     key: dataKey,
-                    tag: props.itemTag,
-                    class: props.itemClass,
-                    style: itemStyle,
+                    class: 'virtual-dnd-list-item',
+                    style: getItemStyle(dataKey),
                     dataKey: dataKey,
                     sizeKey: sizeKey,
                     onResize: onItemResized,
@@ -416,7 +424,9 @@ const VirtualDragList = defineComponent({
     return () => {
       const { front, behind } = rangeRef.value;
       const { rootTag, wrapTag, scroller, wrapClass, wrapStyle } = props;
-      const padding = isHorizontal.value ? `0px ${behind}px 0px ${front}px` : `${front}px 0px ${behind}px`;
+      const padding = isHorizontal.value
+        ? `0px ${behind}px 0px ${front}px`
+        : `${front}px 0px ${behind}px`;
 
       return h(
         rootTag,
