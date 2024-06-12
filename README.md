@@ -63,15 +63,13 @@ const list = ref([
 
 ## Emits
 
-| **Emit**      | **Description**                               |
-| ------------- | --------------------------------------------- |
-| `top`         | scrolled to top                               |
-| `bottom`      | scrolled to bottom                            |
-| `drag`        | drag is started                               |
-| `drop`        | drag is completed                             |
-| `add`         | element is dropped into the list from another |
-| `remove`      | element is removed from the list into another |
-| `rangeChange` | triggered when the range changes              |
+| **Emit**      | **Description**    |
+| ------------- | ------------------ |
+| `top`         | scrolled to top    |
+| `bottom`      | scrolled to bottom |
+| `drag`        | drag is started    |
+| `drop`        | drag is completed  |
+| `rangeChange` | range changed      |
 
 ## Props
 
@@ -92,10 +90,11 @@ const list = ref([
 | `size`         | `Number`                  | `-`         | The estimated height of each piece of data, you can choose to pass it or not, it will be automatically calculated |
 | `handle`       | `Function/String`         | `-`         | Drag handle selector within list items                                                                            |
 | `group`        | `Object/String`           | `-`         | string: 'name' or object: `{ name: 'group', put: true/false, pull: true/false/'clone', revertDrag: true/false }`  |
-| `keepOffset`   | `Boolean`                 | `false`     | When scrolling up to load data, keep the same offset as the previous scroll                                       |
 | `direction`    | `vertical \| horizontal`  | `vertical`  | Scroll direction                                                                                                  |
 | `scroller`     | `Document \| HTMLElement` | `-`         | Virtual list scrolling element                                                                                    |
 | `lockAxis`     | `x \| y`                  | `-`         | Axis on which dragging will be locked                                                                             |
+| `tableMode`    | `Boolean`                 | `false`     | display with table and tbody                                                                                      |
+| `keepOffset`   | `Boolean`                 | `false`     | When scrolling up to load data, keep the same offset as the previous scroll                                       |
 | `debounceTime` | `Number`                  | `0`         | scroll debounce time                                                                                              |
 | `throttleTime` | `Number`                  | `0`         | scroll throttle time                                                                                              |
 
@@ -105,6 +104,7 @@ const list = ref([
 | ------------------ | --------- | ------------------------ | ------------------------------------------------------------- |
 | `sortable`         | `Boolean` | `true`                   | Whether the current list can be sorted by dragging            |
 | `draggable`        | `String`  | `.virtual-dnd-list-item` | Specifies which items inside the element should be draggable. |
+| `itemClass`        | `String`  | `virtual-dnd-list-item`  | Default list item class                                       |
 | `disabled`         | `Boolean` | `false`                  | Disables the sortable if set to true                          |
 | `animation`        | `Number`  | `150`                    | Animation speed moving items when sorting                     |
 | `autoScroll`       | `Boolean` | `true`                   | Automatic scrolling when moving to the edge of the container  |

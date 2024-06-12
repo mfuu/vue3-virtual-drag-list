@@ -20,95 +20,16 @@ import {
   SortableAttrs,
   VirtualAttrs,
 } from './core';
-import { VirtualProps, SlotsProps } from './props';
-
-type CallFun = (vnodeEl: HTMLElement) => void;
-type Funs = Record<'mounted' | 'updated' | 'unmounted', CallFun>;
-const createSlot = ({ mounted, updated, unmounted }: Funs) => {
-  return defineComponent({
-    props: ['vnode'],
-    mounted() {
-      mounted(this.$el);
-    },
-    onUpdated() {
-      updated(this.$el);
-    },
-    onUnmounted() {
-      unmounted(this.$el);
-    },
-    render(props: any) {
-      return props.vnode;
-    },
-  });
-};
-
-const Items = defineComponent({
-  props: SlotsProps,
-  emits: ['resize'],
-  setup(props, { emit, slots }) {
-    let observer: ResizeObserver | null = null;
-
-    const onSizeChange = (el: HTMLElement) => {
-      const size = el ? el[props.sizeKey] : 0;
-      emit('resize', size, props.dataKey);
-    };
-
-    const mounted = (el: HTMLElement) => {
-      if (typeof ResizeObserver !== 'undefined') {
-        observer = new ResizeObserver(() => {
-          onSizeChange(el);
-        });
-        el && observer.observe(el);
-      }
-    };
-
-    const updated = (el: HTMLElement) => {
-      onSizeChange(el);
-    };
-
-    const unmounted = () => {
-      if (observer) {
-        observer.disconnect();
-        observer = null;
-      }
-    };
-
-    const mySlot = createSlot({ mounted, updated, unmounted });
-
-    return () => {
-      const { dataKey } = props;
-      const [defaultSlot] = slots.default?.() || [];
-      return h(
-        mySlot,
-        {
-          key: dataKey,
-          vnode: defaultSlot,
-          'data-key': dataKey,
-          class: 'virtual-dnd-list-item',
-        },
-        { default: () => slots.default?.() }
-      );
-    };
-  },
-});
+import { VirtualProps } from './props';
+import Item from './item';
 
 const getList = (source) => {
   return isRef(source) ? source.value : source;
 };
 
-const VirtualDragList = defineComponent({
+const VirtualList = defineComponent({
   props: VirtualProps,
-  emits: [
-    'update:dataSource',
-    'update:modelValue',
-    'top',
-    'bottom',
-    'drag',
-    'drop',
-    'add',
-    'remove',
-    'rangeChange',
-  ],
+  emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
   setup(props, { emit, slots, expose }) {
     const rangeRef = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0 });
 
@@ -118,7 +39,7 @@ const VirtualDragList = defineComponent({
     const dragging = ref<any>();
     const lastList = ref<any[]>([]);
 
-    const isHorizontal = computed(() => props.direction !== 'vertical');
+    const horizontal = computed(() => props.direction !== 'vertical');
 
     const virtualAttributes = computed(() => {
       return VirtualAttrs.reduce((res, key) => {
@@ -139,22 +60,18 @@ const VirtualDragList = defineComponent({
     let uniqueKeys: any[] = [];
     let lastLength: number = 0;
 
-    // git item size by data-key
     function getSize(key: string | number) {
       return virtual.getSize(key);
     }
 
-    // Get the current scroll height
     function getOffset() {
       return virtual.getOffset();
     }
 
-    // Get client viewport size
     function getClientSize() {
       return virtual.getClientSize();
     }
 
-    // Get all scroll size
     function getScrollSize() {
       return virtual.getScrollSize();
     }
@@ -166,22 +83,18 @@ const VirtualDragList = defineComponent({
       }
     }
 
-    // Scroll to the specified offset
     function scrollToOffset(offset: number) {
       virtual.scrollToOffset(offset);
     }
 
-    // Scroll to the specified index position
     function scrollToIndex(index: number) {
       virtual.scrollToIndex(index);
     }
 
-    // Scroll to top of list
     function scrollToTop() {
       scrollToOffset(0);
     }
 
-    // Scroll to bottom of list
     function scrollToBottom() {
       virtual.scrollToBottom();
     }
@@ -226,7 +139,6 @@ const VirtualDragList = defineComponent({
       }
     });
 
-    // init range
     onBeforeMount(() => {
       onUpdate();
     });
@@ -243,8 +155,8 @@ const VirtualDragList = defineComponent({
     });
 
     onMounted(() => {
-      initVirtual();
-      initSortable();
+      installVirtual();
+      installSortable();
     });
 
     onUnmounted(() => {
@@ -280,17 +192,13 @@ const VirtualDragList = defineComponent({
       sortable?.option('uniqueKeys', uniqueKeys);
     };
 
-    const initVirtual = () => {
+    const installVirtual = () => {
       virtual = new Virtual({
-        size: props.size,
-        keeps: props.keeps,
+        ...virtualAttributes.value,
         buffer: Math.round(props.keeps / 3),
         wrapper: wrapRef.value as any,
-        scroller: (props.scroller as any) || (rootRef.value as any),
-        direction: props.direction,
+        scroller: props.scroller || (rootRef.value as any),
         uniqueKeys: uniqueKeys,
-        debounceTime: props.debounceTime,
-        throttleTime: props.throttleTime,
         onScroll: (event) => {
           lastLength = 0;
           if (!!listRef.value.length && event.top) {
@@ -310,17 +218,11 @@ const VirtualDragList = defineComponent({
       });
     };
 
-    const initSortable = () => {
+    const installSortable = () => {
       sortable = new Sortable(rootRef.value as any, {
         ...sortableAttributes.value,
         list: listRef.value,
         uniqueKeys: uniqueKeys,
-        onAdd: (event) => {
-          emit('add', event);
-        },
-        onRemove: (event) => {
-          emit('remove', event);
-        },
         onDrag: (event) => {
           dragging.value = event.key;
           if (!props.sortable) {
@@ -382,17 +284,21 @@ const VirtualDragList = defineComponent({
       }
     };
 
-    const getItemStyle = (dataKey: any) => {
-      if (dataKey == dragging.value) {
-        return { display: 'none' };
+    const renderSpacer = (offset) => {
+      if (props.tableMode) {
+        const tdStyle = { padding: 0, margin: 0, border: 0, height: `${offset}px` };
+
+        return h('tr', {}, [h('td', { style: tdStyle })]);
       }
-      return {};
+      return null;
     };
 
     const renderItems = () => {
       const renders: any[] = [];
-      const { start, end } = rangeRef.value;
-      const sizeKey = props.direction === 'vertical' ? 'offsetHeight' : 'offsetWidth';
+      const { start, end, front, behind } = rangeRef.value;
+      const sizeKey = horizontal.value ? 'offsetWidth' : 'offsetHeight';
+
+      renders.push(renderSpacer(front));
 
       for (let index = start; index <= end; index++) {
         const record = listRef.value[index];
@@ -401,11 +307,11 @@ const VirtualDragList = defineComponent({
           renders.push(
             slots.item
               ? h(
-                  Items,
+                  Item,
                   {
                     key: dataKey,
-                    class: 'virtual-dnd-list-item',
-                    style: getItemStyle(dataKey),
+                    class: props.itemClass,
+                    style: dataKey == dragging.value && { display: 'none' },
                     dataKey: dataKey,
                     sizeKey: sizeKey,
                     onResize: onItemResized,
@@ -418,31 +324,37 @@ const VirtualDragList = defineComponent({
           );
         }
       }
+
+      renders.push(renderSpacer(behind));
+
       return renders;
     };
 
     return () => {
       const { front, behind } = rangeRef.value;
-      const { rootTag, wrapTag, scroller, wrapClass, wrapStyle } = props;
-      const padding = isHorizontal.value
-        ? `0px ${behind}px 0px ${front}px`
-        : `${front}px 0px ${behind}px`;
+      const { tableMode, rootTag, wrapTag, scroller, wrapClass, wrapStyle } = props;
+
+      const padding = horizontal.value ? `0 ${behind}px 0 ${front}px` : `${front}px 0 ${behind}px`;
+      const overflow = horizontal.value ? 'auto hidden' : 'hidden auto';
+
+      const container = tableMode ? 'table' : rootTag;
+      const wrapper = tableMode ? 'tbody' : wrapTag;
 
       return h(
-        rootTag,
+        container,
         {
           ref: rootRef,
-          style: !scroller && { overflow: isHorizontal.value ? 'auto hidden' : 'hidden auto' },
+          style: !scroller && !tableMode && { overflow },
         },
         {
           default: () => [
             slots.header?.(),
             h(
-              wrapTag,
+              wrapper,
               {
                 ref: wrapRef,
                 class: wrapClass,
-                style: { ...wrapStyle, padding },
+                style: { ...wrapStyle, padding: !tableMode && padding },
               },
               {
                 default: () => renderItems(),
@@ -456,4 +368,4 @@ const VirtualDragList = defineComponent({
   },
 });
 
-export default VirtualDragList;
+export default VirtualList;

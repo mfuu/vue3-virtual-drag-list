@@ -1,6 +1,6 @@
 import * as vue from 'vue';
 
-declare const VirtualDragList: vue.DefineComponent<{
+declare const VirtualList: vue.DefineComponent<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -8,7 +8,15 @@ declare const VirtualDragList: vue.DefineComponent<{
         default: string;
         required: boolean;
     };
+    tableMode: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     draggable: {
+        type: StringConstructor;
+        default: string;
+    };
+    itemClass: {
         type: StringConstructor;
         default: string;
     };
@@ -116,7 +124,7 @@ declare const VirtualDragList: vue.DefineComponent<{
     };
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "add" | "remove" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
+}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -124,7 +132,15 @@ declare const VirtualDragList: vue.DefineComponent<{
         default: string;
         required: boolean;
     };
+    tableMode: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     draggable: {
+        type: StringConstructor;
+        default: string;
+    };
+    itemClass: {
         type: StringConstructor;
         default: string;
     };
@@ -237,12 +253,12 @@ declare const VirtualDragList: vue.DefineComponent<{
     onBottom?: ((...args: any[]) => any) | undefined;
     onDrag?: ((...args: any[]) => any) | undefined;
     onDrop?: ((...args: any[]) => any) | undefined;
-    onAdd?: ((...args: any[]) => any) | undefined;
-    onRemove?: ((...args: any[]) => any) | undefined;
     onRangeChange?: ((...args: any[]) => any) | undefined;
 }, {
     dataKey: string;
+    tableMode: boolean;
     draggable: string;
+    itemClass: string;
     sortable: boolean;
     lockAxis: "x" | "y";
     direction: "vertical" | "horizontal";
@@ -266,4 +282,4 @@ declare const VirtualDragList: vue.DefineComponent<{
     chosenClass: string;
 }>;
 
-export { VirtualDragList as default };
+export { VirtualList as default };

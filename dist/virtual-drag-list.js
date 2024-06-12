@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.0
+ * vue-virtual-draglist v3.3.1
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -7,7 +7,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue')) :
   typeof define === 'function' && define.amd ? define(['vue'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.VirtualDragList = factory(global.Vue));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.VirtualList = factory(global.Vue));
 })(this, (function (vue) { 'use strict';
 
   function _iterableToArrayLimit(arr, i) {
@@ -1447,9 +1447,17 @@
       "default": '',
       required: true
     },
+    tableMode: {
+      type: Boolean,
+      "default": false
+    },
     draggable: {
       type: String,
       "default": '.virtual-dnd-list-item'
+    },
+    itemClass: {
+      type: String,
+      "default": 'virtual-dnd-list-item'
     },
     sortable: {
       type: Boolean,
@@ -1559,6 +1567,9 @@
     sizeKey: {
       type: String,
       "default": 'offsetHeight'
+    },
+    itemClass: {
+      type: String
     }
   };
 
@@ -1582,7 +1593,7 @@
       }
     });
   };
-  var Items = vue.defineComponent({
+  var Item = vue.defineComponent({
     props: SlotsProps,
     emits: ['resize'],
     setup: function setup(props, _ref2) {
@@ -1610,22 +1621,23 @@
           observer = null;
         }
       };
-      var mySlot = createSlot({
+      var customSlot = createSlot({
         mounted: mounted,
         updated: updated,
         unmounted: unmounted
       });
       return function () {
         var _a;
-        var dataKey = props.dataKey;
+        var dataKey = props.dataKey,
+          itemClass = props.itemClass;
         var _ref3 = ((_a = slots["default"]) === null || _a === void 0 ? void 0 : _a.call(slots)) || [],
           _ref4 = _slicedToArray(_ref3, 1),
           defaultSlot = _ref4[0];
-        return vue.h(mySlot, {
+        return vue.h(customSlot, {
           key: dataKey,
+          "class": itemClass,
           vnode: defaultSlot,
-          'data-key': dataKey,
-          "class": 'virtual-dnd-list-item'
+          'data-key': dataKey
         }, {
           "default": function _default() {
             var _a;
@@ -1635,16 +1647,17 @@
       };
     }
   });
+
   var getList = function getList(source) {
     return vue.isRef(source) ? source.value : source;
   };
-  var VirtualDragList = vue.defineComponent({
+  var VirtualList = vue.defineComponent({
     props: VirtualProps,
-    emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'add', 'remove', 'rangeChange'],
-    setup: function setup(props, _ref5) {
-      var emit = _ref5.emit,
-        slots = _ref5.slots,
-        expose = _ref5.expose;
+    emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
+    setup: function setup(props, _ref) {
+      var emit = _ref.emit,
+        slots = _ref.slots,
+        expose = _ref.expose;
       var rangeRef = vue.ref({
         start: 0,
         end: props.keeps - 1,
@@ -1656,7 +1669,7 @@
       var listRef = vue.ref([]);
       var dragging = vue.ref();
       var lastList = vue.ref([]);
-      var isHorizontal = vue.computed(function () {
+      var horizontal = vue.computed(function () {
         return props.direction !== 'vertical';
       });
       var virtualAttributes = vue.computed(function () {
@@ -1675,19 +1688,15 @@
       var sortable;
       var uniqueKeys = [];
       var lastLength = 0;
-      // git item size by data-key
       function getSize(key) {
         return virtual.getSize(key);
       }
-      // Get the current scroll height
       function getOffset() {
         return virtual.getOffset();
       }
-      // Get client viewport size
       function getClientSize() {
         return virtual.getClientSize();
       }
-      // Get all scroll size
       function getScrollSize() {
         return virtual.getScrollSize();
       }
@@ -1697,19 +1706,15 @@
           virtual.scrollToIndex(index);
         }
       }
-      // Scroll to the specified offset
       function scrollToOffset(offset) {
         virtual.scrollToOffset(offset);
       }
-      // Scroll to the specified index position
       function scrollToIndex(index) {
         virtual.scrollToIndex(index);
       }
-      // Scroll to top of list
       function scrollToTop() {
         scrollToOffset(0);
       }
-      // Scroll to bottom of list
       function scrollToBottom() {
         virtual.scrollToBottom();
       }
@@ -1747,7 +1752,6 @@
           }
         }
       });
-      // init range
       vue.onBeforeMount(function () {
         onUpdate();
       });
@@ -1760,8 +1764,8 @@
         virtual.removeScrollEventListener();
       });
       vue.onMounted(function () {
-        initVirtual();
-        initSortable();
+        installVirtual();
+        installSortable();
       });
       vue.onUnmounted(function () {
         sortable === null || sortable === void 0 ? void 0 : sortable.destroy();
@@ -1791,17 +1795,12 @@
         virtual === null || virtual === void 0 ? void 0 : virtual.option('uniqueKeys', uniqueKeys);
         sortable === null || sortable === void 0 ? void 0 : sortable.option('uniqueKeys', uniqueKeys);
       };
-      var initVirtual = function initVirtual() {
-        virtual = new Virtual({
-          size: props.size,
-          keeps: props.keeps,
+      var installVirtual = function installVirtual() {
+        virtual = new Virtual(Object.assign(Object.assign({}, virtualAttributes.value), {
           buffer: Math.round(props.keeps / 3),
           wrapper: wrapRef.value,
           scroller: props.scroller || rootRef.value,
-          direction: props.direction,
           uniqueKeys: uniqueKeys,
-          debounceTime: props.debounceTime,
-          throttleTime: props.throttleTime,
           onScroll: function onScroll(event) {
             lastLength = 0;
             if (!!listRef.value.length && event.top) {
@@ -1818,18 +1817,12 @@
             rangeRef.value = range;
             rangeChanged && emit('rangeChange', range);
           }
-        });
+        }));
       };
-      var initSortable = function initSortable() {
+      var installSortable = function installSortable() {
         sortable = new Sortable(rootRef.value, Object.assign(Object.assign({}, sortableAttributes.value), {
           list: listRef.value,
           uniqueKeys: uniqueKeys,
-          onAdd: function onAdd(event) {
-            emit('add', event);
-          },
-          onRemove: function onRemove(event) {
-            emit('remove', event);
-          },
           onDrag: function onDrag(event) {
             dragging.value = event.key;
             if (!props.sortable) {
@@ -1879,28 +1872,39 @@
           updateRange(listRef.value, listRef.value);
         }
       };
-      var getItemStyle = function getItemStyle(dataKey) {
-        if (dataKey == dragging.value) {
-          return {
-            display: 'none'
+      var renderSpacer = function renderSpacer(offset) {
+        if (props.tableMode) {
+          var tdStyle = {
+            padding: 0,
+            margin: 0,
+            border: 0,
+            height: "".concat(offset, "px")
           };
+          return vue.h('tr', {}, [vue.h('td', {
+            style: tdStyle
+          })]);
         }
-        return {};
+        return null;
       };
       var renderItems = function renderItems() {
         var renders = [];
         var _rangeRef$value = rangeRef.value,
           start = _rangeRef$value.start,
-          end = _rangeRef$value.end;
-        var sizeKey = props.direction === 'vertical' ? 'offsetHeight' : 'offsetWidth';
+          end = _rangeRef$value.end,
+          front = _rangeRef$value.front,
+          behind = _rangeRef$value.behind;
+        var sizeKey = horizontal.value ? 'offsetWidth' : 'offsetHeight';
+        renders.push(renderSpacer(front));
         var _loop = function _loop(index) {
           var record = listRef.value[index];
           if (record) {
             var dataKey = getDataKey(record, props.dataKey);
-            renders.push(slots.item ? vue.h(Items, {
+            renders.push(slots.item ? vue.h(Item, {
               key: dataKey,
-              "class": 'virtual-dnd-list-item',
-              style: getItemStyle(dataKey),
+              "class": props.itemClass,
+              style: dataKey == dragging.value && {
+                display: 'none'
+              },
               dataKey: dataKey,
               sizeKey: sizeKey,
               onResize: onItemResized
@@ -1919,31 +1923,36 @@
         for (var index = start; index <= end; index++) {
           _loop(index);
         }
+        renders.push(renderSpacer(behind));
         return renders;
       };
       return function () {
         var _rangeRef$value2 = rangeRef.value,
           front = _rangeRef$value2.front,
           behind = _rangeRef$value2.behind;
-        var rootTag = props.rootTag,
+        var tableMode = props.tableMode,
+          rootTag = props.rootTag,
           wrapTag = props.wrapTag,
           scroller = props.scroller,
           wrapClass = props.wrapClass,
           wrapStyle = props.wrapStyle;
-        var padding = isHorizontal.value ? "0px ".concat(behind, "px 0px ").concat(front, "px") : "".concat(front, "px 0px ").concat(behind, "px");
-        return vue.h(rootTag, {
+        var padding = horizontal.value ? "0 ".concat(behind, "px 0 ").concat(front, "px") : "".concat(front, "px 0 ").concat(behind, "px");
+        var overflow = horizontal.value ? 'auto hidden' : 'hidden auto';
+        var container = tableMode ? 'table' : rootTag;
+        var wrapper = tableMode ? 'tbody' : wrapTag;
+        return vue.h(container, {
           ref: rootRef,
-          style: !scroller && {
-            overflow: isHorizontal.value ? 'auto hidden' : 'hidden auto'
+          style: !scroller && !tableMode && {
+            overflow: overflow
           }
         }, {
           "default": function _default() {
             var _a, _b;
-            return [(_a = slots.header) === null || _a === void 0 ? void 0 : _a.call(slots), vue.h(wrapTag, {
+            return [(_a = slots.header) === null || _a === void 0 ? void 0 : _a.call(slots), vue.h(wrapper, {
               ref: wrapRef,
               "class": wrapClass,
               style: Object.assign(Object.assign({}, wrapStyle), {
-                padding: padding
+                padding: !tableMode && padding
               })
             }, {
               "default": function _default() {
@@ -1956,6 +1965,6 @@
     }
   });
 
-  return VirtualDragList;
+  return VirtualList;
 
 }));
