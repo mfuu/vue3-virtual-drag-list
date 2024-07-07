@@ -67,6 +67,10 @@ export const VirtualProps = {
     type: Boolean,
     default: true,
   },
+  scrollSpeed: {
+    type: Object,
+    default: () => ({ x: 10, y: 10 }),
+  },
   scrollThreshold: {
     type: Number,
     default: 55,

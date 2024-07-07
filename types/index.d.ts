@@ -70,6 +70,13 @@ declare const VirtualList: vue.DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    scrollSpeed: {
+        type: ObjectConstructor;
+        default: () => {
+            x: number;
+            y: number;
+        };
+    };
     scrollThreshold: {
         type: NumberConstructor;
         default: number;
@@ -194,6 +201,13 @@ declare const VirtualList: vue.DefineComponent<{
         type: BooleanConstructor;
         default: boolean;
     };
+    scrollSpeed: {
+        type: ObjectConstructor;
+        default: () => {
+            x: number;
+            y: number;
+        };
+    };
     scrollThreshold: {
         type: NumberConstructor;
         default: number;
@@ -267,6 +281,7 @@ declare const VirtualList: vue.DefineComponent<{
     throttleTime: number;
     animation: number;
     autoScroll: boolean;
+    scrollSpeed: Record<string, any>;
     scrollThreshold: number;
     keepOffset: boolean;
     disabled: boolean;

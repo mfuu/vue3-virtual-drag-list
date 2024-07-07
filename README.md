@@ -108,6 +108,7 @@ const list = ref([
 | `disabled`         | `Boolean` | `false`                  | Disables the sortable if set to true                          |
 | `animation`        | `Number`  | `150`                    | Animation speed moving items when sorting                     |
 | `autoScroll`       | `Boolean` | `true`                   | Automatic scrolling when moving to the edge of the container  |
+| `scrollSpeed`      | `Object`  | `{ x: 10, y: 10 }`       | Vertical&Horizontal scrolling speed (px)                      |
 | `scrollThreshold`  | `Number`  | `55`                     | Threshold to trigger autoscroll                               |
 | `delay`            | `Number`  | `0`                      | Time in milliseconds to define when the sorting should start  |
 | `delayOnTouchOnly` | `Boolean` | `false`                  | Only delay on press if user is using touch                    |

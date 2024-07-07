@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.1
+ * vue-virtual-draglist v3.3.2
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -876,7 +876,7 @@
   })(sortableDnd_min);
   var Dnd = sortableDnd_min.exports;
 
-  var SortableAttrs = ['delay', 'group', 'handle', 'lockAxis', 'disabled', 'sortable', 'draggable', 'animation', 'autoScroll', 'ghostClass', 'ghostStyle', 'chosenClass', 'fallbackOnBody', 'scrollThreshold', 'delayOnTouchOnly'];
+  var SortableAttrs = ['delay', 'group', 'handle', 'lockAxis', 'disabled', 'sortable', 'draggable', 'animation', 'autoScroll', 'ghostClass', 'ghostStyle', 'chosenClass', 'scrollSpeed', 'fallbackOnBody', 'scrollThreshold', 'delayOnTouchOnly'];
   function Sortable(el, options) {
     this.el = el;
     this.options = options;
@@ -911,40 +911,8 @@
         },
         onDrop: function onDrop(event) {
           return _this.onDrop(event);
-        },
-        onAdd: function onAdd(event) {
-          return _this.onAdd(event);
-        },
-        onRemove: function onRemove(event) {
-          return _this.onRemove(event);
         }
       }));
-    },
-    onAdd: function onAdd(event) {
-      var _Dnd$get$option = Dnd.get(event.from).option('store'),
-        item = _Dnd$get$option.item,
-        key = _Dnd$get$option.key;
-
-      // store the dragged item
-      this.sortable.option('store', {
-        item: item,
-        key: key
-      });
-      this.dispatchEvent('onAdd', {
-        item: item,
-        key: key,
-        event: event
-      });
-    },
-    onRemove: function onRemove(event) {
-      var _Dnd$get$option2 = Dnd.get(event.from).option('store'),
-        item = _Dnd$get$option2.item,
-        key = _Dnd$get$option2.key;
-      this.dispatchEvent('onRemove', {
-        item: item,
-        key: key,
-        event: event
-      });
     },
     onDrag: function onDrag(event) {
       var key = event.node.getAttribute('data-key');
@@ -965,10 +933,10 @@
       });
     },
     onDrop: function onDrop(event) {
-      var _Dnd$get$option3 = Dnd.get(event.from).option('store'),
-        item = _Dnd$get$option3.item,
-        key = _Dnd$get$option3.key,
-        index = _Dnd$get$option3.index;
+      var _Dnd$get$option = Dnd.get(event.from).option('store'),
+        item = _Dnd$get$option.item,
+        key = _Dnd$get$option.key,
+        index = _Dnd$get$option.index;
       var list = this.options.list;
       var params = {
         key: key,
@@ -981,7 +949,7 @@
         newIndex: index
       };
       if (!(event.from === event.to && event.node === event.target)) {
-        this.getDropParams(params, event, item, key, index, list);
+        this.handleDropEvent(params, event, item, key, index, list);
       }
       this.dispatchEvent('onDrop', params);
       if (event.from === this.el && this.reRendered) {
@@ -994,7 +962,7 @@
       }
       this.reRendered = false;
     },
-    getDropParams: function getDropParams(params, event, item, key, index, list) {
+    handleDropEvent: function handleDropEvent(params, event, item, key, index, list) {
       var targetKey = event.target.getAttribute('data-key');
       var newIndex = -1;
       var oldIndex = index;
@@ -1141,7 +1109,6 @@
     this.calcType = CACLTYPE.INIT;
     this.calcSize = {
       average: 0,
-      total: 0,
       fixed: 0
     };
     this.scrollDirection = '';
@@ -1227,20 +1194,27 @@
       this.handleUpdate(start, this.getEndByStart(start));
     },
     onItemResized: function onItemResized(key, size) {
+      if (this.sizes.get(key) === size) {
+        return;
+      }
       this.sizes.set(key, size);
       if (this.calcType === CACLTYPE.INIT) {
         this.calcType = CACLTYPE.FIXED;
         this.calcSize.fixed = size;
       } else if (this.isFixed() && this.calcSize.fixed !== size) {
         this.calcType = CACLTYPE.DYNAMIC;
-        this.calcSize.fixed = undefined;
+        this.calcSize.fixed = 0;
       }
-      // In the case of non-fixed heights, the average height and the total height are calculated
-      if (this.calcType !== CACLTYPE.FIXED) {
-        this.calcSize.total = _toConsumableArray(this.sizes.values()).reduce(function (t, i) {
-          return t + i;
-        }, 0);
-        this.calcSize.average = Math.round(this.calcSize.total / this.sizes.size);
+
+      // calculate the average size only once
+      if (this.calcType === CACLTYPE.DYNAMIC && !this.calcSize.average) {
+        var critical = Math.min(this.options.keeps, this.options.uniqueKeys.length);
+        if (this.sizes.size === critical) {
+          var total = _toConsumableArray(this.sizes.values()).reduce(function (t, i) {
+            return t + i;
+          }, 0);
+          this.calcSize.average = Math.round(total / this.sizes.size);
+        }
       }
     },
     addScrollEventListener: function addScrollEventListener() {
@@ -1331,7 +1305,7 @@
     },
     handleScrollFront: function handleScrollFront() {
       var scrolls = this.getScrollItems();
-      if (scrolls > this.range.start) {
+      if (scrolls >= this.range.start) {
         return;
       }
       var start = Math.max(scrolls - this.options.buffer, 0);
@@ -1339,7 +1313,7 @@
     },
     handleScrollBehind: function handleScrollBehind() {
       var scrolls = this.getScrollItems();
-      if (scrolls < this.range.start + this.options.buffer) {
+      if (scrolls <= this.range.start + this.options.buffer) {
         return;
       }
       this.checkIfUpdate(scrolls, this.getEndByStart(scrolls));
@@ -1431,6 +1405,9 @@
         wrapper = _this$options3.wrapper,
         scroller = _this$options3.scroller,
         direction = _this$options3.direction;
+      if (scroller === wrapper) {
+        return 0;
+      }
       if (scroller && wrapper) {
         var rect = scroller instanceof Window ? Dnd.utils.getRect(wrapper) : Dnd.utils.getRect(wrapper, true, scroller);
         offset = this.offset + rect[rectDir[direction]];
@@ -1502,6 +1479,15 @@
     autoScroll: {
       type: Boolean,
       "default": true
+    },
+    scrollSpeed: {
+      type: Object,
+      "default": function _default() {
+        return {
+          x: 10,
+          y: 10
+        };
+      }
     },
     scrollThreshold: {
       type: Number,
