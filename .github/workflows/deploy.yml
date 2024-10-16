@@ -33,6 +33,7 @@ jobs:
 
       - name: Build with VitePress
         run: |
+          npm run core:update
           npm run docs:build
           ls
 
