@@ -6,7 +6,7 @@ A virtual scrolling list component that can be sorted by dragging, support vue3
 
 If you use vue with 2.x, see [here](https://github.com/mfuu/vue-virtual-drag-list)
 
-### [Live demo](https://mfuu.github.io/vue-virtual-drag-list/)
+### [Live demo](https://mfuu.github.io/vue3-virtual-drag-list/)
 
 ## Simple usage
 
@@ -120,6 +120,7 @@ const list = ref([
 | `ghostClass`       | `String`  | `''`                     | The class of the mask element when dragging                   |
 | `ghostStyle`       | `Object`  | `{}`                     | The style of the mask element when dragging                   |
 | `chosenClass`      | `String`  | `''`                     | Class name for the chosen item                                |
+| `placeholderClass` | `String`  | `''`                     | Class name for the drop placeholder                           |
 
 ## Methods
 
