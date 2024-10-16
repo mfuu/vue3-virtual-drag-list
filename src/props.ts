@@ -123,9 +123,13 @@ export const VirtualProps = {
     type: String,
     default: '',
   },
+  placeholderClass: {
+    type: String,
+    default: '',
+  }
 };
 
-export const SlotsProps = {
+export const ItemProps = {
   dataKey: {
     type: [String, Number],
   },

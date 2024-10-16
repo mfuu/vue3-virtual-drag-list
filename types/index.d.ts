@@ -1,6 +1,6 @@
 import * as vue from 'vue';
 
-declare const VirtualList: vue.DefineComponent<{
+declare const VirtualList: vue.DefineComponent<vue.ExtractPropTypes<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -129,9 +129,13 @@ declare const VirtualList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-}, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
+    placeholderClass: {
+        type: StringConstructor;
+        default: string;
+    };
+}>, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
+}>, {}, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.PublicProps, Readonly<vue.ExtractPropTypes<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -260,7 +264,11 @@ declare const VirtualList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-}>> & {
+    placeholderClass: {
+        type: StringConstructor;
+        default: string;
+    };
+}>> & Readonly<{
     "onUpdate:dataSource"?: ((...args: any[]) => any) | undefined;
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onTop?: ((...args: any[]) => any) | undefined;
@@ -268,7 +276,7 @@ declare const VirtualList: vue.DefineComponent<{
     onDrag?: ((...args: any[]) => any) | undefined;
     onDrop?: ((...args: any[]) => any) | undefined;
     onRangeChange?: ((...args: any[]) => any) | undefined;
-}, {
+}>, {
     dataKey: string;
     tableMode: boolean;
     draggable: string;
@@ -295,6 +303,7 @@ declare const VirtualList: vue.DefineComponent<{
     ghostClass: string;
     ghostStyle: Record<string, any>;
     chosenClass: string;
-}>;
+    placeholderClass: string;
+}, {}, {}, {}, string, vue.ComponentProvideOptions, true, {}, any>;
 
 export { VirtualList as default };
