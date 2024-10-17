@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.3
+ * vue-virtual-draglist v3.3.4
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -1322,7 +1322,7 @@
         }
         this.offset = offset;
         var top = this.isFront() && offset <= 0;
-        var bottom = this.isBehind() && clientSize + offset >= scrollSize;
+        var bottom = this.isBehind() && clientSize + offset + 1 >= scrollSize;
         this.options.onScroll({
           top: top,
           bottom: bottom,

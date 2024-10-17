@@ -1,6 +1,6 @@
 import * as vue from 'vue';
 
-declare const VirtualList: vue.DefineComponent<vue.ExtractPropTypes<{
+declare const VirtualList: vue.DefineComponent<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -133,9 +133,9 @@ declare const VirtualList: vue.DefineComponent<vue.ExtractPropTypes<{
         type: StringConstructor;
         default: string;
     };
-}>, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
+}, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, {}, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.PublicProps, Readonly<vue.ExtractPropTypes<{
+}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
     dataSource: {};
     modelValue: {};
     dataKey: {
@@ -268,7 +268,7 @@ declare const VirtualList: vue.DefineComponent<vue.ExtractPropTypes<{
         type: StringConstructor;
         default: string;
     };
-}>> & Readonly<{
+}>> & {
     "onUpdate:dataSource"?: ((...args: any[]) => any) | undefined;
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onTop?: ((...args: any[]) => any) | undefined;
@@ -276,7 +276,7 @@ declare const VirtualList: vue.DefineComponent<vue.ExtractPropTypes<{
     onDrag?: ((...args: any[]) => any) | undefined;
     onDrop?: ((...args: any[]) => any) | undefined;
     onRangeChange?: ((...args: any[]) => any) | undefined;
-}>, {
+}, {
     dataKey: string;
     tableMode: boolean;
     draggable: string;
@@ -304,6 +304,6 @@ declare const VirtualList: vue.DefineComponent<vue.ExtractPropTypes<{
     ghostStyle: Record<string, any>;
     chosenClass: string;
     placeholderClass: string;
-}, {}, {}, {}, string, vue.ComponentProvideOptions, true, {}, any>;
+}>;
 
 export { VirtualList as default };

@@ -1,6 +1,6 @@
 {
   "name": "vue-virtual-draglist",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "A virtual scrolling list component that can be sorted by dragging, support vue3",
   "main": "dist/virtual-drag-list.min.js",
   "types": "types/index.d.ts",
@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint --fix src --ext .js",
     "build": "cross-env mode=production rollup -c rollup.config.js",
-    "core:update": "git submodule update --init --recursive",
+    "core:update": "git submodule update --remote",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
