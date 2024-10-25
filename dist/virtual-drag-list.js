@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.4
+ * vue-virtual-draglist v3.3.5
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -104,7 +104,7 @@
   var sortableDnd_min = {exports: {}};
 
   /*!
-   * sortable-dnd v0.6.19
+   * sortable-dnd v0.6.20
    * open source under the MIT license
    * https://github.com/mfuu/sortable-dnd#readme
    */
@@ -291,7 +291,7 @@
       function N(t) {
         this.options = t, this.stack = [];
       }
-      function P(t) {
+      function O(t) {
         this.options = t || {}, this.selects = [];
       }
       window.requestAnimationFrame || (window.requestAnimationFrame = function (t) {
@@ -377,7 +377,7 @@
             }, s);
           }
         }
-      }, P.prototype = {
+      }, O.prototype = {
         active: function () {
           return !!D;
         },
@@ -474,9 +474,9 @@
           }
         }
       };
-      var A,
+      var P,
+        A,
         H,
-        O,
         k,
         L,
         X,
@@ -543,13 +543,14 @@
           selectedClass: "",
           placeholderClass: "",
           swapOnDrop: !0,
+          removeCloneOnDrop: !0,
           fallbackOnBody: !1,
           supportTouch: "ontouchstart" in window,
           emptyInsertThreshold: -1
         };
         for (var i in o) !(i in this.options) && (this.options[i] = o[i]);
         for (var r in et(n), this) "_" === r.charAt(0) && "function" == typeof this[r] && (this[r] = this[r].bind(this));
-        c(t, this.options.supportTouch ? "touchstart" : "mousedown", this._onDrag), this.autoScroller = new M(this.options), this.multiplayer = new P(this.options), this.animator = new N(this.options), tt.push(t);
+        c(t, this.options.supportTouch ? "touchstart" : "mousedown", this._onDrag), this.autoScroller = new M(this.options), this.multiplayer = new O(this.options), this.animator = new N(this.options), tt.push(t);
       }
       return ot.prototype = {
         constructor: ot,
@@ -588,12 +589,12 @@
         _onStart: function (t, e) {
           x(e);
           var n = g(k);
-          A = this.el, H = this.el, F = k, z = n, G = n, V = n, J = {
+          P = this.el, A = this.el, F = k, z = n, G = n, V = n, J = {
             to: this.el,
             target: k,
             newIndex: n,
             relative: 0
-          }, K = k, O = this.el, Y = k.cloneNode(!0), R = k.parentNode, W = this.options.group.pull, ot.clone = Y, ot.active = this, ot.dragged = k, this.multiplayer.onChoose(), w(k, this.options.chosenClass, !0), C({
+          }, K = k, H = this.el, Y = k.cloneNode(!0), R = k.parentNode, W = this.options.group.pull, ot.clone = Y, ot.active = this, ot.dragged = k, this.multiplayer.onChoose(), w(k, this.options.chosenClass, !0), C({
             sortable: this,
             name: "onChoose",
             params: this._getParams(e)
@@ -696,12 +697,12 @@
           }
         },
         _allowPut: function () {
-          if (O === this.el) return !0;
+          if (H === this.el) return !0;
           if (!this.options.group.put) return !1;
           var t = this.options.group,
             e = t.name,
             n = t.put,
-            o = O[T].options.group;
+            o = H[T].options.group;
           return n.join && n.indexOf(o.name) > -1 || o.name && e && o.name === e;
         },
         _getDirection: function () {
@@ -734,23 +735,23 @@
               params: this._getParams(t, {
                 target: L
               })
-            }), this.options.sortable || this.el !== O) return this.el === H || e !== this.el && f(this.el) ? void (L && !L.animated && !m(L, Y) && this._allowSwap() && (L !== Y && X !== Y ? (this.el !== H ? this._onInsert(t) : L !== k && this._onChange(t), U = L) : U = L)) : (L = U = null, void this._onInsert(t));
-            H !== O && (L = U = k, Z = 0, this._onInsert(t));
+            }), this.options.sortable || this.el !== H) return this.el === A || e !== this.el && f(this.el) ? void (L && !L.animated && !m(L, Y) && this._allowSwap() && (L !== Y && X !== Y ? (this.el !== A ? this._onInsert(t) : L !== k && this._onChange(t), U = L) : U = L)) : (L = U = null, void this._onInsert(t));
+            A !== H && (L = U = k, Z = 0, this._onInsert(t));
           }
         },
         _onInsert: function (t) {
           var e = L || Y,
-            n = "clone" === W && this.el !== O && H === O,
-            o = "clone" === W && this.el === O && H !== O,
+            n = "clone" === W && this.el !== H && A === H,
+            o = "clone" === W && this.el === H && A !== H,
             i = m(L, document),
             r = L === k && !i,
-            s = H[T],
-            a = O[T];
-          A = this.el, z = g(Y), F = e, R = i ? L.parentNode : this.el, s.animator.collect(Y.parentNode), this.animator.collect(R), n && (J.target = K, J.newIndex = z, J.relative = K === k ? 0 : _(Y, K), S(k, "display", ""), a.multiplayer.toggleVisible(!0), a.options.group.revertDrag || Y.parentNode.insertBefore(k, Y)), o && (z = g(k), S(k, "display", "none"), this.multiplayer.toggleVisible(!1)), S(Y, "display", r ? "none" : ""), L && i ? R.insertBefore(Y, Z < 0 ? L : L.nextSibling) : R.appendChild(Y), G = r ? V : g(Y), n && a.options.group.revertDrag && (J.target = k, J.newIndex = V, J.relative = 0, C({
+            s = A[T],
+            a = H[T];
+          P = this.el, z = g(Y), F = e, R = i ? L.parentNode : this.el, s.animator.collect(Y.parentNode), this.animator.collect(R), n && (J.target = K, J.newIndex = z, J.relative = K === k ? 0 : _(Y, K), S(k, "display", ""), a.multiplayer.toggleVisible(!0), a.options.group.revertDrag || Y.parentNode.insertBefore(k, Y)), o && (z = g(k), S(k, "display", "none"), this.multiplayer.toggleVisible(!1)), S(Y, "display", r ? "none" : ""), L && i ? R.insertBefore(Y, Z < 0 ? L : L.nextSibling) : R.appendChild(Y), G = r ? V : g(Y), n && a.options.group.revertDrag && (J.target = k, J.newIndex = V, J.relative = 0, C({
             sortable: a,
             name: "onChange",
             params: this._getParams(t, {
-              to: O,
+              to: H,
               target: k,
               newIndex: V,
               revertDrag: !0
@@ -765,7 +766,7 @@
             sortable: this,
             name: "onChange",
             params: this._getParams(t, {
-              from: O,
+              from: H,
               backToOrigin: !0
             })
           })), o || C({
@@ -774,38 +775,40 @@
             params: this._getParams(t, {
               oldIndex: -1
             })
-          }), s.animator.animate(), this.animator.animate(), H = this.el;
+          }), s.animator.animate(), this.animator.animate(), A = this.el;
         },
         _onChange: function (t) {
-          this.animator.collect(R), z = g(Y), R = L.parentNode, F = L, this.el === O && (K = L), R.insertBefore(Y, X), G = g(Y), C({
+          this.animator.collect(R), z = g(Y), R = L.parentNode, F = L, this.el === H && (K = L), R.insertBefore(Y, X), G = g(Y), C({
             sortable: this,
             name: "onChange",
             params: this._getParams(t)
-          }), this.animator.animate(), H = this.el;
+          }), this.animator.animate(), A = this.el;
         },
         _onDrop: function (t) {
-          this._cancelStart(), h(Q, "touchmove", this._nearestSortable), h(Q, "mousemove", this._nearestSortable), h(Q, "mouseup", this._onDrop), h(Q, "touchend", this._onDrop), h(Q, "touchcancel", this._onDrop), O && (H = O, z = V, F === Y && (F = k), this.animator.collect(R), this.multiplayer.toggleChosenClass(!1), w(k, this.options.chosenClass, !1), C({
+          this._cancelStart(), h(Q, "touchmove", this._nearestSortable), h(Q, "mousemove", this._nearestSortable), h(Q, "mouseup", this._onDrop), h(Q, "touchend", this._onDrop), h(Q, "touchcancel", this._onDrop), H && (A = H, z = V, F === Y && (F = k), this.animator.collect(R), this.multiplayer.toggleChosenClass(!1), w(k, this.options.chosenClass, !1), C({
             sortable: this,
             name: "onUnchoose",
             params: this._getParams(t)
-          }), q && this._onEnd(t), !q && this.animator.animate()), !nt(t.changedTouches ? t.changedTouches[0] : t) && this.multiplayer.onSelect(t, k, O, this), B && B.parentNode && B.parentNode.removeChild(B), this.autoScroller.stop(), this.multiplayer.nulling(), this._nulling();
+          }), q && this._onEnd(t), !q && this.animator.animate()), !nt(t.changedTouches ? t.changedTouches[0] : t) && this.multiplayer.onSelect(t, k, H, this), B && B.parentNode && B.parentNode.removeChild(B), this.autoScroller.stop(), this.multiplayer.nulling(), this._nulling();
         },
         _onEnd: function (t) {
           w(Y, this.options.chosenClass, !1), w(Y, this.options.placeholderClass, !1);
           var n = "clone" === W;
-          this.multiplayer.onDrop(H, A, n);
+          this.multiplayer.onDrop(A, P, n);
           var o = this._getParams(t),
-            i = this.options.swapOnDrop;
-          n && H !== A || !("function" == typeof i ? i(o) : i) || R.insertBefore(k, Y), n && H !== A && !this.multiplayer.active() || Y && Y.parentNode && Y.parentNode.removeChild(Y), S(k, "display", ""), this.animator.animate(), H !== A && C({
-            sortable: H[T],
+            i = this.options,
+            r = i.swapOnDrop,
+            s = i.removeCloneOnDrop;
+          n && A !== P || !("function" == typeof r ? r(o) : r) || R.insertBefore(k, Y), n && A !== P && !this.multiplayer.active() || !("function" == typeof s ? s(o) : s) || Y && Y.parentNode && Y.parentNode.removeChild(Y), S(k, "display", ""), this.animator.animate(), A !== P && C({
+            sortable: A[T],
             name: "onDrop",
             params: e({}, o, n ? J : {
               newIndex: -1
             })
           }), C({
-            sortable: A[T],
+            sortable: P[T],
             name: "onDrop",
-            params: e({}, o, H === A ? {} : {
+            params: e({}, o, A === P ? {} : {
               oldIndex: -1
             })
           });
@@ -813,10 +816,10 @@
         _getParams: function (t) {
           var n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
             o = {};
-          return o.event = t, o.to = A, o.from = H, o.node = k, o.clone = Y, o.target = F, o.oldIndex = z, o.newIndex = G, o.pullMode = W, e(o, this.multiplayer.params(), n), o.relative = F === k ? 0 : _(Y, F), o;
+          return o.event = t, o.to = P, o.from = A, o.node = k, o.clone = Y, o.target = F, o.oldIndex = z, o.newIndex = G, o.pullMode = W, e(o, this.multiplayer.params(), n), o.relative = F === k ? 0 : _(Y, F), o;
         },
         _nulling: function () {
-          A = H = O = k = L = X = Y = B = F = R = W = z = G = V = j = q = U = J = K = Q = Z = $ = ot.clone = ot.ghost = ot.active = ot.dragged = null;
+          P = A = H = k = L = X = Y = B = F = R = W = z = G = V = j = q = U = J = K = Q = Z = $ = ot.clone = ot.ghost = ot.active = ot.dragged = null;
         },
         destroy: function () {
           this._cancelStart(), this._nulling(), this.multiplayer.nulling(), this.autoScroller.stop(), h(this.el, "touchstart", this._onDrag), h(this.el, "mousedown", this._onDrag);
@@ -887,9 +890,8 @@
         }, {});
         this.sortable = new Dnd(this.el, Object.assign(Object.assign({}, props), {
           emptyInsertThreshold: 0,
-          swapOnDrop: function swapOnDrop(event) {
-            return event.from === event.to;
-          },
+          swapOnDrop: false,
+          removeCloneOnDrop: false,
           onDrag: function onDrag(event) {
             return _this.onDrag(event);
           },
@@ -959,9 +961,7 @@
         if (event.from === this.el && this.reRendered) {
           (_b = Dnd.dragged) === null || _b === void 0 ? void 0 : _b.remove();
         }
-        if (event.from !== event.to && event.pullMode === 'clone') {
-          (_c = Dnd.clone) === null || _c === void 0 ? void 0 : _c.remove();
-        }
+        (_c = Dnd.clone) === null || _c === void 0 ? void 0 : _c.remove();
         this.reRendered = false;
       }
     }, {
