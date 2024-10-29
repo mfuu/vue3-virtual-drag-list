@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.5
+ * vue-virtual-draglist v3.3.6
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -890,8 +890,12 @@
         }, {});
         this.sortable = new Dnd(this.el, Object.assign(Object.assign({}, props), {
           emptyInsertThreshold: 0,
-          swapOnDrop: false,
-          removeCloneOnDrop: false,
+          swapOnDrop: function swapOnDrop(event) {
+            return event.from === event.to;
+          },
+          removeCloneOnDrop: function removeCloneOnDrop(event) {
+            return event.from === event.to;
+          },
           onDrag: function onDrag(event) {
             return _this.onDrag(event);
           },
@@ -961,7 +965,9 @@
         if (event.from === this.el && this.reRendered) {
           (_b = Dnd.dragged) === null || _b === void 0 ? void 0 : _b.remove();
         }
-        (_c = Dnd.clone) === null || _c === void 0 ? void 0 : _c.remove();
+        if (event.from !== event.to) {
+          (_c = Dnd.clone) === null || _c === void 0 ? void 0 : _c.remove();
+        }
         this.reRendered = false;
       }
     }, {
