@@ -25,6 +25,7 @@ import {
   SortableAttrs,
   VirtualOptions,
   SortableOptions,
+  isSameValue,
 } from './core';
 import { VirtualProps } from './props';
 import Item from './item';
@@ -37,14 +38,14 @@ const VirtualList = defineComponent({
   props: VirtualProps,
   emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
   setup(props, { emit, slots, expose }) {
-    const range = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0 });
+    const range = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0, total: 0 });
     const horizontal = computed(() => props.direction !== 'vertical');
 
     const rootRef = ref<HTMLElement | null>(null);
     const wrapRef = ref<HTMLElement | null>(null);
     const listRef = ref<any[]>([]);
 
-    function getSize(key: any) {
+    function getSize(key: string | number) {
       return virtual.getSize(key);
     }
 
@@ -60,7 +61,7 @@ const VirtualList = defineComponent({
       return virtual.getScrollSize();
     }
 
-    function scrollToKey(key: any) {
+    function scrollToKey(key: string | number) {
       const index = uniqueKeys.indexOf(key);
       if (index > -1) {
         virtual.scrollToIndex(index);
@@ -132,7 +133,7 @@ const VirtualList = defineComponent({
     });
 
     let lastList: any[] = [];
-    let uniqueKeys: any[] = [];
+    let uniqueKeys: (string | number)[] = [];
     let topLoadLength: number = 0;
     const onModelUpdate = () => {
       const list = getList(props.modelValue || props.dataSource);
@@ -190,9 +191,9 @@ const VirtualList = defineComponent({
     };
 
     // ========================================== use virtual ==========================================
-    let virtual: Virtual<any>;
-    const choosen = ref<any>();
+    let virtual: Virtual;
     const dragging = ref<boolean>(false);
+    const chosenKey = ref<string>('');
     const virtualAttributes = computed(() => {
       return VirtualAttrs.reduce((res, key) => {
         res[key] = props[key];
@@ -204,7 +205,7 @@ const VirtualList = defineComponent({
       if (!virtual) return;
       for (let key in newVal) {
         if (newVal[key] !== oldVal[key]) {
-          virtual.option(key as keyof VirtualOptions<any>, newVal[key]);
+          virtual.option(key as keyof VirtualOptions, newVal[key]);
         }
       }
     });
@@ -240,17 +241,17 @@ const VirtualList = defineComponent({
       virtual = new Virtual({
         ...virtualAttributes.value,
         buffer: Math.round(props.keeps / 3),
-        wrapper: wrapRef.value as any,
-        scroller: props.scroller || (rootRef.value as any),
+        wrapper: wrapRef.value as HTMLElement,
+        scroller: props.scroller || (rootRef.value as HTMLElement),
         uniqueKeys: uniqueKeys,
         onScroll,
         onUpdate,
       });
     };
 
-    const onItemResized = (size: number, key) => {
+    const onItemResized = (size: number, key: string | number) => {
       // ignore changes for dragging element
-      if (key === choosen.value) {
+      if (isSameValue(key, chosenKey.value)) {
         return;
       }
 
@@ -282,11 +283,11 @@ const VirtualList = defineComponent({
     });
 
     const onChoose = (event: SortableEvent) => {
-      choosen.value = event.node.getAttribute('data-key');
+      chosenKey.value = event.node.getAttribute('data-key') as string;
     };
 
     const onUnchoose = () => {
-      choosen.value = '';
+      chosenKey.value = '';
     };
 
     const onDrag = (event: DragEvent<any>) => {
@@ -312,7 +313,7 @@ const VirtualList = defineComponent({
     };
 
     const installSortable = () => {
-      sortable = new Sortable(rootRef.value as any, {
+      sortable = new Sortable(rootRef.value as HTMLElement, {
         ...sortableAttributes.value,
         list: listRef.value,
         uniqueKeys: uniqueKeys,
@@ -345,6 +346,7 @@ const VirtualList = defineComponent({
         const record = listRef.value[index];
         if (record) {
           const dataKey = getDataKey(record, props.dataKey);
+          const isChosen = isSameValue(dataKey, chosenKey.value);
           renders.push(
             slots.item
               ? h(
@@ -352,7 +354,7 @@ const VirtualList = defineComponent({
                   {
                     key: dataKey,
                     class: props.itemClass,
-                    style: dragging.value && dataKey == choosen.value && { display: 'none' },
+                    style: dragging.value && isChosen && { display: 'none' },
                     dataKey: dataKey,
                     sizeKey: sizeKey,
                     onResize: onItemResized,

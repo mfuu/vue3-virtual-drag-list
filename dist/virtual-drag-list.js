@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.6
+ * vue-virtual-draglist v3.3.7
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -857,6 +857,54 @@
   })(sortableDnd_min);
   var Dnd = sortableDnd_min.exports;
 
+  function throttle(fn, wait) {
+    var timer;
+    var result = function result() {
+      var _this = this;
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      if (timer) return;
+      if (wait <= 0) {
+        fn.apply(this, args);
+      } else {
+        timer = setTimeout(function () {
+          timer = null;
+          fn.apply(_this, args);
+        }, wait);
+      }
+    };
+    result['cancel'] = function () {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    };
+    return result;
+  }
+  function debounce(fn, wait) {
+    var throttled = throttle(fn, wait);
+    var result = function result() {
+      throttled['cancel']();
+      throttled.apply(this, arguments);
+    };
+    result['cancel'] = function () {
+      throttled['cancel']();
+    };
+    return result;
+  }
+  function isSameValue(a, b) {
+    return a == b;
+  }
+  function getDataKey(item, dataKey) {
+    return (!Array.isArray(dataKey) ? dataKey.replace(/\[/g, '.').replace(/\]/g, '.').split('.') : dataKey).reduce(function (o, k) {
+      return (o || {})[k];
+    }, item);
+  }
+  function elementIsDocumentOrWindow(element) {
+    return element instanceof Document && element.nodeType === 9 || element instanceof Window;
+  }
+
   var SortableAttrs = ['delay', 'group', 'handle', 'lockAxis', 'disabled', 'sortable', 'draggable', 'animation', 'autoScroll', 'ghostClass', 'ghostStyle', 'chosenClass', 'scrollSpeed', 'fallbackOnBody', 'scrollThreshold', 'delayOnTouchOnly', 'placeholderClass'];
   var Sortable = /*#__PURE__*/function () {
     function Sortable(el, options) {
@@ -923,9 +971,10 @@
     }, {
       key: "onDrag",
       value: function onDrag(event) {
-        var key = event.node.getAttribute('data-key');
-        var index = this.getIndex(key);
+        var dataKey = event.node.getAttribute('data-key');
+        var index = this.getIndex(dataKey);
         var item = this.options.list[index];
+        var key = this.options.uniqueKeys[index];
         // store the dragged item
         this.sortable.option('store', {
           item: item,
@@ -1014,7 +1063,16 @@
     }, {
       key: "getIndex",
       value: function getIndex(key) {
-        return this.options.uniqueKeys.indexOf(key);
+        if (key === null || key === undefined) {
+          return -1;
+        }
+        var uniqueKeys = this.options.uniqueKeys;
+        for (var i = 0, len = uniqueKeys.length; i < len; i++) {
+          if (isSameValue(uniqueKeys[i], key)) {
+            return i;
+          }
+        }
+        return -1;
       }
     }, {
       key: "dispatchEvent",
@@ -1024,51 +1082,6 @@
       }
     }]);
   }();
-
-  function throttle(fn, wait) {
-    var timer;
-    var result = function result() {
-      var _this = this;
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-      if (timer) return;
-      if (wait <= 0) {
-        fn.apply(this, args);
-      } else {
-        timer = setTimeout(function () {
-          timer = null;
-          fn.apply(_this, args);
-        }, wait);
-      }
-    };
-    result['cancel'] = function () {
-      if (timer) {
-        clearTimeout(timer);
-        timer = null;
-      }
-    };
-    return result;
-  }
-  function debounce(fn, wait) {
-    var throttled = throttle(fn, wait);
-    var result = function result() {
-      throttled['cancel']();
-      throttled.apply(this, arguments);
-    };
-    result['cancel'] = function () {
-      throttled['cancel']();
-    };
-    return result;
-  }
-  function getDataKey(item, dataKey) {
-    return (!Array.isArray(dataKey) ? dataKey.replace(/\[/g, '.').replace(/\]/g, '.').split('.') : dataKey).reduce(function (o, k) {
-      return (o || {})[k];
-    }, item);
-  }
-  function elementIsDocumentOrWindow(element) {
-    return element instanceof Document && element.nodeType === 9 || element instanceof Window;
-  }
 
   var VirtualAttrs = ['size', 'keeps', 'scroller', 'direction', 'debounceTime', 'throttleTime'];
   var Virtual = /*#__PURE__*/function () {
@@ -1097,7 +1110,8 @@
         start: 0,
         end: 0,
         front: 0,
-        behind: 0
+        behind: 0,
+        total: 0
       };
       this.offset = 0;
       this.direction = 'STATIONARY';
@@ -1161,7 +1175,7 @@
         if (index >= this.options.uniqueKeys.length - 1) {
           this.scrollToBottom();
         } else {
-          var indexOffset = this.getOffsetByIndex(index);
+          var indexOffset = this.getOffsetByRange(0, index);
           var startOffset = this.getScrollStartOffset();
           this.scrollToOffset(indexOffset + startOffset);
         }
@@ -1289,7 +1303,8 @@
       value: function updateScrollElement() {
         var scroller = this.options.scroller;
         if (elementIsDocumentOrWindow(scroller)) {
-          this.scrollEl = document.scrollingElement || document.documentElement || document.body;
+          var scrollEl = document.scrollingElement || document.documentElement || document.body;
+          this.scrollEl = scrollEl;
         } else {
           this.scrollEl = scroller;
         }
@@ -1376,7 +1391,7 @@
         var middleOffset = 0;
         while (low <= high) {
           middle = low + Math.floor((high - low) / 2);
-          middleOffset = this.getOffsetByIndex(middle);
+          middleOffset = this.getOffsetByRange(0, middle);
           if (middleOffset === offset) {
             return middle;
           } else if (middleOffset < offset) {
@@ -1408,7 +1423,15 @@
         this.range.end = this.getEndByStart(start);
         this.range.front = this.getFrontOffset();
         this.range.behind = this.getBehindOffset();
+        this.range.total = this.getTotalOffset();
         this.options.onUpdate(Object.assign({}, this.range));
+      }
+    }, {
+      key: "getTotalOffset",
+      value: function getTotalOffset() {
+        var offset = this.range.front + this.range.behind;
+        offset += this.getOffsetByRange(this.range.start, this.range.end + 1);
+        return offset;
       }
     }, {
       key: "getFrontOffset",
@@ -1416,7 +1439,7 @@
         if (this.isFixed()) {
           return this.fixedSize * this.range.start;
         } else {
-          return this.getOffsetByIndex(this.range.start);
+          return this.getOffsetByRange(0, this.range.start);
         }
       }
     }, {
@@ -1430,13 +1453,13 @@
         return (last - end) * this.getItemSize();
       }
     }, {
-      key: "getOffsetByIndex",
-      value: function getOffsetByIndex(index) {
-        if (!index) {
+      key: "getOffsetByRange",
+      value: function getOffsetByRange(start, end) {
+        if (start >= end) {
           return 0;
         }
         var offset = 0;
-        for (var i = 0; i < index; i++) {
+        for (var i = start; i < end; i++) {
           var size = this.sizes.get(this.options.uniqueKeys[i]);
           offset = offset + (typeof size === 'number' ? size : this.getItemSize());
         }
@@ -1471,9 +1494,9 @@
         }
         var offset = 0;
         if (scroller && wrapper) {
-          var sizeKey = this.isHorizontal() ? 'left' : 'top';
+          var offsetKey = this.isHorizontal() ? 'left' : 'top';
           var rect = elementIsDocumentOrWindow(scroller) ? Dnd.utils.getRect(wrapper) : Dnd.utils.getRect(wrapper, true, scroller);
-          offset = this.offset + rect[sizeKey];
+          offset = this.offset + rect[offsetKey];
         }
         return offset;
       }
@@ -1716,7 +1739,8 @@
         start: 0,
         end: props.keeps - 1,
         front: 0,
-        behind: 0
+        behind: 0,
+        total: 0
       });
       var horizontal = vue.computed(function () {
         return props.direction !== 'vertical';
@@ -1840,8 +1864,8 @@
       };
       // ========================================== use virtual ==========================================
       var virtual;
-      var choosen = vue.ref();
       var dragging = vue.ref(false);
+      var chosenKey = vue.ref('');
       var virtualAttributes = vue.computed(function () {
         return VirtualAttrs.reduce(function (res, key) {
           res[key] = props[key];
@@ -1891,7 +1915,7 @@
       };
       var onItemResized = function onItemResized(size, key) {
         // ignore changes for dragging element
-        if (key === choosen.value) {
+        if (isSameValue(key, chosenKey.value)) {
           return;
         }
         var sizes = virtual.sizes.size;
@@ -1918,10 +1942,10 @@
         }
       });
       var onChoose = function onChoose(event) {
-        choosen.value = event.node.getAttribute('data-key');
+        chosenKey.value = event.node.getAttribute('data-key');
       };
       var onUnchoose = function onUnchoose() {
-        choosen.value = '';
+        chosenKey.value = '';
       };
       var onDrag = function onDrag(event) {
         dragging.value = true;
@@ -1978,10 +2002,11 @@
           var record = listRef.value[index];
           if (record) {
             var dataKey = getDataKey(record, props.dataKey);
+            var isChosen = isSameValue(dataKey, chosenKey.value);
             renders.push(slots.item ? vue.h(Item, {
               key: dataKey,
               "class": props.itemClass,
-              style: dragging.value && dataKey == choosen.value && {
+              style: dragging.value && isChosen && {
                 display: 'none'
               },
               dataKey: dataKey,

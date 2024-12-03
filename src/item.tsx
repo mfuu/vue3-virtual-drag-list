@@ -15,7 +15,7 @@ const createSlot = ({ mounted, updated, unmounted }: Funs) => {
     onUnmounted() {
       unmounted(this.$el);
     },
-    render(props: any) {
+    render(props) {
       return props.vnode;
     },
   });
