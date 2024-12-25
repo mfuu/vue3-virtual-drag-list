@@ -1,7 +1,5 @@
 /dist/*
 /node_modules/**
 
-**/*.svg
 **/*.sh
-
-/docs/*
+cache

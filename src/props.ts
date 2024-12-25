@@ -4,7 +4,6 @@ type Direction = 'vertical' | 'horizontal';
 type LockAxis = 'x' | 'y';
 
 export const VirtualProps = {
-  dataSource: {},
   modelValue: {},
   dataKey: {
     type: String,
@@ -29,12 +28,15 @@ export const VirtualProps = {
   },
   handle: {
     type: [Function, String],
+    default: undefined,
   },
   group: {
     type: [Object, String],
+    default: undefined,
   },
   scroller: {
     type: [Document, HTMLElement],
+    default: undefined,
   },
   lockAxis: {
     type: String as PropType<LockAxis>,
@@ -50,6 +52,7 @@ export const VirtualProps = {
   },
   size: {
     type: Number,
+    default: undefined,
   },
   debounceTime: {
     type: Number,
@@ -126,12 +129,13 @@ export const VirtualProps = {
   placeholderClass: {
     type: String,
     default: '',
-  }
+  },
 };
 
 export const ItemProps = {
   dataKey: {
     type: [String, Number],
+    default: undefined,
   },
   sizeKey: {
     type: String,
@@ -139,5 +143,6 @@ export const ItemProps = {
   },
   itemClass: {
     type: String,
+    default: undefined,
   },
 };

@@ -36,14 +36,14 @@ const getList = (source) => {
 
 const VirtualList = defineComponent({
   props: VirtualProps,
-  emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
+  emits: ['update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
   setup(props, { emit, slots, expose }) {
-    const range = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0, total: 0 });
+    const list = ref([]);
+    const range = ref<Range>({ start: 0, end: props.keeps - 1, front: 0, behind: 0 });
     const horizontal = computed(() => props.direction !== 'vertical');
 
-    const rootRef = ref<HTMLElement | null>(null);
-    const wrapRef = ref<HTMLElement | null>(null);
-    const listRef = ref<any[]>([]);
+    const rootRef = ref<HTMLElement>();
+    const wrapRef = ref<HTMLElement>();
 
     function getSize(key: string | number) {
       return virtual.getSize(key);
@@ -98,7 +98,7 @@ const VirtualList = defineComponent({
 
     // ========================================== model change ==========================================
     watch(
-      () => [props.dataSource, props.modelValue],
+      () => [props.modelValue],
       () => {
         onModelUpdate();
       },
@@ -136,29 +136,29 @@ const VirtualList = defineComponent({
     let uniqueKeys: (string | number)[] = [];
     let topLoadLength: number = 0;
     const onModelUpdate = () => {
-      const list = getList(props.modelValue || props.dataSource);
-      if (!list) return;
+      const data = getList(props.modelValue);
+      if (!data) return;
 
-      listRef.value = list;
+      list.value = data;
       updateUniqueKeys();
-      updateRange(lastList, list);
+      updateRange(lastList, data);
 
-      sortable?.option('list', list);
+      sortable?.option('list', data);
 
       // if auto scroll to the last offset
       if (topLoadLength && props.keepOffset) {
-        const index = list.length - topLoadLength;
+        const index = data.length - topLoadLength;
         if (index > 0) {
           scrollToIndex(index);
         }
         topLoadLength = 0;
       }
 
-      lastList = [...listRef.value];
+      lastList = [...list.value];
     };
 
     const updateUniqueKeys = () => {
-      uniqueKeys = listRef.value.map((item) => getDataKey(item, props.dataKey));
+      uniqueKeys = list.value.map((item) => getDataKey(item, props.dataKey));
       virtual?.option('uniqueKeys', uniqueKeys);
       sortable?.option('uniqueKeys', uniqueKeys);
     };
@@ -172,15 +172,16 @@ const VirtualList = defineComponent({
         return;
       }
 
-      let _range = { ...range.value };
+      let newRange = { ...range.value };
       if (
+        oldList.length > props.keeps &&
         newList.length > oldList.length &&
-        _range.end === oldList.length - 1 &&
+        newRange.end === oldList.length - 1 &&
         scrolledToBottom()
       ) {
-        _range.start++;
+        newRange.start++;
       }
-      virtual?.updateRange(_range);
+      virtual?.updateRange(newRange);
     };
 
     const scrolledToBottom = () => {
@@ -211,7 +212,7 @@ const VirtualList = defineComponent({
     });
 
     const handleToTop = throttle(() => {
-      topLoadLength = listRef.value.length;
+      topLoadLength = list.value.length;
       emit('top');
     }, 50);
 
@@ -221,7 +222,7 @@ const VirtualList = defineComponent({
 
     const onScroll = (event: ScrollEvent) => {
       topLoadLength = 0;
-      if (!!listRef.value.length && event.top) {
+      if (!!list.value.length && event.top) {
         handleToTop();
       } else if (event.bottom) {
         handleToBottom();
@@ -230,8 +231,8 @@ const VirtualList = defineComponent({
 
     const onUpdate = (newRange: Range) => {
       const rangeChanged = newRange.start !== range.value.start;
-      if (dragging.value && rangeChanged) {
-        sortable && (sortable.reRendered = true);
+      if (dragging.value && rangeChanged && sortable) {
+        sortable.rangeChanged = true;
       }
       range.value = newRange;
       rangeChanged && emit('rangeChange', newRange);
@@ -241,8 +242,8 @@ const VirtualList = defineComponent({
       virtual = new Virtual({
         ...virtualAttributes.value,
         buffer: Math.round(props.keeps / 3),
-        wrapper: wrapRef.value as HTMLElement,
-        scroller: props.scroller || (rootRef.value as HTMLElement),
+        wrapper: wrapRef.value!,
+        scroller: props.scroller || rootRef.value,
         uniqueKeys: uniqueKeys,
         onScroll,
         onUpdate,
@@ -256,7 +257,7 @@ const VirtualList = defineComponent({
       }
 
       const sizes = virtual.sizes.size;
-      const renders = Math.min(props.keeps, listRef.value.length);
+      const renders = Math.min(props.keeps, list.value.length);
       virtual.onItemResized(key, size);
 
       if (sizes === renders - 1) {
@@ -306,16 +307,15 @@ const VirtualList = defineComponent({
       sortable.option('autoScroll', props.autoScroll);
 
       if (event.changed) {
-        emit('update:dataSource', event.list);
         emit('update:modelValue', event.list);
       }
       emit('drop', event);
     };
 
     const installSortable = () => {
-      sortable = new Sortable(rootRef.value as HTMLElement, {
+      sortable = new Sortable(rootRef.value!, {
         ...sortableAttributes.value,
-        list: listRef.value,
+        list: list.value,
         uniqueKeys: uniqueKeys,
         onDrag,
         onDrop,
@@ -343,7 +343,7 @@ const VirtualList = defineComponent({
       renders.push(renderSpacer(front));
 
       for (let index = start; index <= end; index++) {
-        const record = listRef.value[index];
+        const record = list.value[index];
         if (record) {
           const dataKey = getDataKey(record, props.dataKey);
           const isChosen = isSameValue(dataKey, chosenKey.value);

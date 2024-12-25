@@ -1,7 +1,6 @@
 import * as vue from 'vue';
 
 declare const VirtualList: vue.DefineComponent<{
-    dataSource: {};
     modelValue: {};
     dataKey: {
         type: StringConstructor;
@@ -26,9 +25,11 @@ declare const VirtualList: vue.DefineComponent<{
     };
     handle: {
         type: (StringConstructor | FunctionConstructor)[];
+        default: undefined;
     };
     group: {
         type: (StringConstructor | ObjectConstructor)[];
+        default: undefined;
     };
     scroller: {
         type: ({
@@ -38,6 +39,7 @@ declare const VirtualList: vue.DefineComponent<{
             new (): HTMLElement;
             prototype: HTMLElement;
         })[];
+        default: undefined;
     };
     lockAxis: {
         type: vue.PropType<"x" | "y">;
@@ -53,6 +55,7 @@ declare const VirtualList: vue.DefineComponent<{
     };
     size: {
         type: NumberConstructor;
+        default: undefined;
     };
     debounceTime: {
         type: NumberConstructor;
@@ -135,8 +138,7 @@ declare const VirtualList: vue.DefineComponent<{
     };
 }, () => vue.VNode<vue.RendererNode, vue.RendererElement, {
     [key: string]: any;
-}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:dataSource" | "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
-    dataSource: {};
+}>, unknown, {}, {}, vue.ComponentOptionsMixin, vue.ComponentOptionsMixin, ("update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange")[], "update:modelValue" | "top" | "bottom" | "drag" | "drop" | "rangeChange", vue.VNodeProps & vue.AllowedComponentProps & vue.ComponentCustomProps, Readonly<vue.ExtractPropTypes<{
     modelValue: {};
     dataKey: {
         type: StringConstructor;
@@ -161,9 +163,11 @@ declare const VirtualList: vue.DefineComponent<{
     };
     handle: {
         type: (StringConstructor | FunctionConstructor)[];
+        default: undefined;
     };
     group: {
         type: (StringConstructor | ObjectConstructor)[];
+        default: undefined;
     };
     scroller: {
         type: ({
@@ -173,6 +177,7 @@ declare const VirtualList: vue.DefineComponent<{
             new (): HTMLElement;
             prototype: HTMLElement;
         })[];
+        default: undefined;
     };
     lockAxis: {
         type: vue.PropType<"x" | "y">;
@@ -188,6 +193,7 @@ declare const VirtualList: vue.DefineComponent<{
     };
     size: {
         type: NumberConstructor;
+        default: undefined;
     };
     debounceTime: {
         type: NumberConstructor;
@@ -269,7 +275,6 @@ declare const VirtualList: vue.DefineComponent<{
         default: string;
     };
 }>> & {
-    "onUpdate:dataSource"?: ((...args: any[]) => any) | undefined;
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onTop?: ((...args: any[]) => any) | undefined;
     onBottom?: ((...args: any[]) => any) | undefined;
@@ -282,9 +287,13 @@ declare const VirtualList: vue.DefineComponent<{
     draggable: string;
     itemClass: string;
     sortable: boolean;
+    handle: string | Function;
+    group: string | Record<string, any>;
+    scroller: HTMLElement | Document;
     lockAxis: "x" | "y";
     direction: "vertical" | "horizontal";
     keeps: number;
+    size: number;
     debounceTime: number;
     throttleTime: number;
     animation: number;

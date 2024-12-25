@@ -1,6 +1,6 @@
 {
   "name": "vue-virtual-draglist",
-  "version": "3.3.7",
+  "version": "3.3.8",
   "description": "A virtual scrolling list component that can be sorted by dragging, support vue3",
   "main": "dist/virtual-drag-list.min.js",
   "types": "types/index.d.ts",
@@ -63,6 +63,6 @@
     "rollup-plugin-dts": "^4.2.3",
     "typescript": "^4.3.5",
     "vitepress": "^1.4.1",
-    "vue": "^3.2.2"
+    "vue": "~3.2.2"
   }
 }

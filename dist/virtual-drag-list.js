@@ -1,5 +1,5 @@
 /*!
- * vue-virtual-draglist v3.3.7
+ * vue-virtual-draglist v3.3.8
  * open source under the MIT license
  * https://github.com/mfuu/vue3-virtual-drag-list#readme
  */
@@ -911,14 +911,14 @@
       _classCallCheck(this, Sortable);
       this.el = el;
       this.options = options;
-      this.reRendered = false;
+      this.rangeChanged = false;
       this.installSortable();
     }
     return _createClass(Sortable, [{
       key: "destroy",
       value: function destroy() {
         this.sortable.destroy();
-        this.reRendered = false;
+        this.rangeChanged = false;
       }
     }, {
       key: "option",
@@ -1011,13 +1011,13 @@
           this.handleDropEvent(event, params, index);
         }
         this.dispatchEvent('onDrop', params);
-        if (event.from === this.el && this.reRendered) {
+        if (event.from === this.el && this.rangeChanged) {
           (_b = Dnd.dragged) === null || _b === void 0 ? void 0 : _b.remove();
         }
         if (event.from !== event.to) {
           (_c = Dnd.clone) === null || _c === void 0 ? void 0 : _c.remove();
         }
-        this.reRendered = false;
+        this.rangeChanged = false;
       }
     }, {
       key: "handleDropEvent",
@@ -1110,8 +1110,7 @@
         start: 0,
         end: 0,
         front: 0,
-        behind: 0,
-        total: 0
+        behind: 0
       };
       this.offset = 0;
       this.direction = 'STATIONARY';
@@ -1278,7 +1277,6 @@
         eventFn(scroller, 'touchmove', this.preventDefault);
         eventFn(scroller, 'keydown', this.preventDefaultForKeyDown);
       }
-      // ========================================= Properties =========================================
     }, {
       key: "preventDefault",
       value: function preventDefault(e) {
@@ -1423,15 +1421,7 @@
         this.range.end = this.getEndByStart(start);
         this.range.front = this.getFrontOffset();
         this.range.behind = this.getBehindOffset();
-        this.range.total = this.getTotalOffset();
         this.options.onUpdate(Object.assign({}, this.range));
-      }
-    }, {
-      key: "getTotalOffset",
-      value: function getTotalOffset() {
-        var offset = this.range.front + this.range.behind;
-        offset += this.getOffsetByRange(this.range.start, this.range.end + 1);
-        return offset;
       }
     }, {
       key: "getFrontOffset",
@@ -1504,7 +1494,6 @@
   }();
 
   var VirtualProps = {
-    dataSource: {},
     modelValue: {},
     dataKey: {
       type: String,
@@ -1528,13 +1517,16 @@
       "default": true
     },
     handle: {
-      type: [Function, String]
+      type: [Function, String],
+      "default": undefined
     },
     group: {
-      type: [Object, String]
+      type: [Object, String],
+      "default": undefined
     },
     scroller: {
-      type: [Document, HTMLElement]
+      type: [Document, HTMLElement],
+      "default": undefined
     },
     lockAxis: {
       type: String,
@@ -1549,7 +1541,8 @@
       "default": 30
     },
     size: {
-      type: Number
+      type: Number,
+      "default": undefined
     },
     debounceTime: {
       type: Number,
@@ -1639,14 +1632,16 @@
   };
   var ItemProps = {
     dataKey: {
-      type: [String, Number]
+      type: [String, Number],
+      "default": undefined
     },
     sizeKey: {
       type: String,
       "default": 'offsetHeight'
     },
     itemClass: {
-      type: String
+      type: String,
+      "default": undefined
     }
   };
 
@@ -1730,24 +1725,23 @@
   };
   var VirtualList = vue.defineComponent({
     props: VirtualProps,
-    emits: ['update:dataSource', 'update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
+    emits: ['update:modelValue', 'top', 'bottom', 'drag', 'drop', 'rangeChange'],
     setup: function setup(props, _ref) {
       var emit = _ref.emit,
         slots = _ref.slots,
         expose = _ref.expose;
+      var list = vue.ref([]);
       var range = vue.ref({
         start: 0,
         end: props.keeps - 1,
         front: 0,
-        behind: 0,
-        total: 0
+        behind: 0
       });
       var horizontal = vue.computed(function () {
         return props.direction !== 'vertical';
       });
-      var rootRef = vue.ref(null);
-      var wrapRef = vue.ref(null);
-      var listRef = vue.ref([]);
+      var rootRef = vue.ref();
+      var wrapRef = vue.ref();
       function getSize(key) {
         return virtual.getSize(key);
       }
@@ -1791,7 +1785,7 @@
       });
       // ========================================== model change ==========================================
       vue.watch(function () {
-        return [props.dataSource, props.modelValue];
+        return [props.modelValue];
       }, function () {
         onModelUpdate();
       }, {
@@ -1820,24 +1814,24 @@
       var uniqueKeys = [];
       var topLoadLength = 0;
       var onModelUpdate = function onModelUpdate() {
-        var list = getList(props.modelValue || props.dataSource);
-        if (!list) return;
-        listRef.value = list;
+        var data = getList(props.modelValue);
+        if (!data) return;
+        list.value = data;
         updateUniqueKeys();
-        updateRange(lastList, list);
-        sortable === null || sortable === void 0 ? void 0 : sortable.option('list', list);
+        updateRange(lastList, data);
+        sortable === null || sortable === void 0 ? void 0 : sortable.option('list', data);
         // if auto scroll to the last offset
         if (topLoadLength && props.keepOffset) {
-          var index = list.length - topLoadLength;
+          var index = data.length - topLoadLength;
           if (index > 0) {
             scrollToIndex(index);
           }
           topLoadLength = 0;
         }
-        lastList = _toConsumableArray(listRef.value);
+        lastList = _toConsumableArray(list.value);
       };
       var updateUniqueKeys = function updateUniqueKeys() {
-        uniqueKeys = listRef.value.map(function (item) {
+        uniqueKeys = list.value.map(function (item) {
           return getDataKey(item, props.dataKey);
         });
         virtual === null || virtual === void 0 ? void 0 : virtual.option('uniqueKeys', uniqueKeys);
@@ -1850,11 +1844,11 @@
         if (oldList.length === newList.length) {
           return;
         }
-        var _range = Object.assign({}, range.value);
-        if (newList.length > oldList.length && _range.end === oldList.length - 1 && scrolledToBottom()) {
-          _range.start++;
+        var newRange = Object.assign({}, range.value);
+        if (oldList.length > props.keeps && newList.length > oldList.length && newRange.end === oldList.length - 1 && scrolledToBottom()) {
+          newRange.start++;
         }
-        virtual === null || virtual === void 0 ? void 0 : virtual.updateRange(_range);
+        virtual === null || virtual === void 0 ? void 0 : virtual.updateRange(newRange);
       };
       var scrolledToBottom = function scrolledToBottom() {
         var offset = getOffset();
@@ -1881,7 +1875,7 @@
         }
       });
       var handleToTop = throttle(function () {
-        topLoadLength = listRef.value.length;
+        topLoadLength = list.value.length;
         emit('top');
       }, 50);
       var handleToBottom = throttle(function () {
@@ -1889,7 +1883,7 @@
       }, 50);
       var onScroll = function onScroll(event) {
         topLoadLength = 0;
-        if (!!listRef.value.length && event.top) {
+        if (!!list.value.length && event.top) {
           handleToTop();
         } else if (event.bottom) {
           handleToBottom();
@@ -1897,8 +1891,8 @@
       };
       var onUpdate = function onUpdate(newRange) {
         var rangeChanged = newRange.start !== range.value.start;
-        if (dragging.value && rangeChanged) {
-          sortable && (sortable.reRendered = true);
+        if (dragging.value && rangeChanged && sortable) {
+          sortable.rangeChanged = true;
         }
         range.value = newRange;
         rangeChanged && emit('rangeChange', newRange);
@@ -1919,7 +1913,7 @@
           return;
         }
         var sizes = virtual.sizes.size;
-        var renders = Math.min(props.keeps, listRef.value.length);
+        var renders = Math.min(props.keeps, list.value.length);
         virtual.onItemResized(key, size);
         if (sizes === renders - 1) {
           virtual.updateRange(range.value);
@@ -1960,14 +1954,13 @@
         virtual.enableScroll(true);
         sortable.option('autoScroll', props.autoScroll);
         if (event.changed) {
-          emit('update:dataSource', event.list);
           emit('update:modelValue', event.list);
         }
         emit('drop', event);
       };
       var installSortable = function installSortable() {
         sortable = new Sortable(rootRef.value, Object.assign(Object.assign({}, sortableAttributes.value), {
-          list: listRef.value,
+          list: list.value,
           uniqueKeys: uniqueKeys,
           onDrag: onDrag,
           onDrop: onDrop,
@@ -1999,7 +1992,7 @@
         var sizeKey = horizontal.value ? 'offsetWidth' : 'offsetHeight';
         renders.push(renderSpacer(front));
         var _loop = function _loop(index) {
-          var record = listRef.value[index];
+          var record = list.value[index];
           if (record) {
             var dataKey = getDataKey(record, props.dataKey);
             var isChosen = isSameValue(dataKey, chosenKey.value);
