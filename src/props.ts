@@ -16,11 +16,7 @@ export const VirtualProps = {
   },
   draggable: {
     type: String,
-    default: '.virtual-dnd-list-item',
-  },
-  itemClass: {
-    type: String,
-    default: 'virtual-dnd-list-item',
+    default: '[role="item"]',
   },
   sortable: {
     type: Boolean,
@@ -140,9 +136,5 @@ export const ItemProps = {
   sizeKey: {
     type: String,
     default: 'offsetHeight',
-  },
-  itemClass: {
-    type: String,
-    default: undefined,
   },
 };

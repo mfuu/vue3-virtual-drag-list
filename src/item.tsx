@@ -55,13 +55,13 @@ const Item = defineComponent({
     const customSlot = createSlot({ mounted, updated, unmounted });
 
     return () => {
-      const { dataKey, itemClass } = props;
+      const { dataKey } = props;
       const [defaultSlot] = slots.default?.() || [];
       return h(
         customSlot,
         {
           key: dataKey,
-          class: itemClass,
+          role: 'item',
           vnode: defaultSlot,
           'data-key': dataKey,
         },

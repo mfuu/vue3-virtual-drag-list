@@ -15,10 +15,6 @@ declare const VirtualList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    itemClass: {
-        type: StringConstructor;
-        default: string;
-    };
     sortable: {
         type: BooleanConstructor;
         default: boolean;
@@ -153,10 +149,6 @@ declare const VirtualList: vue.DefineComponent<{
         type: StringConstructor;
         default: string;
     };
-    itemClass: {
-        type: StringConstructor;
-        default: string;
-    };
     sortable: {
         type: BooleanConstructor;
         default: boolean;
@@ -285,7 +277,6 @@ declare const VirtualList: vue.DefineComponent<{
     dataKey: string;
     tableMode: boolean;
     draggable: string;
-    itemClass: string;
     sortable: boolean;
     handle: string | Function;
     group: string | Record<string, any>;

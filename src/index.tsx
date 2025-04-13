@@ -326,8 +326,9 @@ const VirtualList = defineComponent({
 
     // ========================================== layout ==========================================
     const renderSpacer = (offset) => {
+      const offsetKey = horizontal.value ? 'width' : 'height';
       if (props.tableMode) {
-        const tdStyle = { padding: 0, border: 0, height: `${offset}px` };
+        const tdStyle = { padding: 0, border: 0, [offsetKey]: `${offset}px` };
 
         return h('tr', {}, [h('td', { style: tdStyle })]);
       }
@@ -353,7 +354,6 @@ const VirtualList = defineComponent({
                   Item,
                   {
                     key: dataKey,
-                    class: props.itemClass,
                     style: dragging.value && isChosen && { display: 'none' },
                     dataKey: dataKey,
                     sizeKey: sizeKey,

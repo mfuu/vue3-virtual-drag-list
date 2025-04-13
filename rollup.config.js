@@ -11,7 +11,7 @@ const homepage = packageJson.homepage;
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 const banner = `
 /*!
- * vue-virtual-draglist v${version}
+ * vue-virtual-sortable v${version}
  * open source under the MIT license
  * ${homepage}
  */
@@ -24,7 +24,7 @@ export default [
     output: [
       {
         format: 'umd',
-        file: 'dist/virtual-drag-list.js',
+        file: 'dist/virtual-list.js',
         name: 'VirtualList',
         sourcemap: false,
         globals: {
@@ -34,7 +34,7 @@ export default [
       },
       {
         format: 'umd',
-        file: 'dist/virtual-drag-list.min.js',
+        file: 'dist/virtual-list.min.js',
         name: 'VirtualList',
         sourcemap: false,
         globals: {
