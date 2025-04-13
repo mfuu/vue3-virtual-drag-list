@@ -2,9 +2,9 @@ import { defineConfig } from 'vitepress';
 import { componentPreview, containerPreview } from '@vitepress-demo-preview/plugin';
 
 export default defineConfig({
-  base: '/vue3-virtual-drag-list/',
+  base: '/vue3-virtual-sortable/',
   lang: 'en-US',
-  title: 'vue3-virtual-drag-list',
+  title: 'vue3-virtual-sortable',
   description: 'A virtual scrolling list component that can be sorted by dragging',
 
   themeConfig: {
@@ -12,7 +12,7 @@ export default defineConfig({
       provider: 'local',
     },
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/mfuu/vue-virtual-drag-list' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/mfuu/vue3-virtual-sortable' }],
 
     footer: {
       message: 'Released under the MIT License.',

@@ -1,11 +1,11 @@
 ---
 layout: home
 
-title: vue-virtual-drag-list
+title: vue-virtual-sortable
 titleTemplate: A virtual scrolling list component that can be sorted by dragging
 
 hero:
-  name: vue-virtual-drag-list
+  name: vue-virtual-sortable
   tagline: A virtual scrolling list component that can be sorted by dragging
   actions:
     - theme: brand
@@ -13,7 +13,7 @@ hero:
       link: /guide/install
     - theme: alt
       text: GitHub
-      link: https://github.com/mfuu/vue-virtual-drag-list
+      link: https://github.com/mfuu/vue-virtual-sortable
 ---
 <style>
 :root {

@@ -19,7 +19,7 @@
     <template v-slot:item="{ record, index, dateKey }">
       <tr>
         <td>
-          <span class="index">#{{ index }}</span>
+          <span class="index">#{{ record.index }}</span>
           <span class="handle">☰</span>
         </td>
         <td>{{ record.name }}</td>

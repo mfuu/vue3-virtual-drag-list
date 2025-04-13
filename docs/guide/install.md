@@ -5,11 +5,11 @@
 ::: code-group
 
 ```sh [npm]
-$ npm i vue-virtual-draglist@next
+$ npm i vue-virtual-sortable@next
 ```
 
 ```sh [yarn]
-$ yarn add vue-virtual-draglist@next
+$ yarn add vue-virtual-sortable@next
 ```
 
 :::
@@ -31,7 +31,7 @@ $ yarn add vue-virtual-draglist@next
 </template>
 
 <script setup>
-import VirtualList from 'vue-virtual-draglist';
+import VirtualList from 'vue-virtual-sortable';
 import { ref } from 'vue';
 
 const list = ref([{ id: 'a', text: 'a', id: 'b', text: 'b' }]);

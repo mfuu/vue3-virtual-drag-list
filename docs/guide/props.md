@@ -130,19 +130,11 @@ Disables the sortable if set to true
 
 ## `draggable`
 
-| **Type** | **Default**              |
-| -------- | ------------------------ |
-| `String` | `.virtual-dnd-list-item` |
+| **Type** | **Default**     |
+| -------- | --------------- |
+| `String` | `[role="item"]` |
 
 Specifies which items inside the element should be draggable
-
-## `itemClass`
-
-| **Type** | **Default**              |
-| -------- | ------------------------ |
-| `String` | `virtual-dnd-list-item` |
-
-Default list item class
 
 ## `animation`
 

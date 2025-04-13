@@ -11,7 +11,7 @@
     <template v-slot:item="{ record, index, dateKey }">
       <div class="list-item">
         <div class="item-title">
-          <span class="index">#{{ index }}</span>
+          <span class="index">#{{ record.index }}</span>
           <span class="handle">☰</span>
         </div>
         <p>{{ record.desc }}</p>
